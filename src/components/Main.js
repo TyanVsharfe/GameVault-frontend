@@ -1,22 +1,12 @@
-import { NavLink } from 'react-router-dom';
-import "../assets/styles/style.css";
-import searchIcon from "../assets/icons/search.svg";
-import accountIcon from "../assets/icons/account.svg";
+import React from "react";
 
-function Main() {
+function Search() {
     return (
-        <div className="App">
-            <header>
-                <div className="header__title">
-                    <a className="page-logo" href="/main">gamevault</a>
-                </div>
-                <nav>
-                    <NavLink  to="/search"><img className="nav__icon" src={searchIcon} alt=""/></NavLink>
-                    <NavLink to="/account"><img className="nav__icon" src={accountIcon} alt=""/></NavLink>
-                </nav>
-            </header>
+        <div className="search-result" id="search-result">
+            <h1>Main</h1>
+            <div id="resultList"></div>
         </div>
     );
 }
 
-export default Main;
+export default Search;

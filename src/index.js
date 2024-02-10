@@ -2,14 +2,23 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
+import Navigation from "./components/Navigation";
 import Main from "./components/Main";
-import {BrowserRouter} from "react-router-dom";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import Account from "./components/Account";
+import Search from "./components/Search";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
       <BrowserRouter>
-          <Main />
+          <Navigation />
+
+          <Routes>
+              <Route path="/main" element={<Main />} />
+              <Route path="/search" element={<Search />} />
+              <Route path="/account" element={<Account />} />
+          </Routes>
       </BrowserRouter>
   </React.StrictMode>
 );

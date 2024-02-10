@@ -1,7 +1,3 @@
-div {
-    background: #D4DAE0;
-}
-
 body {
     font-family: RethinkSans, serif;
 }
@@ -76,6 +72,7 @@ header {
     width: 1135px;
     height: 800px;
     margin: auto;
+    background: #D4DAE0;
 }
 
 .main-info {
