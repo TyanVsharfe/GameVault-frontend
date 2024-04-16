@@ -1,16 +1,16 @@
 body {
-    font-family: RethinkSans, serif;
+    /*font-family: RethinkSans, serif;*/
 }
 
 h1 {
-    font-family: RethinkSans, serif;
+    /*font-family: RethinkSans, serif;*/
     font-weight: bold;
     text-align: center;
 }
 
 .page-logo {
     color: #000;
-    font-family: RethinkSans, sans-serif;
+    /*font-family: RethinkSans, sans-serif;*/
     font-size: 50px;
     font-style: normal;
     font-weight: 400;
@@ -46,7 +46,7 @@ h2 {
     height: 55px;*/
 
     color: #000;
-    font-family: RethinkSans, sans-serif;
+    /*font-family: RethinkSans, sans-serif;*/
     font-size: 50px;
     font-style: normal;
     font-weight: 400;

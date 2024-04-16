@@ -1,6 +1,6 @@
 import React from "react";
 
-function Search() {
+function Main() {
     return (
         <div className="search-result" id="search-result">
             <h1>Main</h1>
@@ -9,4 +9,4 @@ function Search() {
     );
 }
 
-export default Search;
+export default Main;
