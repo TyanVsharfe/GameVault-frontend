@@ -11,6 +11,7 @@ import Search from "./components/Search";
 
 //import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import Game from "./components/Game";
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -21,6 +22,7 @@ root.render(
               <Route path="/main" element={<Main />} />
               <Route path="/search" element={<Search />} />
               <Route path="/account" element={<Account />} />
+              <Route path="/game/*" element={<Game />} />
           </Routes>
       </BrowserRouter>
   </React.StrictMode>

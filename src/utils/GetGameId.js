@@ -1,4 +1,4 @@
-export async function checkEntity(id) {
+export async function GetGameId(id) {
     try {
         const response = await fetch(`/api/checkEntity/${id}`);
 

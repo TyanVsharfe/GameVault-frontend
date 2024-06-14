@@ -1,5 +1,6 @@
-async function addGame() {
+export async function addGame() {
     console.log('Вызывается AddGame');
+    console.log(window.location.pathname);
     const storedData = localStorage.getItem(window.location.pathname)
     const parsedData = JSON.parse(storedData);
     console.log(parsedData[0]); // Это ваши сохраненные данные
@@ -17,6 +18,5 @@ async function addGame() {
         })
     });
     localStorage.removeItem(window.location.pathname);
-    location.reload();
     alert("Игра добавлена");
 }

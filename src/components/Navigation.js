@@ -19,10 +19,11 @@ function Navigation() {
     const [gameName, setGameName] = useState('');
 
     const handleSearchSubmit = async () => {
+        localStorage.removeItem('game_list');
         setIsLoading(true);
         localStorage.setItem('loading', true);
         const gameName = document.getElementById('gameNameInput').value;
-        console.log("Gamename " + gameName)
+        console.log("Game name - " + gameName)
         try {
             const response = await fetch('http://localhost:8080/api/igdb/games', {
                 method: 'POST',
@@ -42,7 +43,7 @@ function Navigation() {
         } catch (error) {
             console.error('Ошибка при выполнении запроса:', error);
         } finally {
-            //setIsLoading(false);
+            setIsLoading(false);
         }
     };
 
