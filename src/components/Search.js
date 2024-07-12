@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import Container from "react-bootstrap/Container";
-import SearchComponent from "./SearhComponent";
+import SearchComponent from "./SearhResult";
 import {Stack} from "react-bootstrap";
 import Row from "react-bootstrap/Row";
 

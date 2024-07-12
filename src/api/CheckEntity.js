@@ -8,12 +8,10 @@ export async function checkEntity(id) {
             return result;
         } else {
             console.error('Ошибка при проверке сущности:', response.status);
-            // Вероятно, вам нужно что-то вернуть в случае ошибки
             return null;
         }
     } catch (error) {
         console.error('Произошла ошибка:', error);
-        // Обработка ошибки, если что-то пошло не так при выполнении запроса
         return null;
     }
 }

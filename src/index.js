@@ -8,10 +8,12 @@ import Navigation from "./components/Navigation";
 import Main from "./components/Main";
 import Account from "./components/Account";
 import Search from "./components/Search";
+import Game from "./components/Game";
 
 //import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Game from "./components/Game";
+
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

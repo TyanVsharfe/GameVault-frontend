@@ -1,21 +1,21 @@
+import "../assets/styles/game-page.css"
+
 import React, { useState, useEffect } from 'react';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
-import {Stack} from "react-bootstrap";
-import "../assets/styles/game-page.css"
-import CheckGameStatus from "./CheckGameStatus";
+import {Button, Stack} from "react-bootstrap";
+import UserGameInfo from "./UserGameInfo";
+import {getGameId} from "../utils/GetGameId";
+import {checkEntity} from "../api/CheckEntity";
+import AddedGame from "./AddedGame";
+import {addGame} from "../api/AddGame";
 
 function Game() {
     const [gameData, setGameData] = useState(null);
-    const [id, setID] = useState(window.location.pathname.split('/')[window.location.pathname.split('/').length - 1]);
+    const [gameStatus, setGameStatus] = useState(false);
+    const [id, setID] = useState(getGameId);
 
     useEffect(() => {
-        const getGameId = () => {
-            let currentPath = window.location.pathname;
-            let pathParts = currentPath.split('/');
-            return pathParts[pathParts.length - 1];
-        };
-
         const fetchData = async () => {
             try {
                 const gameId = getGameId();
@@ -29,16 +29,18 @@ function Game() {
                 //     console.log('Game not in DB');
                 // }
 
+                const status = await checkEntity(id)
+
+                if (status != null) {
+                    setGameStatus(status);
+                }
+
                 const response = await fetch(`/api/igdb/game/${gameId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 });
-
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
 
                 const data = await response.json();
                 const keyStorage = `/game/${gameId}`;
@@ -51,11 +53,11 @@ function Game() {
         };
 
         fetchData();
-    }, []);
+    }, [gameData, id]);
 
     return (
         <div className="game" id="main">
-            <Stack className=".d-flex justify-content-center align-items-center" direction="horizontal">
+            <Stack className=".d-flex justify-content-center align-items-center" direction="horizontal" gap={5}>
                 <Card data-bs-theme="dark" style={{width: '15rem'}} className="text-center" border="light">
                     <Card.Img variant="top" src={gameData?.cover?.url?.replace('t_thumb', 't_cover_big') || ''}/>
                     <Card.Body>
@@ -67,7 +69,11 @@ function Game() {
                                 )}
                             </Container>
                         </Card.Text>
-                        <CheckGameStatus id={id}/>
+                        {gameStatus ? (
+                            <AddedGame/>
+                        ) : (
+                            <Button type={"button"} onClick={() => {addGame().then(r => setGameStatus(true))}}>Add game</Button>
+                        )}
                     </Card.Body>
                     <Card.Footer className="text-muted">
                         {gameData?.first_release_date
@@ -75,11 +81,14 @@ function Game() {
                             : gameData?.release_dates && gameData.release_dates[0].y}
                     </Card.Footer>
                 </Card>
+
+                <div className={"game-info"}>
+                    <h2>Game Information</h2>
+                    <span>{gameData?.summary}</span>
+                </div>
+
+                {gameStatus ? (<UserGameInfo/>): <></>}
             </Stack>
-            <div className={"game-info"}>
-                <h2>Game Information</h2>
-                <span>{gameData?.summary}</span>
-            </div>
         </div>
     );
 }

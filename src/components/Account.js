@@ -26,20 +26,29 @@ function Account() {
         localStorage.removeItem('game_list');
         setIsLoading(true);
         localStorage.setItem('loading', true);
-        const gameName = document.getElementById('gameNameInput').value;
-        console.log("Game name - " + gameName)
+
         try {
-            const response = await fetch('http://localhost:8080/api/games', {
+
+            const responseUserIgdbIds = await fetch('http://localhost:8080/api/games/igdbIds', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'text/plain'
                 },
             });
-            console.log(response);
+
+            const IgdbIds = await responseUserIgdbIds.text();
+
+            const response = await fetch('http://localhost:8080/api/igdb/games/ids', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: IgdbIds
+            });
+
+            //console.log(response);
             const data = await response.json();
 
-            console.log("Data " + data);
-            //console.log("SearchResults до set " + searchResults);
             setUserGames(data);
             localStorage.setItem('user_game_list', JSON.stringify(data));
             console.log("SearchResults после set " + userGames);
@@ -53,16 +62,15 @@ function Account() {
     return (
         <div className="main">
             <nav className="account-nav">
-                <h1>Account</h1>
 {/*                <a className="" href="">Profile</a>
                 <a className="" href="">Games</a>
                 <a className="" href=""></a>*/}
             </nav>
-            <div id="user-game-list"></div>
             <Container>
                 <Stack className=".d-flex justify-content-center align-items-center">
+                    <h1>Account</h1>
                     <h2>Search result</h2>
-                    <Row className="flex-wrap" style={{ display: 'flex', alignItems: 'flex-end' }} gap="4">
+                    <Row style={{justifyContent: "flex-start"}}>
                         <UserGames userGames={userGames}/>
                     </Row>
                 </Stack>

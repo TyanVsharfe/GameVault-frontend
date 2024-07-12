@@ -1,4 +1,4 @@
-async function deleteGame() {
+export async function deleteGame() {
     console.log('Вызывается DeleteGame');
     const storedData = localStorage.getItem(window.location.pathname)
     const parsedData = JSON.parse(storedData);
@@ -11,6 +11,5 @@ async function deleteGame() {
         }
     })
     localStorage.removeItem(window.location.pathname);
-    location.reload();
     alert("Игра удалена");
 }

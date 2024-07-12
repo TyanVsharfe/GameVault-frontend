@@ -1,4 +1,4 @@
-import "../assets/styles/style.css";
+// import "../assets/styles/style.css";
 
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
@@ -12,28 +12,21 @@ import Col from 'react-bootstrap/Col';
 import "bootstrap-icons/font/bootstrap-icons.css";
 
 import React, { useState } from 'react';
+import {getIdgbGamesList} from "../api/GetIgdbGamesList";
 
 function Navigation() {
-    const [isLoading, setIsLoading] = useState(false);
+    //const [isLoading, setIsLoading] = useState(false);
     const [searchResults, setSearchResults] = useState(null);
     const [gameName, setGameName] = useState('');
 
     const handleSearchSubmit = async () => {
         localStorage.removeItem('game_list');
-        setIsLoading(true);
+        //setIsLoading(true);
         localStorage.setItem('loading', true);
         const gameName = document.getElementById('gameNameInput').value;
         console.log("Game name - " + gameName)
         try {
-            const response = await fetch('http://localhost:8080/api/igdb/games', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'text/plain'
-                },
-                body: gameName
-            });
-            console.log(response);
-            const data = await response.json();
+            const data = await getIdgbGamesList(gameName);
 
             console.log("Data " + data);
             //console.log("SearchResults до set " + searchResults);
@@ -43,7 +36,7 @@ function Navigation() {
         } catch (error) {
             console.error('Ошибка при выполнении запроса:', error);
         } finally {
-            setIsLoading(false);
+            //setIsLoading(false);
         }
     };
 
