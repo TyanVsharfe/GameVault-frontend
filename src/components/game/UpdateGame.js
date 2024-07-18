@@ -1,32 +1,26 @@
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import {Dropdown, Stack} from "react-bootstrap";
-import {deleteGame} from "../api/DeleteGame";
-import {addRating} from "../api/AddRating";
-import {addStatus} from "../api/AddStatus";
-import {enumStatus} from "../utils/Enums"
+import {deleteGame} from "../../api/DeleteGame";
+import {addRating} from "../../api/AddRating";
+import {addStatus} from "../../api/AddStatus";
+import {enumStatus} from "../../utils/Enums"
+import {GameContext} from "../GameContext";
 
-function AddedGame() {
+function UpdateGame() {
+    const { setUserRating, setGameStatus } = useContext(GameContext);
     const [ show, setShow ] = useState(false);
-    const [gameStatus, setGameStatus] = useState(false);
-
     const [ graphicsRating, setGraphicsRating ] = useState(5);
     const [ storyRating, setStoryRating ] = useState(5);
     const [ gameplayRating, setGameplayRating ] = useState(5);
 
-    const graphicsSliderChange = (e) => {
-        setGraphicsRating(e.target.value);
-    };
+    const graphicsSliderChange = (e) => setGraphicsRating(e.target.value);
 
-    const storySliderChange = (e) => {
-        setStoryRating(e.target.value);
-    };
+    const storySliderChange = (e) => setStoryRating(e.target.value);
 
-    const gameplaySliderChange = (e) => {
-        setGameplayRating(e.target.value);
-    };
+    const gameplaySliderChange = (e) => setGameplayRating(e.target.value);
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -39,22 +33,22 @@ function AddedGame() {
                         Change status
                     </Dropdown.Toggle>
                     <Dropdown.Menu>
-                        <Dropdown.Item onClick={() => addStatus(enumStatus.Completed)}>
+                        <Dropdown.Item onClick={() => addStatus(enumStatus.Completed).then(() => setGameStatus("Completed"))}>
                             Completed
                         </Dropdown.Item>
-                        <Dropdown.Item onClick={() => addStatus(enumStatus.Playing)}>
+                        <Dropdown.Item onClick={() => addStatus(enumStatus.Playing).then(() => setGameStatus("Playing"))}>
                             Playing
                         </Dropdown.Item>
-                        <Dropdown.Item onClick={() => addStatus(enumStatus.Planned)}>
+                        <Dropdown.Item onClick={() => addStatus(enumStatus.Planned).then(() => setGameStatus("Planned"))}>
                             Planned
                         </Dropdown.Item>
-                        <Dropdown.Item onClick={() => addStatus(enumStatus.Abandoned)}>
+                        <Dropdown.Item onClick={() => addStatus(enumStatus.Abandoned).then(() => setGameStatus("Abandoned"))}>
                             Abandoned
                         </Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
                 <Button variant={"primary"} type={"button"} onClick={handleShow}>Change rating</Button>
-                <Button variant={"danger"} type={"button"} onClick={() => {deleteGame().then(r => setGameStatus(false))}}>Delete game</Button>
+                <Button variant={"danger"} type={"button"} onClick={() => {deleteGame()}}>Delete game</Button>
             </Stack>
 
             <Modal show={show} centered={true} onHide={handleClose}
@@ -79,9 +73,10 @@ function AddedGame() {
 
                 <Modal.Footer>
                     <Button variant="outline-primary" onClick={handleClose}>Close</Button>
-                    <Button variant="primary" onClick={() => {
+                    <Button variant="primary" onClick={(rat) => {
                         handleClose();
-                        addRating(graphicsRating, storyRating, gameplayRating);
+                        rat = addRating(graphicsRating, storyRating, gameplayRating);
+                        setUserRating(rat);
                     }}>Save changes</Button>
                 </Modal.Footer>
             </Modal>
@@ -89,4 +84,4 @@ function AddedGame() {
     );
 }
 
-export default AddedGame;
+export default UpdateGame;

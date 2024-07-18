@@ -1,15 +1,17 @@
 import {getGameId} from "../utils/GetGameId";
 
 export function addRating(graphics, story, gameplay) {
+    let rating = parseFloat(getRating(graphics, story, gameplay))
     fetch(`/api/game/${getGameId()}`, {
         method: "PUT",
         headers: {"Accept": "application/json", "Content-Type": "application/json"},
         body: JSON.stringify({
-            "userRating": parseFloat(getRating(graphics, story, gameplay)),
+            "userRating": rating,
         })
     });
     localStorage.removeItem(window.location.pathname);
     alert("Оценка обновлена")
+    return rating;
 }
 
 function getRating(graphics, story, gameplay) {

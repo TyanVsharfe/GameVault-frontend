@@ -29,7 +29,7 @@ function Account() {
 
         try {
 
-            const responseUserIgdbIds = await fetch('http://localhost:8080/api/games/igdbIds', {
+            const responseUserIgdbIds = await fetch('http://localhost:8080/api/games/ids', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'text/plain'

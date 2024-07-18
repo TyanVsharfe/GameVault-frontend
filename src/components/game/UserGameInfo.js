@@ -1,19 +1,20 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect} from 'react';
 import Card from "react-bootstrap/Card";
-import {GetGame} from "../api/GetGame";
+import {GetGame} from "../../api/GetGame";
+import {GameContext} from "../GameContext";
 
 function UserGameInfo() {
-    const [userRating, setUserRating] = useState(undefined);
-    const [gameStatus, setGameStatus] = useState(undefined);
+    const { userRating, setUserRating, gameStatus, setGameStatus } = useContext(GameContext);
 
     useEffect(() => {
         GetGame().then(data => {
+            console.log(data);
             if (data && data.userRating !== null)
                 setUserRating(data.userRating)
             if (data && data.status !== null)
                 setGameStatus(data.status)
         })
-    }, []);
+    }, [setUserRating, setGameStatus]);
 
     return (
         <Card data-bs-theme="dark" style={{width: '15rem'}} className="text-center" border="light">

@@ -7,8 +7,8 @@ import reportWebVitals from './reportWebVitals';
 import Navigation from "./components/Navigation";
 import Main from "./components/Main";
 import Account from "./components/Account";
-import Search from "./components/Search";
-import Game from "./components/Game";
+import Search from "./components/search/Search";
+import Game from "./components/game/Game";
 
 //import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';

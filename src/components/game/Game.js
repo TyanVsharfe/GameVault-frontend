@@ -1,14 +1,16 @@
-import "../assets/styles/game-page.css"
+import "../../assets/styles/game-page.css"
 
 import React, { useState, useEffect } from 'react';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import {Button, Stack} from "react-bootstrap";
 import UserGameInfo from "./UserGameInfo";
-import {getGameId} from "../utils/GetGameId";
-import {checkEntity} from "../api/CheckEntity";
-import AddedGame from "./AddedGame";
-import {addGame} from "../api/AddGame";
+import {getGameId} from "../../utils/GetGameId";
+import {checkEntity} from "../../api/CheckEntity";
+import UpdateGame from "./UpdateGame";
+import {addGame} from "../../api/AddGame";
+import Notes from "../Notes";
+import {GameProvider} from "../GameContext";
 
 function Game() {
     const [gameData, setGameData] = useState(null);
@@ -56,8 +58,8 @@ function Game() {
     }, [gameData, id]);
 
     return (
-        <div className="game" id="main">
-            <Stack className=".d-flex justify-content-center align-items-center" direction="horizontal" gap={5}>
+        <GameProvider>
+            <Stack className=".d-flex justify-content-center align-items-center" direction="horizontal" style={{paddingTop: "20px"}} gap={5}>
                 <Card data-bs-theme="dark" style={{width: '15rem'}} className="text-center" border="light">
                     <Card.Img variant="top" src={gameData?.cover?.url?.replace('t_thumb', 't_cover_big') || ''}/>
                     <Card.Body>
@@ -70,7 +72,7 @@ function Game() {
                             </Container>
                         </Card.Text>
                         {gameStatus ? (
-                            <AddedGame/>
+                            <UpdateGame/>
                         ) : (
                             <Button type={"button"} onClick={() => {addGame().then(r => setGameStatus(true))}}>Add game</Button>
                         )}
@@ -89,7 +91,17 @@ function Game() {
 
                 {gameStatus ? (<UserGameInfo/>): <></>}
             </Stack>
-        </div>
+            {gameStatus ? (<Notes/>) : <></>}
+            {/*<Container style={{display: "flex", justifyContent: "center", textAlign: "center"}}>*/}
+            {/*    <Form.Group controlId="formFile" className="mb-3" style={{width: "290px"}}>*/}
+            {/*        <Form.Label>Upload screenshots</Form.Label>*/}
+            {/*        <Form.Control type="file" style={{ width: "auto", maxWidth: "290px" }}/>*/}
+            {/*        <Button variant="primary" type="submit">*/}
+            {/*            Save*/}
+            {/*        </Button>*/}
+            {/*    </Form.Group>*/}
+            {/*</Container>*/}
+        </GameProvider>
     );
 }
 
