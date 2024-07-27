@@ -1,11 +1,12 @@
 import React from "react";
+import Container from "react-bootstrap/Container";
 
 function Main() {
     return (
-        <div className="search-result" id="search-result">
+        <Container style={{textAlign: "center"}}>
             <h1>Main</h1>
             <div id="resultList"></div>
-        </div>
+        </Container>
     );
 }
 

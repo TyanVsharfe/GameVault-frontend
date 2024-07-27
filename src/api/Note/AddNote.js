@@ -1,4 +1,4 @@
-import {getGameId} from "../utils/GetGameId";
+import {getGameId} from "../../utils/GetGameId";
 
 export function addNote(content) {
     fetch(`/api/game/note`, {

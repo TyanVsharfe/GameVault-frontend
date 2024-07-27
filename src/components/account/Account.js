@@ -2,7 +2,8 @@ import React, {useEffect, useState} from "react";
 import Container from "react-bootstrap/Container";
 import {Stack} from "react-bootstrap";
 import Row from "react-bootstrap/Row";
-import UserGames from "./UserGames";
+import UserGames from "../game/UserGames";
+import Nav from "react-bootstrap/Nav";
 
 function Account() {
     const [userGames, setUserGames] = useState([]);
@@ -60,22 +61,28 @@ function Account() {
     };
 
     return (
-        <div className="main">
-            <nav className="account-nav">
-{/*                <a className="" href="">Profile</a>
-                <a className="" href="">Games</a>
-                <a className="" href=""></a>*/}
-            </nav>
+        <Container style={{display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
+            <Nav variant="tabs" className="justify-content-center" defaultActiveKey="/account" style={{width: "50%"}}>
+                <Nav.Item>
+                    <Nav.Link href="/account">My games</Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                    <Nav.Link href="/account/settings">Settings</Nav.Link>
+                </Nav.Item>
+            </Nav>
+
             <Container>
                 <Stack className=".d-flex justify-content-center align-items-center">
                     <h1>Account</h1>
-                    <h2>Search result</h2>
-                    <Row style={{justifyContent: "flex-start"}}>
+                    <h2>User games</h2>
+                </Stack>
+                <Stack className=".d-flex justify-content-center align-items-center">
+                    <Row style={{justifyContent: "flex-start", flexWrap: "wrap"}}>
                         <UserGames userGames={userGames}/>
                     </Row>
                 </Stack>
             </Container>
-        </div>
+        </Container>
     );
 }
 

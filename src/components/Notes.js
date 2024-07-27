@@ -7,11 +7,11 @@ import {GetGame} from "../api/GetGame";
 import {Stack} from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import {addNote} from "../api/AddNote";
+import {addNote} from "../api/Note/AddNote";
 import { ReactComponent as EditLogo } from "../assets/icons/pencil-square.svg";
 import { ReactComponent as DeleteLogo } from "../assets/icons/delete.svg";
-import {deleteNote} from "../api/DeleteNote";
-import {editNote} from "../api/EditNote";
+import {deleteNote} from "../api/Note/DeleteNote";
+import {editNote} from "../api/Note/EditNote";
 
 function Notes() {
     const [ show, setShow ] = useState(false);
@@ -90,7 +90,7 @@ function Notes() {
         <>
             <Container style={{textAlign: "center"}}>
                 <h2>Notes</h2>
-                <Stack className=".d-flex justify-content-center align-items-center" direction="horizontal">
+                <Stack className=".d-flex justify-content-center align-items-center flex-wrap" direction="horizontal" gap={4}>
                     {renderNotes()}
                 </Stack>
                 <Button variant="primary" style={{marginBottom: "20px"}} onClick={() => {
@@ -103,7 +103,7 @@ function Notes() {
                    dialogClassName="modal-90w"
                    aria-labelledby="example-custom-modal-styling-title">
                 <Modal.Header closeButton>
-                    <Modal.Title>Add note</Modal.Title>
+                    <Modal.Title>Note</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>
