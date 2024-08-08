@@ -3,7 +3,7 @@ import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import React, {useEffect, useState} from "react";
-import {GetGame} from "../api/GetGame";
+import {GetGame} from "../api/Game/GetGame";
 import {Stack} from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";

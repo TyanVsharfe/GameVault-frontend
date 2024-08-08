@@ -1,4 +1,4 @@
-import {getGameId} from "../utils/GetGameId";
+import {getGameId} from "../../utils/GetGameId";
 
 export async function GetGame() {
     return (await fetch(`/api/game/${getGameId()}`, {

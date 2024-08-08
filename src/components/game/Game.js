@@ -8,7 +8,7 @@ import UserGameInfo from "./UserGameInfo";
 import {getGameId} from "../../utils/GetGameId";
 import {checkEntity} from "../../api/CheckEntity";
 import UpdateGame from "./UpdateGame";
-import {addGame} from "../../api/AddGame";
+import {addGame} from "../../api/Game/AddGame";
 import Notes from "../Notes";
 import {GameProvider} from "../GameContext";
 

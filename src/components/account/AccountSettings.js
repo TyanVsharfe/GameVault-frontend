@@ -25,7 +25,10 @@ function AccountSettings() {
             <Container style={{display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
                 <Nav variant="tabs" className="justify-content-center" defaultActiveKey="/account/settings" style={{width: "50%"}}>
                     <Nav.Item>
-                        <Nav.Link href="/account">My games</Nav.Link>
+                        <Nav.Link href="/account">Account info</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item>
+                        <Nav.Link href="/account/games">My games</Nav.Link>
                     </Nav.Item>
                     <Nav.Item>
                         <Nav.Link href="/account/settings">Settings</Nav.Link>
@@ -34,8 +37,7 @@ function AccountSettings() {
 
                 <Container>
                     <Stack className=".d-flex justify-content-center align-items-center">
-                        <h1>Account</h1>
-                        <h2>Settings</h2>
+                        <h1>Settings</h1>
                     </Stack>
                     <br/>
                     <Stack className=".d-flex justify-content-center align-items-center">

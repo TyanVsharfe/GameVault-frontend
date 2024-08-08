@@ -22,7 +22,7 @@ function Navigation() {
         //setIsLoading(true);
         localStorage.setItem('loading', true);
         const gameName = document.getElementById('gameNameInput').value;
-        console.log("Game name - " + gameName)
+        console.log("Game title - " + gameName)
         try {
             const data = await getIdgbGamesList(gameName);
 
@@ -46,7 +46,7 @@ function Navigation() {
                     <Nav className="container-fluid">
                         <Nav.Link href="/main">Home</Nav.Link>
                         <Nav.Link href="/search">Search</Nav.Link>
-                        <Nav.Link href="/account">Account</Nav.Link>
+                        <Nav.Link href="/account/games">Account</Nav.Link>
                         {/*<Nav.Link href="/search"><i className="bi bi-search" style={{fontSize: '2rem'}}></i></Nav.Link>
                         <Nav.Link href="/account"><i className="bi bi-person-circle" style={{fontSize: '2rem'}}></i></Nav.Link>*/}
                         <Form onSubmit={(event) => {

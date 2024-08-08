@@ -6,13 +6,14 @@ import reportWebVitals from './reportWebVitals';
 
 import Navigation from "./components/Navigation";
 import Main from "./components/Main";
-import Account from "./components/account/Account";
+import AccountGames from "./components/account/AccountGames";
 import Search from "./components/search/Search";
 import Game from "./components/game/Game";
 
 //import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AccountSettings from "./components/account/AccountSettings";
+import Account from "./components/account/Account";
 
 
 
@@ -25,6 +26,7 @@ root.render(
               <Route path="/main" element={<Main />} />
               <Route path="/search" element={<Search />} />
               <Route path="/account" element={<Account />} />
+              <Route path="/account/games" element={<AccountGames />} />
               <Route path="/account/settings" element={<AccountSettings />} />
               <Route path="/game/*" element={<Game />} />
           </Routes>

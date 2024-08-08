@@ -3,7 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import {Dropdown, Stack} from "react-bootstrap";
-import {deleteGame} from "../../api/DeleteGame";
+import {deleteGame} from "../../api/Game/DeleteGame";
 import {addRating} from "../../api/AddRating";
 import {addStatus} from "../../api/AddStatus";
 import {enumStatus} from "../../utils/Enums"

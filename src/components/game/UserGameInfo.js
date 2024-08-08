@@ -1,6 +1,6 @@
 import React, {useContext, useEffect} from 'react';
 import Card from "react-bootstrap/Card";
-import {GetGame} from "../../api/GetGame";
+import {GetGame} from "../../api/Game/GetGame";
 import {GameContext} from "../GameContext";
 
 function UserGameInfo() {
