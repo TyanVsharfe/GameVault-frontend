@@ -1,5 +1,6 @@
 export async function ImportSteamGames(steamId) {
     let response = fetch(`/api/steam/user/${steamId}/games/titles`, {method: "GET"});
+    let importSteamGames = [];
 
     response.then(async response => {
         const clonedResponse = response.clone();
@@ -17,13 +18,27 @@ export async function ImportSteamGames(steamId) {
                 console.log(jsonData);
 
                 for (const game of jsonData) {
-                    await addSteamGame(game.id, game.name, game.cover.url);
+                    let importGame = {
+                        id: game.id,
+                        name: game.name,
+                        cover: {
+                            url: game?.cover?.url
+                        }
+                    };
+                    importSteamGames.push(importGame);
+                    //await addSteamGame(game.id, game.name, game.cover.url);
                 }
+
             })
     })
 
-    localStorage.removeItem(window.location.pathname);
-    alert("Игры импортированы")
+    return importSteamGames;
+}
+
+export async function addImportedSteamGames(importedGames) {
+    for (const game of importedGames) {
+        await addSteamGame(game.id, game.name, game.cover.url);
+    }
 }
 
 async function addSteamGame(igdbId, title, coverUrl) {

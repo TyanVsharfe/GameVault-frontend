@@ -14,6 +14,8 @@ import Game from "./components/game/Game";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import AccountSettings from "./components/account/AccountSettings";
 import Account from "./components/account/Account";
+import FranchiseGames from "./components/game/FranchiseGames";
+import FranchiseInfo from "./components/game/FranchiseInfo";
 
 
 
@@ -29,6 +31,7 @@ root.render(
               <Route path="/account/games" element={<AccountGames />} />
               <Route path="/account/settings" element={<AccountSettings />} />
               <Route path="/game/*" element={<Game />} />
+              <Route path="/series/*" element={<FranchiseInfo />} />
           </Routes>
       </BrowserRouter>
   </React.StrictMode>

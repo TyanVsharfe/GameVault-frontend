@@ -38,7 +38,7 @@ function UserGames({userGames}) {
                         <Col key={game.id} style={{paddingBottom: '20px'}}>
                             <Card data-bs-theme="dark" style={{ width: '250px'}}  className="text-center" border='light'>
                                 <Card.Img variant="top" src={game.cover.url?.replace('t_thumb', 't_cover_big') || ''}/>
-                                <Card.Body style={{ height: '175px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                                <Card.Body style={{ height: '175px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
                                     <Card.Title>{game.name}</Card.Title>
                                     <Card.Text>
                                         <Container>

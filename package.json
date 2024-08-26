@@ -19,6 +19,7 @@
     "react-query": "^3.39.3",
     "react-router-dom": "^6.24.1",
     "react-scripts": "^5.0.1",
+    "swiper": "^11.1.9",
     "web-vitals": "^4.2.1"
   },
   "scripts": {

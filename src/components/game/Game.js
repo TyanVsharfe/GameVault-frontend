@@ -11,11 +11,16 @@ import UpdateGame from "./UpdateGame";
 import {addGame} from "../../api/Game/AddGame";
 import Notes from "../Notes";
 import {GameProvider} from "../GameContext";
+import FranchiseGames from "./FranchiseGames";
+import {Link} from "react-router-dom";
+import SwiperGames from "./SwiperGames";
+import {SwiperSlide} from "swiper/react";
 
 function Game() {
     const [gameData, setGameData] = useState(null);
     const [gameStatus, setGameStatus] = useState(false);
     const [id, setID] = useState(getGameId);
+    const [franchiseGames, setFranchiseGames] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -48,14 +53,16 @@ function Game() {
                 const keyStorage = `/game/${gameId}`;
                 localStorage.setItem(keyStorage, JSON.stringify(data));
                 setGameData(data[0]);
-
+                setFranchiseGames(data[0].franchises);
+                console.log("Game data " + gameData);
+                console.log("Franchise " + franchiseGames);
             } catch (error) {
                 console.error('Error fetching game data:', error);
             }
         };
 
         fetchData();
-    }, [gameData, id]);
+    }, []);
 
     return (
         <GameProvider>
@@ -91,6 +98,21 @@ function Game() {
 
                 {gameStatus ? (<UserGameInfo/>): <></>}
             </Stack>
+            {franchiseGames != null ? (
+                    franchiseGames.map((franchise) => (
+                        <>
+                            <Container style={{width: "600px", display: "flex", justifyContent: "space-between"}}>
+                                <h2 style={{textAlign: "center"}}>Franchise: {franchise.name}</h2>
+                                <h2><Link style={{textDecoration: "none"}} to={`/series/${franchise.slug}`}>See more</Link></h2>
+                            </Container>
+
+
+                            {/*<FranchiseGames franchiseGames={franchiseGames[0].games}/>*/}
+                            <SwiperGames franchiseGames={franchise.games}/>
+                        </>)
+                    )
+                ) :
+                <></>}
             {gameStatus ? (<Notes/>) : <></>}
             {/*<Container style={{display: "flex", justifyContent: "center", textAlign: "center"}}>*/}
             {/*    <Form.Group controlId="formFile" className="mb-3" style={{width: "290px"}}>*/}
