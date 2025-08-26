@@ -32,7 +32,7 @@ function UserGamesPage() {
 
         if (Array.isArray(displayedGames) && displayedGames.length > 0) {
             return (
-                <UserGameList games={displayedGames} gamesPerPage={18}/>
+                <UserGameList games={displayedGames} gamesPerPage={20}/>
             )
         }
         else {

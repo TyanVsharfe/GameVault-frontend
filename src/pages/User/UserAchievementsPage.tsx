@@ -9,17 +9,19 @@ import {ru} from "date-fns/locale";
 import AccountNav from "../../components/AccountNav";
 import {getUserAchievements, UserAchievment} from "../../services/achievementService";
 import Tooltip from "@mui/joy/Tooltip";
+import {useTranslation} from "react-i18next";
 
 function UserAchievementsPage() {
+    const { t, i18n } = useTranslation();
     const [userAchievments, setUserAchievments] = useState<UserAchievment[]>();
 
     useEffect(() => {
-        const userAchievments = getUserAchievements();
+        const userAchievments = getUserAchievements(i18n.language);
         userAchievments.then((data: UserAchievment[]) => {
             setUserAchievments(data)
             console.log(data)
         })
-    }, []);
+    }, [i18n.language]);
 
     const formatDate = (dateString: string) => {
         try {

@@ -106,7 +106,7 @@ const IgdbGameList: React.FC<IgdbGamesListProps> = ({ games, gamesPerPage = 15 }
                             className="mb-4 d-flex justify-content-center"
                             style={{width:'12rem'}}
                         >
-                            <Card data-bs-theme='dark' style={{ width: '15rem' }} className='text-center' border='light'>
+                            <Card data-bs-theme='dark' style={{ width: '15rem' }} className='user-game-list-game-card text-center' border='light'>
                                 <Card.Img className='game__cover' variant='top' src={game.cover?.url?.replace('t_thumb', 't_cover_big') || ''} />
                                 <Card.Body className='game__body'>
                                     <Card.Title className="user-game-list-game-card__title text-center">
@@ -135,10 +135,12 @@ const IgdbGameList: React.FC<IgdbGamesListProps> = ({ games, gamesPerPage = 15 }
                                     {/*    {t('read_more')}*/}
                                     {/*</Button>*/}
                                 </Card.Body>
-                                <Card.Footer className="text-muted">
-                                    {game.first_release_date
-                                        ? new Date(game.first_release_date * 1000).toLocaleDateString()
-                                        : game.release_dates && game.release_dates[0].y}
+                                <Card.Footer style={{flexDirection: 'column', height: '2.1rem'}} className="text-muted">
+                                    <span>
+                                        {game.first_release_date
+                                            ? new Date(game.first_release_date * 1000).toLocaleDateString()
+                                            : game.release_dates && game.release_dates[0].y}
+                                    </span>
                                 </Card.Footer>
                             </Card>
                         </Col>

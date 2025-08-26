@@ -1,6 +1,7 @@
 import axios from "axios";
+import {BASE_URL} from "./authService";
 
-const BASE_URL = 'http://localhost:8080/users';
+const SERVICE_URL = `${BASE_URL}/users`;
 
 export interface Achievement {
     id: number;
@@ -19,9 +20,14 @@ export interface UserAchievment {
     completed: boolean;
 }
 
-export const getUserAchievements = async () => {
-    const headers = {withCredentials: true};
+export const getUserAchievements = async (lang: string) => {
+    const headers = {
+        withCredentials: true,
+        headers: {
+            'Accept-Language': lang,
+        }
+    }
 
-    const response = await axios.get(`${BASE_URL}/achievements`, headers);
+    const response = await axios.get(`${SERVICE_URL}/achievements`, headers);
     return response.data;
 };

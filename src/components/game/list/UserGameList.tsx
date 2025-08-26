@@ -103,8 +103,7 @@ const UserGameList: React.FC<UserGamesListProps> = ({ games, gamesPerPage = 15 }
                         <Col
                             key={index}
                             xs={6} sm={4} md={3} lg={2}
-                            className="mb-4 d-flex justify-content-center"
-                            style={{width:'12rem'}}
+                            className="mb-4 d-flex justify-content-center user-game-list-col"
                         >
                             <Card className="user-game-list-game-card position-relative text-white bg-dark">
                                 {game.userRating != null ? (

@@ -1,8 +1,9 @@
 import axios from "axios";
 import {addUserGame} from "./userGamesService";
+import {BASE_URL} from "./authService";
 
-const BASE_URL = 'http://localhost:8080/api/steam';
-const STEAM_IMPORT_URL = 'http://localhost:8080/api/igdb/steam-import';
+const SERVICE_URL = `${BASE_URL}/steam`;
+const STEAM_IMPORT_URL = `${BASE_URL}/steam-import`;
 
 export interface ImportedSteamGame {
     id: number;
@@ -13,29 +14,14 @@ export interface ImportedSteamGame {
 
 export async function importSteamGames(steamId: String) {
     const headers = {withCredentials: true};
-    const response = await axios.get(`${BASE_URL}/user/${steamId}/games/titles`, headers);
     let importSteamGames = [];
-    console.log("IMPORT STEAM");
-    console.log(response);
-    console.log(`/api/steam/user/${steamId}/games/titles`);
+    console.log("GET STEAM GAMES");
 
-    const jsonData = await response.data;
-    console.log(jsonData);
+    const responseSteamImport = await axios.get(`${STEAM_IMPORT_URL}/${steamId}`, headers);
 
-    const query = jsonData;
+    const jsonData = await responseSteamImport.data;
 
-    const headers1 = {
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        withCredentials: true
-    };
-
-    const responseSteamImport = await axios.post(`${STEAM_IMPORT_URL}`, query, headers1);
-
-    const jsonData1 = await responseSteamImport.data;
-
-    for (const game of jsonData1) {
+    for (const game of jsonData) {
         let importGame: { id: any; name: any; cover: any } = {
             id: game.id,
             name: game.name,
@@ -43,13 +29,15 @@ export async function importSteamGames(steamId: String) {
         };
         importSteamGames.push(importGame);
     }
-
+    importSteamGames.sort((a, b) => a.name.localeCompare(b.name));
     console.log(importSteamGames);
     return importSteamGames;
 }
 
-export async function addImportedSteamGames(importedGames) {
-    for (const game of importedGames) {
-        await addUserGame(game.id);
-    }
+export async function addImportedSteamGames(steamId: String, importedGames) {
+    const headers = {withCredentials: true};
+    const query = importedGames;
+    console.log("IMPORT STEAM");
+
+    const responseSteamImport = await axios.post(`${STEAM_IMPORT_URL}/${steamId}`, query, headers);
 }

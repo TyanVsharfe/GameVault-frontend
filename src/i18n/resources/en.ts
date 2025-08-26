@@ -52,6 +52,7 @@ export const en = {
         none_score: 'unrated',
 
         franchise: 'Franchise',
+        series: 'Series',
         notes: 'Notes',
         reviews: 'Reviews',
         user_review: 'Your review',
@@ -78,6 +79,12 @@ export const en = {
         gameplay: 'Gameplay',
 
         user_games: 'User Games',
+
+        // Stats Page
+        games: 'games',
+        total: ' Total games',
+        avg_rating: 'Avg. Rating',
+        notes_added: 'Notes',
 
         //Game list
         read_more: 'Details',

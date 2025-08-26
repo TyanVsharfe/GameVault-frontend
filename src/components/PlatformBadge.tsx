@@ -8,6 +8,8 @@ const PLATFORM_CONFIG: Record<string, { label: string; color: 'primary' | 'succe
     XONE:         { label: 'Xbox One',     color: 'success', icon: <FaXbox /> },
     'SERIES-X|S':   { label: 'Xbox Series X|S',     color: 'success', icon: <FaXbox /> },
     VITA:          { label: 'PS Vita',  color: 'primary', icon: <FaPlaystation /> },
+    PS1:          { label: 'PlayStation 1', color: 'primary', icon: <FaPlaystation /> },
+    PS2:          { label: 'PlayStation 2', color: 'primary', icon: <FaPlaystation /> },
     PS3:          { label: 'PlayStation 3', color: 'primary', icon: <FaPlaystation /> },
     PS4:          { label: 'PlayStation 4',  color: 'primary', icon: <FaPlaystation /> },
     PS5:          { label: 'PlayStation 5',  color: 'primary', icon: <FaPlaystation /> },

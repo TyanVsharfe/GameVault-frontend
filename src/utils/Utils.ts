@@ -41,3 +41,5 @@ export const statusColors: Record<string, string> = {
     "Abandoned": "rgba(229,57,53,0.5)",
     "None": "rgba(61,180,230,0.5)"
 };
+
+

@@ -34,6 +34,9 @@
 }
 
 /*user game list styles*/
+.user-game-list-col {
+    width: 12rem;
+}
 .user-game-list__title {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -145,10 +148,18 @@
     display: block;
 }
 
-/*.game__cover {*/
-/*    height: 210px;*/
-/*    object-fit: cover;*/
-/*}*/
+.game-page__background {
+    background-size: cover;
+    background-position: center;
+    filter: blur(20px) brightness(50%);
+    position: absolute;
+    top: 42%;
+    left: 50%;
+    width: 72.5rem;
+    height: auto;
+    transform: translate(-50%, -50%);
+    z-index: -1;
+}
 
 /*.game__body {*/
 /*    height: 8.5rem;*/
@@ -172,10 +183,27 @@
         align-content: center;
         align-items: center;
     }
-}
 
-@media (max-width: 1000px) {
     .game-list {
         width: 100%;
+    }
+}
+
+@media (max-width: 1200px) {
+    .game-page__background {
+        width: 65.5rem;
+    }
+}
+
+@media (max-width: 450px) {
+    .user-game-list-game-card {
+        width: 10rem;
+        height: 19.5rem;
+        transition: transform 0.2s ease-in-out;
+        border-radius: 0.8rem;
+    }
+
+    .user-game-list-col {
+        width: 50%;
     }
 }

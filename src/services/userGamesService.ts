@@ -1,10 +1,9 @@
 import axios from "axios";
 import {Note} from "./noteService";
-import {apiRequest} from "./authService";
+import {apiRequest, BASE_URL} from "./authService";
 import {IgdbGame} from "./igdbGamesService";
 
-const OLD_BASE_URL = 'http://localhost:8080/api/games';
-const BASE_URL = 'http://localhost:8080/users/games';
+const SERVICE_URL = `${BASE_URL}/users/games`;
 
 export interface UserGame {
     game: Game;
@@ -35,8 +34,8 @@ export interface Game {
 
 export const getUserGames = async (status: string) => {
     const headers = {withCredentials: true};
-    console.log(`${BASE_URL}/all?=${status}`);
-    const response = await axios.get(`${BASE_URL}/all?status=${status}`, headers);
+    console.log(`${SERVICE_URL}/all?=${status}`);
+    const response = await axios.get(`${SERVICE_URL}?status=${status}`, headers);
 
     await apiRequest(response)
 
@@ -47,7 +46,7 @@ export const getUserGames = async (status: string) => {
 export const getUserGame = async (igdbId: string | undefined) => {
     const headers = {withCredentials: true};
 
-    const response = await axios.get(`${BASE_URL}/${igdbId}`, headers);
+    const response = await axios.get(`${SERVICE_URL}/${igdbId}`, headers);
 
     await apiRequest(response)
 
@@ -58,7 +57,7 @@ export const getUserGame = async (igdbId: string | undefined) => {
 export const getGameReviews = async (igdbId: string | undefined) => {
     const headers = {withCredentials: true};
 
-    const response = await axios.get(`${BASE_URL}/${igdbId}/reviews`, headers);
+    const response = await axios.get(`${SERVICE_URL}/${igdbId}/reviews`, headers);
 
     await apiRequest(response)
 
@@ -68,7 +67,7 @@ export const getGameReviews = async (igdbId: string | undefined) => {
 export const deleteUserGame = async (igdbId: string | undefined) => {
     const headers = {withCredentials: true};
 
-    const response = await axios.delete(`${BASE_URL}/${igdbId}`, headers);
+    const response = await axios.delete(`${SERVICE_URL}/${igdbId}`, headers);
 
     await apiRequest(response)
 
@@ -78,7 +77,7 @@ export const deleteUserGame = async (igdbId: string | undefined) => {
 export const addUserGame = async (igdbId: string | undefined) => {
     const headers = {withCredentials: true};
 
-    const response = await axios.post(`${BASE_URL}/${igdbId}`, {}, headers);
+    const response = await axios.post(`${SERVICE_URL}/${igdbId}`, {}, headers);
 
     await apiRequest(response)
 
@@ -97,7 +96,7 @@ export const updateGameStatus = async (igdbId: string | undefined, status: numbe
         withCredentials: true
     };
 
-    const response = await axios.put(`${BASE_URL}/${igdbId}`, query, headers);
+    const response = await axios.put(`${SERVICE_URL}/${igdbId}`, query, headers);
 
     await apiRequest(response)
 
@@ -121,7 +120,7 @@ export const updateGameRating = async (igdbId: string | undefined, graphics: num
         withCredentials: true
     };
 
-    const response = await axios.put(`${BASE_URL}/${igdbId}`, query, headers);
+    const response = await axios.put(`${SERVICE_URL}/${igdbId}`, query, headers);
 
     await apiRequest(response)
 
@@ -144,7 +143,7 @@ export const updateGameReview = async (igdbId: string | undefined, review: strin
         withCredentials: true
     };
 
-    const response = await axios.put(`${BASE_URL}/${igdbId}`, query, headers);
+    const response = await axios.put(`${SERVICE_URL}/${igdbId}`, query, headers);
 
     await apiRequest(response)
 
@@ -163,7 +162,7 @@ export const deleteGameReview = async (igdbId: string | undefined, review: strin
         withCredentials: true
     };
 
-    const response = await axios.put(`${BASE_URL}/${igdbId}`, query, headers);
+    const response = await axios.put(`${SERVICE_URL}/${igdbId}`, query, headers);
 
     await apiRequest(response)
 
@@ -172,7 +171,7 @@ export const deleteGameReview = async (igdbId: string | undefined, review: strin
 
 export const checkEntity = async (gbId: string | undefined) => {
     try {
-        const response = await fetch(`${BASE_URL}/check-entity/${gbId}`, {
+        const response = await fetch(`${SERVICE_URL}/exists/${gbId}`, {
             method: 'GET',
             credentials: 'include',
         });

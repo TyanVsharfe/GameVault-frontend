@@ -12,9 +12,10 @@ import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
 import AccountNav from "../../components/AccountNav";
 import {UserStats, getUserStats} from "../../services/userStatsService";
-import {Avatar} from "@mui/joy";
+import {Avatar, Box, Chip} from "@mui/joy";
 import ButtonMaterial from '@mui/joy/Button';
 import {useTranslation} from "react-i18next";
+import GameStatusChart from "../../components/game/GameStatusChart";
 
 function UserInfoPage() {
     const { t } = useTranslation();
@@ -49,7 +50,6 @@ function UserInfoPage() {
     const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
-            // Read the file as a data URL
             const reader = new FileReader();
             reader.onload = () => {
                 setAvatarSrc(reader.result as string);
@@ -99,13 +99,13 @@ function UserInfoPage() {
                                     marginTop: "24px"
                                 }}>
                                     <div>
-                                        <h5>Всего игр</h5>
+                                        <h5>{t('total')}</h5>
                                         <div style={{fontSize: "24px", fontWeight: "bold"}}>
                                             {userInfo?.totalGames}
                                         </div>
                                     </div>
                                     <div>
-                                        <h5>Заметок</h5>
+                                        <h5>{t('notes_added')}</h5>
                                         <div style={{fontSize: "24px", fontWeight: "bold"}}>
                                             {userInfo?.totalNotes}
                                         </div>
@@ -123,16 +123,17 @@ function UserInfoPage() {
                                     textAlign: "center",
                                     marginTop: "24px"
                                 }}>
-                                    {Object.entries(userInfo?.gamesByStatus || {}).map(([status, count]) => (
-                                        <div key={status}>
-                                            <h5>
-                                                {t(`status_${status.toLowerCase()}`)}
-                                            </h5>
-                                            <div style={{fontSize: "24px", fontWeight: "bold"}}>
-                                                {count}
-                                            </div>
-                                        </div>
-                                    ))}
+                                    {/*{Object.entries(userInfo?.gamesByStatus || {}).map(([status, count]) => (*/}
+                                    {/*    <div key={status}>*/}
+                                    {/*        <h5>*/}
+                                    {/*            {t(`status_${status.toLowerCase()}`)}*/}
+                                    {/*        </h5>*/}
+                                    {/*        <div style={{fontSize: "24px", fontWeight: "bold"}}>*/}
+                                    {/*            {count}*/}
+                                    {/*        </div>*/}
+                                    {/*    </div>*/}
+                                    {/*))}*/}
+                                    <Chip size="lg" variant="soft" color="primary">{t('avg_rating')}: {userInfo?.averageRating.toFixed(1)}</Chip>
                                 </div>
                             </Card.Body>
 
@@ -184,6 +185,7 @@ function UserInfoPage() {
                 </Row>
                 {/*<ReadingGoals />*/}
             </Tab.Container>
+            {userInfo != undefined && (<GameStatusChart stats={userInfo}/>)}
         </Container>
     );
 }

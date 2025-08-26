@@ -9,7 +9,7 @@ import FranchiseGames from "../../components/game/FranchiseGames";
 import {Link, useParams} from "react-router-dom";
 import SwiperGames from "../../components/game/SwiperGames";
 import {SwiperSlide} from "swiper/react";
-import {getIdgbGame, IgdbGame} from "../../services/igdbGamesService";
+import {getIdgbGame, IgdbGame, Series} from "../../services/igdbGamesService";
 import {
     addUserGame,
     checkEntity,
@@ -129,19 +129,12 @@ function GamePage() {
                    }}
                    gap={5}>
                 <div
+                    className='game-page__background'
                     style={{
                         ...(gameData?.cover?.url && {
                                 backgroundImage: `url(${gameData.cover.url.replace('t_thumb', 't_cover_big')})`,
                             }),
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        filter: 'blur(20px) brightness(50%)',
-                        position: 'absolute',
-                        top: '9.5%',
-                        left: '23.5rem',
-                        width: `72.5rem`,
                         height: `${backgroundHeight}px`,
-                        zIndex: 0,
                     }}
                 />
                 <div ref={cardRef}>
@@ -221,19 +214,48 @@ function GamePage() {
                                         expanded: "0.2s ease",
                                     }}
                     >
-                        <Accordion
-                            style={{display: 'flex', flexDirection: 'column', padding: '0px 0px 0px 0px'}}>
-                            {franchiseGames != null ? (
-                                    franchiseGames.map((franchise, index: number) => (
+                        {gameData?.collections != null ? (
+                                gameData?.collections?.map((series, index: number) => (
+                                    <Accordion
+                                        style={{display: 'flex', flexDirection: 'column', padding: '0px 0px 0px 0px'}}>
                                         <div key={index}>
                                             <AccordionSummary
-                                                color="neutral"
                                                 variant="plain"
                                                 sx={{
                                                     '--Icon-color': 'white',
-                                                    '--joy-palette-text-primary': 'white',
-                                                    '--joy-palette-text-secondary': 'white',
-                                                    '--joy-palette-text-icon': 'white',
+                                                    // '--joy-palette-text-primary': 'white',
+                                                    // '--joy-palette-text-secondary': 'white',
+                                                    // '--joy-palette-text-icon': 'white',
+                                                    '--joy-palette-neutral-plainColor': 'white',
+                                                    color: 'white',
+                                                }}>
+                                                {t('series')}: {series.name}
+                                            </AccordionSummary>
+                                            <AccordionDetails>
+                                                <h2>
+                                                    <Link style={{textDecoration: "none", fontSize: "1.2rem"}}
+                                                          to={`/series/${series.id}`}>{t('read_more')}</Link>
+                                                </h2>
+                                                <SwiperGames franchiseGames={series.games}/>
+                                            </AccordionDetails>
+                                        </div>
+                                    </Accordion>)
+                                )
+                            ) :
+                            <></>
+                        }
+                        {franchiseGames != null ? (
+                                franchiseGames.map((franchise, index: number) => (
+                                    <Accordion
+                                        style={{display: 'flex', flexDirection: 'column', padding: '0px 0px 0px 0px'}}>
+                                        <div key={index}>
+                                            <AccordionSummary
+                                                variant="plain"
+                                                sx={{
+                                                    '--Icon-color': 'white',
+                                                    // '--joy-palette-text-primary': 'white',
+                                                    // '--joy-palette-text-secondary': 'white',
+                                                    // '--joy-palette-text-icon': 'white',
                                                     '--joy-palette-neutral-plainColor': 'white',
                                                     color: 'white',
                                                 }}>
@@ -246,12 +268,12 @@ function GamePage() {
                                                 </h2>
                                                 <SwiperGames franchiseGames={franchise.games}/>
                                             </AccordionDetails>
-                                        </div>)
-                                    )
-                                ) :
-                                <></>
-                            }
-                        </Accordion>
+                                        </div>
+                                    </Accordion>)
+                                )
+                            ) :
+                            <></>
+                        }
                     </AccordionGroup>
                 </Stack>
                 <div style={{opacity: '98%'}}>
@@ -278,7 +300,7 @@ function GamePage() {
                                 {t('genre')}:
                             </strong>
                             <div style={{marginTop: '0.2rem'}}>
-                                {gameData?.genres && (
+                            {gameData?.genres && (
                                     gameData.genres.map((genre) =>
                                         <Chip style={{marginBottom: '0.4rem', marginRight: '0.3rem'}} key={genre.id}>
                                             {genre.name}

@@ -52,6 +52,7 @@ export const ru = {
         none_score: 'не оценено',
 
         franchise: 'Франшиза',
+        series: 'Серия',
         notes: 'Заметки',
         reviews: 'Рецензии',
         user_review: 'Ваша рецензия',
@@ -78,6 +79,12 @@ export const ru = {
         gameplay: 'Геймплей',
 
         user_games: 'Игры пользователя',
+
+        // Stats Page
+        games: 'игр',
+        total: ' Всего игр',
+        avg_rating: 'Средний рейтинг',
+        notes_added: 'Заметок:',
 
         //Game list
         read_more: 'Подробнее',

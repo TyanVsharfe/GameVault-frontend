@@ -137,7 +137,7 @@ function UserSettingsPage() {
                 <Modal.Footer>
                     <Button variant="outline-primary" onClick={handleCloseImport}>{t('cancel')}</Button>
                     <Button variant="primary" onClick={() => {
-                        addImportedSteamGames(importedSteamGames.filter(game => checkedGameIds.includes(game.id))).then();
+                        addImportedSteamGames(steamId, importedSteamGames.filter(game => checkedGameIds.includes(game.id)).map(game => game.id)).then();
                         handleCloseImport();
                         handleShowToast();
                     }}>{t('import')}</Button>

@@ -1,8 +1,9 @@
 import axios from "axios";
 import {Note} from "./noteService";
 import {CategoryIGDB} from "../utils/Enums";
+import {BASE_URL} from "./authService";
 
-const BASE_URL = 'http://localhost:8080/api/igdb';
+const SERVICE_URL = `${BASE_URL}/igdb`;
 
 export interface IgdbGame {
     id: number;
@@ -10,6 +11,7 @@ export interface IgdbGame {
     cover: Cover;
     first_release_date: number;
     franchises: string;
+    collections: Series[];
     genres: Genre[];
     name: string;
     game_status: string;
@@ -18,6 +20,13 @@ export interface IgdbGame {
     release_dates: ReleaseDate[];
     platforms: Platform[];
     summary: string;
+}
+
+export interface Series {
+    id: number;
+    name: string;
+    slug: string;
+    games: IgdbGame[];
 }
 
 export interface InvolvedCompany {
@@ -60,7 +69,7 @@ export interface ReleaseGame {
 
 export const getIdgbGames= async (gameName: string) => {
     try {
-        const response = await fetch('http://localhost:8080/api/igdb/games', {
+        const response = await fetch(`${BASE_URL}/igdb/games`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'text/plain'
@@ -76,7 +85,7 @@ export const getIdgbGames= async (gameName: string) => {
 
 export const getIdgbGame= async (gameId: string | undefined) => {
     try {
-        const response = await axios.get(`${BASE_URL}/games/${gameId}`);
+        const response = await axios.get(`${SERVICE_URL}/games/${gameId}`);
         return response.data;
     } catch (error) {
         console.error('Ошибка при выполнении запроса:', error);
@@ -85,7 +94,7 @@ export const getIdgbGame= async (gameId: string | undefined) => {
 
 export const getComingSoonGames= async () => {
     try {
-        const response = await axios.get(`${BASE_URL}/games/release-dates`);
+        const response = await axios.get(`${SERVICE_URL}/games/release-dates`);
         return response.data;
     } catch (error) {
         console.error('Ошибка при выполнении запроса:', error);

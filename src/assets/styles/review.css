@@ -25,6 +25,7 @@
 
 .review-score.high {
     background: rgba(45, 139, 58, 0.75);
+}
 
 .review-score.medium {
     background: #d1a517;

@@ -1,6 +1,9 @@
 import axios from "axios";
 
-const BASE_URL = 'http://localhost:8080';
+export const API_PREFIX = "/api/v1"
+export const BASE_ADDRESS = "http://localhost:8080"
+
+export const BASE_URL = BASE_ADDRESS + API_PREFIX;
 
 export interface UserLogin {
     username: string;
