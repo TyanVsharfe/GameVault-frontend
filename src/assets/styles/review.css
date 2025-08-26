@@ -1,0 +1,70 @@
+.review {
+    border-bottom: 1px solid #ddd;
+    padding: 12px 0;
+}
+
+.review:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+}
+
+.review-score {
+    color: white;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.review-score.high {
+    background: rgba(45, 139, 58, 0.75);
+}
+
+.review-score.medium {
+    background: #d1a517;
+}
+
+.review-score.low {
+    background: #d14836;
+}
+
+.review-text {
+    margin-top: 5px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 7;
+    -webkit-box-orient: vertical;
+    position: relative;
+}
+
+.review-text::after {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: white;
+    padding-left: 5px;
+}
+
+.review-text.expanded {
+    max-height: none;
+    -webkit-line-clamp: unset;
+}
+
+.review-text.expanded::after {
+    display: none;
+}
+
+.review-text-button {
+    padding: 4px 10px 5px;
+    font-size: 12px;
+    background: none;
+    border: none;
+    display: block;
+}
