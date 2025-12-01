@@ -19,9 +19,13 @@ const PLATFORM_CONFIG: Record<string, { label: string; color: 'primary' | 'succe
     ANDROID:      { label: 'Android',      color: 'warning', icon: <FaAndroid /> },
     IOS:          { label: 'iOS',          color: 'warning', icon: <SiIos /> },
     SWITCH:       { label: 'Switch',       color: 'danger',  icon: <SiNintendoswitch /> },
+    'SWITCH-2':       { label: 'Switch 2',       color: 'danger',  icon: <SiNintendoswitch /> },
 };
 
 export const PlatformBadge = (platform: string, index: number) => {
+    if (platform == undefined) {
+        return "";
+    }
     const key = platform.toUpperCase();
     const config = PLATFORM_CONFIG[key];
 

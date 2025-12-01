@@ -1,3 +1,80 @@
 .nav__link {
-    width: 4.5rem;
+    width: 100%;
 }
+
+:root {
+    --nav-bg-light: #f8f9fa;
+    --nav-bg-dark: #1f2429;
+
+    --btn-bg-light: #e5e7eb;
+    --btn-bg-dark: #2b3035;
+
+    --btn-hover-light: #d1d5db;
+    --btn-hover-dark: #3b4046;
+
+    --btn-text-light: #1f2937;
+    --btn-text-dark: #f3f4f6;
+}
+
+.navbar-custom {
+    background-color: var(--nav-bg-light);
+    transition: background-color 0.3s ease;
+}
+
+[color-theme='dark'] .navbar-custom {
+    background-color: var(--nav-bg-dark);
+}
+
+.theme-btn,
+.logout-btn,
+.lang-btn {
+    background-color: var(--btn-bg-light);
+    border: none;
+    border-radius: 0.7rem;
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--btn-text-light);
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+.theme-btn:hover,
+.logout-btn:hover,
+.lang-btn:hover {
+    background-color: var(--btn-hover-light);
+    transform: translateY(-1px);
+}
+
+[color-theme='dark'] .theme-btn,
+[color-theme='dark'] .logout-btn,
+[color-theme='dark'] .lang-btn {
+    background-color: var(--btn-bg-dark);
+    color: var(--btn-text-dark);
+}
+
+[color-theme='dark'] .theme-btn:hover,
+[color-theme='dark'] .logout-btn:hover,
+[color-theme='dark'] .lang-btn:hover {
+    background-color: var(--btn-hover-dark);
+}
+
+@media (max-width: 768px) {
+    .navbar-custom h1 {
+        font-size: 1.2rem;
+    }
+
+    .nav__link {
+        font-size: 0.9rem;
+        padding: 6px 8px;
+    }
+
+    .theme-btn,
+    .logout-btn,
+    .lang-btn {
+        padding: 4px 8px;
+        border-radius: 6px;
+    }
+}
+

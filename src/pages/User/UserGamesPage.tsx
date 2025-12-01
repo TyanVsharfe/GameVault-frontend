@@ -1,82 +1,151 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import Container from "react-bootstrap/Container";
-import {Alert, Stack} from "react-bootstrap";
-import Nav from "react-bootstrap/Nav";
-import Button from "react-bootstrap/Button";
+import {Alert, Spinner, Stack} from "react-bootstrap";;
 import "../../assets/styles/account.css"
-import GameList from "../../components/game/GameList";
-import {getUserGames, UserGame} from "../../services/userGamesService";
+import {buildUserGamesUrl, fetchUserGames, PageResponse, UserGame} from "../../services/userGamesService";
 import UserGameList from "../../components/game/list/UserGameList";
-import AccountNav from "../../components/AccountNav";
 import {useTranslation} from "react-i18next";
+import useSWR from "swr";
+import PaginationComponent from "../../components/PaginationComponent";
+import AccountTabs from "../../components/nav/AccountTabs";
+import {Button, buttonClasses, ToggleButtonGroup} from "@mui/joy";
+import {useTheme} from "next-themes";
 
 function UserGamesPage() {
     const { t } = useTranslation();
+    const { theme } = useTheme();
 
     const [displayedGames, setDisplayedGames] = useState<UserGame[]>([]);
+    const [gameListData, setGameListData] = useState<null>();
     const [filterStatus, setFilterStatus] = useState("");
     const [activeFilterButtonIndex, setActiveFilterButton] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
 
+    const url = buildUserGamesUrl(currentPage - 1, 20, filterStatus || undefined);
 
-    useEffect(() => {
-        fetchData();
-    }, [filterStatus]);
+    const { data, error, isLoading } = useSWR<PageResponse<UserGame>>(
+        url,
+        fetchUserGames,
+        {
+            revalidateOnFocus: false,
+            revalidateOnReconnect: true,
+            dedupingInterval: 2000,
+        }
+    );
 
-    const fetchData = () => {
-        getUserGames(filterStatus).then((data) => {setDisplayedGames(data)});
+    const handleFilterChange = (index: number, status: string) => {
+        setActiveFilterButton(index);
+        setFilterStatus(status);
+        setCurrentPage(1); // Сбрасываем на первую страницу при смене фильтра
     };
 
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // useEffect(() => {
+    //     fetchData();
+    // }, [filterStatus]);
+    //
+    // const fetchData = () => {
+    //     getUserGames(filterStatus).then((data) => {
+    //         setDisplayedGames(data.content);
+    //         setGameListData(data);
+    //     });
+    // };
+
+    const statusItems = [
+        { status: "", label: t('all_games') },
+        { status: "Completed", label: t('status_completed') },
+        { status: "Playing", label: t('status_playing') },
+        { status: "Planned", label: t('status_planned') },
+        { status: "Abandoned", label: t('status_abandoned') },
+        { status: "None", label: t('status_none') }
+    ];
+
     const renderUserGames = () => {
-        // const gamesResults = displayedGames.map((userGame) => userGame.game);
-
-
-        if (Array.isArray(displayedGames) && displayedGames.length > 0) {
+        if (isLoading) {
             return (
-                <UserGameList games={displayedGames} gamesPerPage={20}/>
-            )
+                <Container style={{ textAlign: "center", padding: "50px" }}>
+                    <Spinner animation="border" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </Spinner>
+                </Container>
+            );
         }
-        else {
+
+        if (error) {
             return (
-                <Container style={{textAlign: "center", maxWidth: "500px"}}>
+                <Container style={{ textAlign: "center", maxWidth: "500px" }}>
+                    <Alert variant="danger">
+                        {error.response?.status === 401
+                            ? t('error_unauthorized')
+                            : t('error_loading')}
+                    </Alert>
+                </Container>
+            );
+        }
+
+        if (!data || data.content.length === 0) {
+            return (
+                <Container style={{ textAlign: "center", maxWidth: "500px" }}>
                     <Alert>{t('not_found')}</Alert>
                 </Container>
-            )
+            );
         }
+
+        return (
+            <>
+                <UserGameList games={data.content} />
+
+                {data.totalPages > 1 && (
+                    <PaginationComponent
+                        currentPage={currentPage}
+                        totalPages={data.totalPages}
+                        onPageChange={handlePageChange}
+                        disabled={isLoading}
+                    />
+                )}
+            </>
+        );
     };
 
     return (
         <Container style={{display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
-            <AccountNav />
+            <AccountTabs/>
 
             <Container>
                 <Stack className=".d-flex justify-content-center align-items-center">
                     <h1>{t('user_games')}</h1>
-                    <Stack direction="horizontal" className=".d-flex justify-content-md-center align-items-center" gap={4}>
-                        <Button variant="outline-primary" disabled={activeFilterButtonIndex === 0} onClick={() => {
-                            setActiveFilterButton(0)
-                            setFilterStatus("")
-                        }}>{t('all_games')}</Button>
-                        <Button variant="outline-primary" disabled={activeFilterButtonIndex === 1} onClick={() => {
-                            setActiveFilterButton(1)
-                            setFilterStatus("Completed")
-                        }}>{t('status_completed')}</Button>
-                        <Button variant="outline-primary" disabled={activeFilterButtonIndex === 2} onClick={() => {
-                            setActiveFilterButton(2)
-                            setFilterStatus("Playing")
-                        }}>{t('status_playing')}</Button>
-                        <Button variant="outline-primary" disabled={activeFilterButtonIndex === 3} onClick={() => {
-                            setActiveFilterButton(3)
-                            setFilterStatus("Planned")
-                        }}>{t('status_planned')}</Button>
-                        <Button variant="outline-primary" disabled={activeFilterButtonIndex === 4} onClick={() => {
-                            setActiveFilterButton(4)
-                            setFilterStatus("Abandoned")
-                        }}>{t('status_abandoned')}</Button>
-                        <Button variant="outline-primary" disabled={activeFilterButtonIndex === 5} onClick={() => {
-                            setActiveFilterButton(5)
-                            setFilterStatus("None")
-                        }}>{t('status_none')}</Button>
-                    </Stack>
+                    <ToggleButtonGroup
+                        sx={{
+                            p: 0.75,
+                            borderRadius: 'xl',
+
+                            [`& .${buttonClasses.root}[aria-pressed="true"]`]: {
+                                bgcolor: theme === 'dark' ? 'neutral.700' : 'background.surface',
+                                color: theme === 'dark' ? 'white' : 'black',
+                            },
+
+                            [`& .${buttonClasses.root}:hover`]: {
+                                bgcolor: theme === 'dark' ? 'neutral.600' : 'neutral.200',
+                                color: theme === 'dark' ? 'white' : 'black',
+                            },
+                        }}
+                    >
+                        {statusItems.map((statusItem, index) => (
+                            <Button
+                                style={{color: theme === 'dark' ? 'white' : 'black'}}
+                                onClick={() => {
+                                setActiveFilterButton(index)
+                                setFilterStatus(statusItem.status)
+                            }}>
+                                {statusItem.label}
+                            </Button>
+                            )
+                        )}
+                    </ToggleButtonGroup>
                 </Stack>
                 <br/>
                 {renderUserGames()}

@@ -2,21 +2,22 @@ import {RootState} from "./store/store";
 import {useDispatch, useSelector} from "react-redux";
 import {Route, Routes, useLocation, useNavigate} from "react-router-dom";
 import React, {useEffect} from "react";
-import Navigation from "./components/Navbar";
+import Navigation from "./components/nav/Navbar";
 import MainPage from "./pages/MainPage";
 import SearchPage from "./pages/search/SearchPage";
 import UserInfoPage from "./pages/User/UserInfoPage";
 import UserGamesPage from "./pages/User/UserGamesPage";
 import UserSettingsPage from "./pages/User/UserSettingsPage";
 import GamePage from "./pages/game/GamePage";
-import FranchiseInfo from "./components/game/FranchiseInfo";
 import {verifySession} from "./store/authSlice";
 import LoginPage from "./pages/Auth/LoginPage";
 import RegisterPage from "./pages/Auth/RegisterPage";
-import "./assets/styles/style.css";
 import UserAchievementsPage from "./pages/User/UserAchievementsPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import '@fontsource/roboto';
+import "./assets/styles/style.css";
+import "./index.css";
+import SeriesPage from "./pages/SeriesPage";
 
 function App() {
     const dispatch = useDispatch();
@@ -64,7 +65,7 @@ function App() {
                 <Route path="/account/settings" element={<UserSettingsPage />} />
                 <Route path="/account/achievements" element={<UserAchievementsPage />} />
                 <Route path="/games/:id" element={<GamePage />} />
-                <Route path="/series/*" element={<FranchiseInfo />} />
+                <Route path="/series/:seriesName" element={<SeriesPage />} />
                 <Route path="*" element={<NotFoundPage />} />
             </Routes>
         </>

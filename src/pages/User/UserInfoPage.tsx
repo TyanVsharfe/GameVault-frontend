@@ -1,29 +1,19 @@
 import React, {useEffect, useState} from "react";
-import Container from "react-bootstrap/Container";
-import {Stack} from "react-bootstrap";
-import Row from "react-bootstrap/Row";
-import Nav from "react-bootstrap/Nav";
-import Tab from "react-bootstrap/Tab";
-import Col from "react-bootstrap/Col";
-import Button from "react-bootstrap/Button";
-import {importSteamGames} from "../../services/steamGamesService";
-import Modal from "react-bootstrap/Modal";
-import Form from "react-bootstrap/Form";
-import Card from "react-bootstrap/Card";
-import AccountNav from "../../components/AccountNav";
-import {UserStats, getUserStats} from "../../services/userStatsService";
-import {Avatar, Box, Chip} from "@mui/joy";
-import ButtonMaterial from '@mui/joy/Button';
+import {UserStats, getUserStats, getOwnUserStats} from "../../services/userStatsService";
+import {Avatar, Box, Card, CardContent, Chip, Stack, Tab, tabClasses, TabList, TabPanel, Tabs} from "@mui/joy";
 import {useTranslation} from "react-i18next";
 import GameStatusChart from "../../components/game/GameStatusChart";
+import AccountTabs from "../../components/nav/AccountTabs";
+import {useTheme} from "next-themes";
 
 function UserInfoPage() {
     const { t } = useTranslation();
+    const { theme } = useTheme();
 
     const [ show, setShow ] = useState(false);
     const [ steamId, setSteamId ] = useState(false);
     const [ userInfo, setUserInfo ] = useState<UserStats>();
-    const [activeTab, setActiveTab] = useState("statistics");
+    const [activeTab, setActiveTab] = useState(0);
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -41,7 +31,8 @@ function UserInfoPage() {
                 'Content-Type': 'application/json'
             },
         });
-        const data = await getUserStats("VladPrakop");
+        const data = await getOwnUserStats();
+        console.log(data);
         setUserInfo(data);
     };
 
@@ -59,51 +50,78 @@ function UserInfoPage() {
     };
 
     return (
-        <Container style={{display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
-            <AccountNav />
-
-            <Tab.Container id="user-tabs" defaultActiveKey="statistics" onSelect={(k) => setActiveTab(k)}>
-                <Row className="mt-4" style={{display: "flex", justifyContent: "center"}}>
-                    <Col lg={4} className="mb-4" style={{ display: "flex", justifyContent: "center", marginRight: "15px"  }}>
-                        <Card className="shadow-sm" style={{ width: "110rem"}}>
-                            <Card.Body className="text-center">
-                                <div className="mb-3">
-                                    {/*<div style={{*/}
-                                    {/*    width: "80px",*/}
-                                    {/*    height: "80px",*/}
-                                    {/*    borderRadius: "50%",*/}
-                                    {/*    backgroundColor: "#8884d8",*/}
-                                    {/*    display: "flex",*/}
-                                    {/*    alignItems: "center",*/}
-                                    {/*    justifyContent: "center",*/}
-                                    {/*    color: "white",*/}
-                                    {/*    fontSize: "24px",*/}
-                                    {/*    margin: "0 auto 15px"*/}
-                                    {/*}}>*/}
-                                    {/*    {userInfo?.username}*/}
-                                    {/*</div>*/}
-                                    <div style={{display: 'flex', justifyContent: 'center', padding: '1rem'}}>
-                                        <Avatar sx={{width: 64, height: 64}} alt="Upload new avatar" src={avatarSrc}/>
-                                    </div>
-                                    <h3>{userInfo?.username}</h3>
-                                    {/*<Badge bg={userInfo?.subscription === "Premium" ? "success" : "secondary"}*/}
-                                    {/*       className="px-3 py-2">*/}
-                                    {/*    {userInfo?.subscription}*/}
-                                    {/*</Badge>*/}
+        <Box style={{display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
+            <AccountTabs/>
+             {/*onChange={(e, newValue) => setActiveEdit(newValue)}*/}
+            <Box id="user-tabs"
+            >
+                <Stack className="mt-4"
+                       direction="row"
+                       spacing={2}
+                       sx={{
+                           justifyContent: "center",
+                           alignItems: "center",
+                       }}
+                >
+                    <Card className="mb-4 shadow-sm" style={{ display: "flex", justifyContent: "center", marginRight: "15px", width: "30rem", border: "none"}}
+                          sx={{
+                              gap: 0.5,
+                              marginBottom: 1,
+                              borderRadius: 'xl',
+                              bgcolor: theme === 'dark' ? 'background.level1' : 'background.level1',
+                          }}
+                    >
+                        <CardContent
+                            className="text-center"
+                        >
+                            <div className="mb-3">
+                                {/*<div style={{*/}
+                                {/*    width: "80px",*/}
+                                {/*    height: "80px",*/}
+                                {/*    borderRadius: "50%",*/}
+                                {/*    backgroundColor: "#8884d8",*/}
+                                {/*    display: "flex",*/}
+                                {/*    alignItems: "center",*/}
+                                {/*    justifyContent: "center",*/}
+                                {/*    color: "white",*/}
+                                {/*    fontSize: "24px",*/}
+                                {/*    margin: "0 auto 15px"*/}
+                                {/*}}>*/}
+                                {/*    {userInfo?.username}*/}
+                                {/*</div>*/}
+                                <div style={{display: 'flex', justifyContent: 'center', padding: '1rem'}}>
+                                    <Avatar sx={{width: 64, height: 64}} alt="Upload new avatar" src={avatarSrc}/>
                                 </div>
+                                <h3>{userInfo?.username}</h3>
+                                {/*<Badge bg={userInfo?.subscription === "Premium" ? "success" : "secondary"}*/}
+                                {/*       className="px-3 py-2">*/}
+                                {/*    {userInfo?.subscription}*/}
+                                {/*</Badge>*/}
+                            </div>
 
-                                <div style={{
-                                    display: "flex",
-                                    justifyContent: "space-around",
-                                    textAlign: "center",
-                                    marginTop: "24px"
-                                }}>
+                            <div style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                textAlign: "left",
+                                marginTop: "24px",
+                                width: '80%',
+                                margin: 'auto'
+                            }}>
+                                <div>
                                     <div>
                                         <h5>{t('total')}</h5>
                                         <div style={{fontSize: "24px", fontWeight: "bold"}}>
                                             {userInfo?.totalGames}
                                         </div>
                                     </div>
+                                    <div>
+                                        <h5>{t('total_achievements_completed')}</h5>
+                                        <div style={{fontSize: "24px", fontWeight: "bold"}}>
+                                            {userInfo?.totalCompletedAchievements}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
                                     <div>
                                         <h5>{t('notes_added')}</h5>
                                         <div style={{fontSize: "24px", fontWeight: "bold"}}>
@@ -113,80 +131,46 @@ function UserInfoPage() {
                                     <div>
                                         <h5>{t('status_completed')}</h5>
                                         <div style={{fontSize: "24px", fontWeight: "bold"}}>
-                                            {userInfo?.gamesByStatus["Completed"]}
+                                            {userInfo?.gamesByStatus["completed"]}
                                         </div>
                                     </div>
                                 </div>
-                                <div style={{
-                                    display: "flex",
-                                    justifyContent: "space-around",
-                                    textAlign: "center",
-                                    marginTop: "24px"
-                                }}>
-                                    {/*{Object.entries(userInfo?.gamesByStatus || {}).map(([status, count]) => (*/}
-                                    {/*    <div key={status}>*/}
-                                    {/*        <h5>*/}
-                                    {/*            {t(`status_${status.toLowerCase()}`)}*/}
-                                    {/*        </h5>*/}
-                                    {/*        <div style={{fontSize: "24px", fontWeight: "bold"}}>*/}
-                                    {/*            {count}*/}
-                                    {/*        </div>*/}
-                                    {/*    </div>*/}
-                                    {/*))}*/}
-                                    <Chip size="lg" variant="soft" color="primary">{t('avg_rating')}: {userInfo?.averageRating.toFixed(1)}</Chip>
-                                </div>
-                            </Card.Body>
+                            </div>
+                            <div style={{
+                                display: "flex",
+                                justifyContent: "space-around",
+                                textAlign: "center",
+                                marginTop: "24px"
+                            }}>
+                                {/*{Object.entries(userInfo?.gamesByStatus || {}).map(([status, count]) => (*/}
+                                {/*    <div key={status}>*/}
+                                {/*        <h5>*/}
+                                {/*            {t(`status_${status.toLowerCase()}`)}*/}
+                                {/*        </h5>*/}
+                                {/*        <div style={{fontSize: "24px", fontWeight: "bold"}}>*/}
+                                {/*            {count}*/}
+                                {/*        </div>*/}
+                                {/*    </div>*/}
+                                {/*))}*/}
+                                <Chip size="lg" variant="soft" color="primary">{t('avg_rating')}: {userInfo?.averageRating ? userInfo?.averageRating?.toFixed(1) : 0}</Chip>
+                            </div>
+                        </CardContent>
 
-                            {/*<Card.Footer className="bg-white">*/}
-                            {/*    <Nav variant="pills" className="flex-column">*/}
-                            {/*        <Nav.Item>*/}
-                            {/*            <Nav.Link eventKey="statistics">Статистика</Nav.Link>*/}
-                            {/*        </Nav.Item>*/}
-                            {/*        <Nav.Item>*/}
-                            {/*            <Nav.Link eventKey="recommendations">Рекомендации</Nav.Link>*/}
-                            {/*        </Nav.Item>*/}
-                            {/*    </Nav>*/}
-                            {/*</Card.Footer>*/}
-                        </Card>
-                    </Col>
-
-                    <Col style={{display: 'contents'}}>
-                        <Tab.Content>
-                            <Tab.Pane eventKey="statistics">
-                            </Tab.Pane>
-
-                            <Tab.Pane eventKey="recommendations">
-                                <Card className="shadow-sm">
-                                    <Card.Header className="bg-white">
-                                        <h5 className="mb-0">Рекомендации для вас</h5>
-                                    </Card.Header>
-                                    <Card.Body>
-                                        {/*<p className="text-muted">*/}
-                                        {/*    Здесь будут отображаться персонализированные рекомендации книг на основе ваших предпочтений,*/}
-                                        {/*    истории чтения и интересов.*/}
-                                        {/*</p>*/}
-
-                                        {/*<div style={{ marginTop: "15px" }}>*/}
-                                        {/*    <h6>Что можно добавить в этот раздел:</h6>*/}
-                                        {/*    <ul>*/}
-                                        {/*        <li>Рекомендации на основе часто читаемых жанров</li>*/}
-                                        {/*        <li>Книги, популярные среди пользователей с похожими интересами</li>*/}
-                                        {/*        <li>Новинки в ваших любимых жанрах</li>*/}
-                                        {/*        <li>Книги того же автора, что вы уже читали</li>*/}
-                                        {/*    </ul>*/}
-                                        {/*</div>*/}
-                                        <>
-                                        </>
-                                    </Card.Body>
-                                </Card>
-                            </Tab.Pane>
-                        </Tab.Content>
-                    </Col>
-                </Row>
-                {/*<ReadingGoals />*/}
-            </Tab.Container>
+                        {/*<Card.Footer className="bg-white">*/}
+                        {/*    <Nav variant="pills" className="flex-column">*/}
+                        {/*        <Nav.Item>*/}
+                        {/*            <Nav.Link eventKey="statistics">Статистика</Nav.Link>*/}
+                        {/*        </Nav.Item>*/}
+                        {/*        <Nav.Item>*/}
+                        {/*            <Nav.Link eventKey="recommendations">Рекомендации</Nav.Link>*/}
+                        {/*        </Nav.Item>*/}
+                        {/*    </Nav>*/}
+                        {/*</Card.Footer>*/}
+                    </Card>
+                </Stack>
+            </Box>
             {userInfo != undefined && (<GameStatusChart stats={userInfo}/>)}
-        </Container>
+        </Box>
     );
 }
 

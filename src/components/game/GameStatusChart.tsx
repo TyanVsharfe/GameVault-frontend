@@ -9,6 +9,7 @@ import {
 } from "recharts";
 import { Box, Typography, Chip } from "@mui/joy";
 import {useTranslation} from "react-i18next";
+import {useTheme} from "next-themes";
 
 interface UserStats {
     username: string;
@@ -19,14 +20,14 @@ interface UserStats {
 }
 
 const statusColors: Record<string, string> = {
-    Playing: "#8b5cf6",
-    Completed: "#0d9740",
-    Planned: "#c8af1b",
-    Abandoned: "#f87171",
-    None: "#3a73d8",
+    playing: "#8b5cf6",
+    completed: "#0d9740",
+    planned: "#c8af1b",
+    abandoned: "#f87171",
+    none: "#3a73d8",
 };
 
-const statusOrder = ["Playing", "Completed", "Planned", "Abandoned", "None"];
+const statusOrder = ["playing", "completed", "planned", "abandoned", "none"];
 
 interface Props {
     stats: UserStats;
@@ -34,6 +35,7 @@ interface Props {
 
 export default function UserStatsChart({ stats }: Props) {
     const { t } = useTranslation();
+    const { theme } = useTheme();
     const total = stats.totalGames || 1;
 
     const data = statusOrder.map((status) => ({
@@ -43,7 +45,15 @@ export default function UserStatsChart({ stats }: Props) {
     }));
 
     return (
-        <Box style={{ width: "60rem", margin: 'auto'}}>
+        <Box style={{ width: "60rem"}}
+             sx={{
+                 p: 0.5,
+                 gap: 0.5,
+                 margin: 2,
+                 borderRadius: 'xl',
+                 bgcolor: theme === 'dark' ? 'background.level3' : 'background.level1',
+             }}
+        >
             <Typography level="h4" className="text-lg font-semibold mb-2">
                 {stats.username}'s Game Status
             </Typography>

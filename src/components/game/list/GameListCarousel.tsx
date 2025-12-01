@@ -1,11 +1,11 @@
 import Button from "react-bootstrap/Button";
-import {IgdbGame, ReleaseGame} from "../../../services/igdbGamesService";
+import {AggregatedRelease, IgdbGame, ReleaseGame} from "../../../services/igdbGamesService";
 import Card from "react-bootstrap/Card";
 import {Link} from "react-router-dom";
 import React from "react";
 
 export interface GameListProps {
-    games: ReleaseGame[];
+    games: AggregatedRelease[];
     carouselRef: React.RefObject<HTMLDivElement>;
     width: number
 }
@@ -31,35 +31,35 @@ const GameListCarousel: React.FC<GameListProps> = ({ games, carouselRef, width }
             </Button>
 
             <div className="carousel-items" style={{width: `${width}rem`}} ref={carouselRef}>
-                {games.map((releaseGame: ReleaseGame, index: number) => (
+                {games.map((releaseGame: AggregatedRelease, index: number) => (
                     <Card key={index} className="carousel-game-card">
-                        {releaseGame.game.cover?.url && (
+                        {releaseGame?.coverUrl && (
                             <Card.Img
                                 variant="top"
-                                src={releaseGame.game.cover?.url?.replace('t_thumb', 't_cover_big') || ''}
-                                alt={releaseGame.game.name}
+                                src={releaseGame?.coverUrl?.replace('t_thumb', 't_cover_big') || ''}
+                                alt={releaseGame?.gameName}
                             />
                         )}
                         <Card.Body style={{maxWidth: '210px'}}>
                             <Card.Title>
                                 <Card.Title>
-                                    <Link to={`/games/${releaseGame.id}`}
+                                    <Link to={`/games/${releaseGame.gameId}`}
                                           style={{textDecoration: 'none', color: 'inherit'}}>
-                                        {releaseGame.game.name || 'Название неизвестно'}
+                                        {releaseGame?.gameName || 'Название неизвестно'}
                                     </Link>
                                 </Card.Title>
                             </Card.Title>
                             <Card.Text>
-                                {releaseGame?.involved_companies && (
-                                    releaseGame.involved_companies.map((company) =>
-                                        company.publisher ?
-                                            <div key={company.company.name}>{company.company.name}</div> : null
-                                    )
-                                )}
+                                {/*{releaseGame?.involved_companies && (*/}
+                                {/*    releaseGame.involved_companies.map((company) =>*/}
+                                {/*        company.publisher ?*/}
+                                {/*            <div key={company.company.name}>{company.company.name}</div> : null*/}
+                                {/*    )*/}
+                                {/*)}*/}
                             </Card.Text>
                         </Card.Body>
                         <Card.Footer className="text-muted">
-                            {releaseGame.human}
+                            {releaseGame?.earliestRelease?.human}
                         </Card.Footer>
                     </Card>
                 ))}

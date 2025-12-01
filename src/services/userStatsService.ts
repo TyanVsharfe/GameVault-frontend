@@ -17,3 +17,10 @@ export const getUserStats = async (username: string) => {
     const response = await axios.get(`${SERVICE_URL}/${username}/stats`, headers);
     return response.data;
 };
+
+export const getOwnUserStats = async () => {
+    const headers = {withCredentials: true};
+
+    const response = await axios.get(`${SERVICE_URL}/me/stats`, headers);
+    return response.data;
+};

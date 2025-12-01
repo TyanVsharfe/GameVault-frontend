@@ -4,7 +4,7 @@ import "../../../assets/styles/game-card.css"
 import {IgdbGame} from "../../../services/igdbGamesService";
 import {Chip, Link, Skeleton} from "@mui/joy";
 import {useTranslation} from "react-i18next";
-import {PlatformBadge} from "../../PlatformBadge";
+import {PlatformBadge} from "../badge/PlatformBadge";
 import {CategoryIGDB} from "../../../utils/Enums";
 import {IgdbGamesListProps} from "./IgdbGameList";
 import List from '@mui/joy/List';
@@ -22,7 +22,7 @@ const NavSearchDropdown: React.FC<IgdbGamesListProps> = ({ games }) => {
                     // display: "flex",
                     // justifyContent: "flex-start",
                     position: 'absolute',
-                    zIndex: 1000,
+                    zIndex: 10000,
                     maxHeight: '300px',
                     overflowY: 'auto',
 

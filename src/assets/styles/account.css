@@ -29,8 +29,8 @@
 }
 
 .import-games-list {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .games-list {
@@ -39,10 +39,7 @@
 }
 
 @media (max-width: 1060px) {
-    .import-games-list {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-    }
+
 }
 
 @media (max-width: 768px) {

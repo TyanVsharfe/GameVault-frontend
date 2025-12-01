@@ -70,10 +70,19 @@
     overflow: hidden;
 }
 
+.user-game-list-game-card-background {
+    border-radius: 1rem;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
 .user-game-list-game-card {
     width: 15rem;
     transition: transform 0.2s ease-in-out;
     border-radius: 0.8rem;
+    z-index: 0;
 }
 
 .user-game-list-game-card:hover {
@@ -87,6 +96,29 @@
     object-fit: cover;
     border-top-left-radius: 0.8rem;
     border-top-right-radius: 0.8rem;
+    display: block;
+    width: 100%;
+}
+
+.game-card__img-wrapper {
+    position: relative;
+    overflow: hidden;
+}
+
+.blur-top {
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    width: calc(100% + 16px);
+    height: 56px;
+    background-size: cover;
+    background-position: top;
+    filter: blur(8px);
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 1;
+    background-color: rgba(0,0,0,0.45);
+    background-blend-mode: darken;
 }
 
 .game-card__title {
@@ -153,10 +185,11 @@
     background-position: center;
     filter: blur(20px) brightness(50%);
     position: absolute;
-    top: 42%;
+    opacity: 1;
+    top: 40%;
     left: 50%;
     width: 72.5rem;
-    height: auto;
+    height: 80%;
     transform: translate(-50%, -50%);
     z-index: -1;
 }
@@ -191,7 +224,7 @@
 
 @media (max-width: 1200px) {
     .game-page__background {
-        width: 65.5rem;
+        width: 58.5rem;
     }
 }
 

@@ -9,8 +9,16 @@ import 'swiper/css/navigation'
 import 'swiper/css/pagination'
 import '../../assets/styles/custom-swiper.css'
 import '../../assets/styles/game-card.css'
+import IgdbGameTypeBadge from "./badge/IgdbGameTypeBadge";
+import {UserGame} from "../../services/userGamesService";
+import { IgdbGame } from "../../services/igdbGamesService";
 
-function SwiperGames({franchiseGames}) {
+interface SwiperGamesProps {
+    franchiseGames: IgdbGame;
+    t: (key: string) => string;
+}
+
+const SwiperGames: React.FC<SwiperGamesProps> = ({franchiseGames, t}) => {
     const renderUserGames = () => {
         let gamesResultsOut = franchiseGames;
         console.log(gamesResultsOut);
@@ -32,7 +40,7 @@ function SwiperGames({franchiseGames}) {
                     style={{width: "100%", display: "flex", justifyContent: "center", paddingBottom: "20px"}}
                 >
                     {
-                        gamesResultsOut.map((game, index: number) => (
+                        gamesResultsOut.filter(g => g.cover?.url != null).map((game, index: number) => (
                             <SwiperSlide key={index} style={{display: "flex", justifyContent: "center"}}>
                                 <Card data-bs-theme="dark" style={{ width: '9rem', height: '18rem'}}  className="text-center">
                                     <Card.Img variant="top" src={game.cover?.url?.replace('t_thumb', 't_cover_big') || ''}/>

@@ -29,17 +29,17 @@ export const getScoreClass = (score: number): string => {
 
 export const getRatingColor = (score: number): string => {
     if (score < 40) return 'rgba(229,57,53,0.75)';
-    if (score < 50) return 'rgba(251,140,0,0.75)';
-    if (score < 70) return 'rgba(253,216,53,0.75)';
+    if (score < 50) return 'rgba(209,129,5,0.75)';
+    if (score < 70) return 'rgba(225,189,22,0.75)';
     return 'rgba(45, 139, 58, 0.75)';
 };
 
 export const statusColors: Record<string, string> = {
-    "Planned": "rgba(139,92,246,0.5)",
-    "Playing": "rgba(251,146,60,0.5)",
-    "Completed": "rgba(45, 139, 58, 0.75)",
-    "Abandoned": "rgba(229,57,53,0.5)",
-    "None": "rgba(61,180,230,0.5)"
+    "planned": "rgba(139,92,246,0.5)",
+    "playing": "rgba(251,146,60,0.5)",
+    "completed": "rgba(45, 139, 58, 0.75)",
+    "abandoned": "rgba(229,57,53,0.5)",
+    "none": "rgba(61,180,230,0.5)"
 };
 
 

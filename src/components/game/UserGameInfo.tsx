@@ -1,42 +1,112 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useState} from 'react';
 import Card from "react-bootstrap/Card";
 import {useGameContext} from "./GameProdiver";
 import {getScoreClass, statusColors} from "../../utils/Utils";
 import {useTranslation} from "react-i18next";
-import {Chip} from "@mui/joy";
+import { Button, Chip} from "@mui/joy";
+import { Typography, Box } from '@mui/joy';
 
-function UserGameInfo() {
+type Props = {
+    isOverallStatus: boolean;
+};
+
+function UserGameInfo({isOverallStatus}: Props) {
     const { t } = useTranslation();
 
-    const { userRating, gameStatus } = useGameContext();
+    const { userRating, gameStatus, userModes } = useGameContext();
+    const [showStatuses, setShowStatuses] = useState(false);
 
     return (
-        <Card data-bs-theme="dark" style={{width: '16rem', marginBottom: '1rem'}} className="text-center">
+        <Card data-bs-theme="dark" style={{width: '16rem', marginBottom: '1rem', border: '0px'}} className="text-center">
             <Card.Header>{t('user_informaton')}:</Card.Header>
-            <Card.Body style={{display: 'flex', justifyContent: 'space-between'}}>
-                <h4 style={{margin: '0px'}}>
-                    {t('status')}:
-                </h4>
-                <Chip size='lg' variant='solid' style={{backgroundColor: statusColors[gameStatus]}}>
-                    {gameStatus == null ? t('none_status') : t(`status_${gameStatus.toLowerCase()}`)}
-                </Chip>
-            </Card.Body>
-            <Card.Footer style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', fontSize: "1.2rem"}}>
-                <h4>
-                    {t('score')}:
-                </h4>
-                {
-                (userRating == null)
-                    ?
-                    <h4 style={{display: 'flex', justifyContent: 'center'}}>
-                        {t('none_score')}
+            <Card.Body style={{fontSize: "1.2rem"}}>
+                <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '1rem', verticalAlign: 'middle'}}>
+                    {(isOverallStatus || userModes?.length === 1)
+                        ? (
+                            <>
+                                <h4 style={{margin: "0px"}}>
+                                    {t('status')}:
+                                </h4>
+                                <Chip size='lg' variant='solid' style={{backgroundColor: statusColors[gameStatus]}}
+                                      sx={{
+                                          fontSize: '1rem',
+                                          padding: '0.2rem 1rem',
+                                      }}
+                                >
+                                    {gameStatus == null ? t('none_status') : t(`status_${gameStatus.toLowerCase()}`)}
+                                </Chip>
+                            </>
+                        )
+                        : (
+                            <>
+                            <Button
+                                    size="sm"
+                                    variant="soft"
+                                    onClick={() => setShowStatuses(!showStatuses)}
+                                    style={{width:'100%'}}
+                                >
+                                    {showStatuses ? t('hide_statuses') : t('show_statuses')}
+                                </Button>
+                            </>
+                        )
+                    }
+                </div>
+                <Box>
+                    {showStatuses && (
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5, marginBottom: '1rem'}}>
+                            {userModes?.map((mode, i) => (
+                                <Box key={i} sx={{flexDirection: 'column', alignItems: 'center', gap: 1, textAlign: 'center'}}>
+                                    {/* Режим */}
+                                    <Typography level="body3" sx={{ minWidth: '8.5rem', fontSize: '1.1rem'}}>
+                                        {t(`${mode.mode.replace('-','_')}`)}
+                                    </Typography>
+
+                                    {/* Статус */}
+                                    <Chip
+                                        size="sm"
+                                        variant="solid"
+                                        style={{backgroundColor: statusColors[mode.status]}}
+                                        sx={{
+                                            fontSize: '0.95rem',
+                                        }}
+                                    >
+                                        {mode.status == null
+                                            ? t('none_status')
+                                            : t(`status_${mode.status.toLowerCase()}`)}
+                                    </Chip>
+                                </Box>
+                            ))}
+                        </Box>
+                    )}
+                </Box>
+                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                    <h4 style={{margin: "0px"}}>
+                        {t('score')}:
                     </h4>
-                    :
-                    <div style={{display: 'flex', justifyContent: 'center'}}>
-                        <div className={getScoreClass(userRating)} style={{width: '3rem', height: '3rem', fontSize: "1rem", borderRadius: '10%',
-                            display: 'flex', alignItems: 'center', justifyContent: 'center'}}>{userRating}</div>
-                    </div>
-               }
+                    {
+                        (userRating == null)
+                            ?
+                            <h4 style={{display: 'flex', justifyContent: 'center'}}>
+                                {t('none_score')}
+                            </h4>
+                            :
+                            <Chip size='lg' variant='solid' className={getScoreClass(userRating)}
+                                  sx={{
+                                      fontSize: '1rem',
+                                      padding: '0.2rem 1rem',
+                                      maxWidth: 'none',
+                                      whiteSpace: 'normal',
+                                      width: '5rem'
+                                  }}
+                            >
+                                {userRating}
+                            </Chip>
+                    }
+                </div>
+            </Card.Body>
+            <Card.Footer
+                style={{display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', fontSize: "1.2rem"}}>
+
             </Card.Footer>
         </Card>
     );

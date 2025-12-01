@@ -1,14 +1,12 @@
-import React, {useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef, useMemo} from 'react';
 import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import {Form, Modal, Stack} from "react-bootstrap";
 import UserGameInfo from "../../components/game/UserGameInfo";
 import GameControls from "../../components/game/GameControls";
 import Notes from "../../components/Notes";
-import FranchiseGames from "../../components/game/FranchiseGames";
 import {Link, useParams} from "react-router-dom";
 import SwiperGames from "../../components/game/SwiperGames";
-import {SwiperSlide} from "swiper/react";
 import {getIdgbGame, IgdbGame, Series} from "../../services/igdbGamesService";
 import {
     addUserGame,
@@ -20,10 +18,9 @@ import {
 } from "../../services/userGamesService";
 import "../../assets/styles/game-card.css"
 import "../../assets/styles/review.css"
-import {CategoryIGDB, getCategoryName} from "../../utils/Enums";
+import {CategoryIGDB} from "../../utils/Enums";
 import {GameProvider} from "../../components/game/GameProdiver";
-import {Chip, Divider, Skeleton, Typography} from "@mui/joy";
-import AspectRatio from '@mui/joy/AspectRatio';
+import {Box, Chip, Divider, Skeleton, Typography} from "@mui/joy";
 import Review, { GameReview } from '../../components/Review';
 import {getRatingColor} from "../../utils/Utils";
 import {useTranslation} from "react-i18next";
@@ -33,10 +30,12 @@ import Accordion from '@mui/joy/Accordion';
 import AccordionDetails from '@mui/joy/AccordionDetails';
 import AccordionGroup from '@mui/joy/AccordionGroup';
 import AccordionSummary from '@mui/joy/AccordionSummary';
-import {PlatformBadge} from "../../components/PlatformBadge";
+import {PlatformBadge} from "../../components/game/badge/PlatformBadge";
+import {useTheme} from "next-themes";
 
 function GamePage() {
     const { t } = useTranslation();
+    const { theme } = useTheme();
 
     const [gameData, setGameData] = useState<IgdbGame>();
     const [uGameData, setUGameData] = useState<UserGame>();
@@ -70,6 +69,20 @@ function GamePage() {
 
     const reviewsWithScores = gameReviews != undefined ? gameReviews.filter(review => review.userRating !== null) : [];
 
+    const completedDlcCount = useMemo(() => {
+        if (!uGameData) return 0;
+
+        const completedDlcs = gameData?.dlcs?.filter(dlc =>
+            uGameData.dlcs?.find(d => ((d.game.igdbId === dlc.id) && (d.status == "completed"))
+        )).length ?? 0;
+
+        const completedExpansions = gameData?.expansions?.filter(exp =>
+            uGameData.dlcs?.find(e => ((e.game.igdbId === exp.id) && (e.status == "completed"))
+        )).length ?? 0;
+
+        return completedDlcs + completedExpansions;
+    }, [uGameData?.dlcs, uGameData?.expansions, gameData?.dlcs, gameData?.expansions]);
+
     const averageScore = reviewsWithScores.length > 0
         ? Math.round(reviewsWithScores.reduce((acc, review) => acc + review.userRating, 0) / reviewsWithScores.length)
         : 0;
@@ -85,6 +98,7 @@ function GamePage() {
 
                 if (status) {
                     const uResponse = await getUserGame(igdbId.id);
+                    console.log("User game data");
                     console.log(uResponse);
                     setUGameData(uResponse);
                     if (uResponse.review != undefined) {
@@ -100,13 +114,8 @@ function GamePage() {
                 const gameReviews = await getGameReviews(igdbId.id);
                 setGameReviews(gameReviews);
 
-                const keyStorage = `/game/${igdbId.id}`;
-                localStorage.setItem(keyStorage, JSON.stringify(response));
                 setGameData(response[0]);
-                console.log(response[0]);
                 setFranchiseGames(response[0].franchises);
-                console.log(gameData);
-                console.log("Franchise " + franchiseGames);
 
                 if (cardRef.current) {
                     setBackgroundHeight(cardRef.current.offsetHeight + 20);
@@ -121,8 +130,20 @@ function GamePage() {
         fetchData();
     }, [igdbId]);
 
+    useEffect(() => {
+        if (cardRef.current) {
+            setBackgroundHeight(cardRef.current.offsetHeight + 20);
+        }
+    }, [gameStatus]);
+
+    function checkDlc(id: number) {
+        console.log(id);
+        if (!uGameData?.dlcs) return 'neutral';
+        return uGameData.dlcs.find(d => d.game.igdbId === id && d.status == 'completed') ? 'success' : 'neutral';
+    }
+
     return (
-        <GameProvider initialStatus={uGameData?.status} initialUserRating={uGameData?.userRating}>
+        <GameProvider initialStatus={uGameData?.status} initialUserRating={uGameData?.userRating} initialUserModes={uGameData?.userModes}>
             <Stack className="game-page" direction="horizontal"
                    style={{
                        paddingTop: "20px",
@@ -135,10 +156,11 @@ function GamePage() {
                                 backgroundImage: `url(${gameData.cover.url.replace('t_thumb', 't_cover_big')})`,
                             }),
                         height: `${backgroundHeight}px`,
+                        top: `${gameStatus ? 42 : 35}%`,
                     }}
                 />
                 <div ref={cardRef}>
-                    <Card data-bs-theme="dark" style={{width: '15rem', opacity: '98%'}} className="text-center">
+                    <Card data-bs-theme="dark" style={{width: '15rem', opacity: '98%', border: '0px'}} className="text-center">
                         {isLoading ? (
                             <Skeleton variant="rectangular" width="100%" height='17rem'/>
                         ) : (
@@ -157,17 +179,23 @@ function GamePage() {
                             {isLoading ? (
                                 <Skeleton variant="rectangular" width='10rem' height='5rem'
                                           sx={{mx: 'auto', borderRadius: 1}}/>
-                            ) : gameStatus ? (
-                                <GameControls/>
-                            ) : (
-                                <Button
-                                    type="button"
-                                    onClick={() => {
-                                        addUserGame(igdbId.id).then(() => setGameStatus(true));
-                                    }}
-                                >
-                                    {t('add_game')}
-                                </Button>
+                            ) : (gameStatus) ? (
+                                <GameControls gameModes={uGameData?.userModes ?? gameData?.game_modes}
+                                              isOverallRating={uGameData?.overallRatingManual ?? false}
+                                              isOverallStatus={uGameData?.overallStatusManual ?? false}
+
+                                />
+                            ) : (gameData?.game_modes != null
+                                    ? (
+                                        <Button
+                                            type="button"
+                                            onClick={() => {
+                                                addUserGame(igdbId.id).then(() => setGameStatus(true));
+                                            }}
+                                        >
+                                            {t('add_game')}
+                                        </Button>)
+                                    : <></>
                             )}
                         </Card.Body>
                         <Card.Footer style={{display: 'flex', justifyContent: 'center'}} className="text-muted">
@@ -180,32 +208,91 @@ function GamePage() {
                             )}
                         </Card.Footer>
                     </Card>
-                    <Button style={{width: '15rem', marginTop: '10px'}} onClick={handleShowUserNotes}>
-                        {t('notes')}
-                    </Button>
+                    {gameStatus ? (
+                        <Button style={{width: '15rem', marginTop: '10px'}} onClick={handleShowUserNotes}>
+                            {t('notes')}
+                        </Button>
+                    ):
+                    <></>}
                 </div>
 
-                <Stack style={{maxWidth: '34rem', zIndex: 0, color: 'white'}}>
-                    <div style={{maxWidth: '34rem'}}>
-                        {/*height: '20rem'*/}
+                <Stack style={{maxWidth: '34rem', zIndex: 0, color: 'white', alignItems: 'baseline'}}>
+                    {/*<div style={{maxWidth: '34rem'}}>*/}
+                    {/*    /!*height: '20rem'*!/*/}
+                    {/*    <h2> {t('description')}:</h2>*/}
+                    {/*    {isLoading ? (*/}
+                    {/*        <Skeleton width="34rem" height="10rem"/>*/}
+                    {/*    ) : (*/}
+                    {/*        <span className={`game__description ${expanded ? "expanded" : ""}`}*/}
+                    {/*              ref={descriptionTextRef}>*/}
+                    {/*        {gameData === undefined ?*/}
+                    {/*            "" :*/}
+                    {/*            gameData?.summary}*/}
+                    {/*        </span>*/}
+                    {/*    )}*/}
+                    {/*    <div style={{display: 'flex', justifyContent: 'flex-end'}}>*/}
+                    {/*        {isOverflowing && (*/}
+                    {/*            <Button variant='plain' style={{color: 'white', background: 'none'}}*/}
+                    {/*                    className='game__description-button' onClick={() => setExpanded(!expanded)}>*/}
+                    {/*                {expanded ? t('hide') : t('more')}*/}
+                    {/*            </Button>*/}
+                    {/*        )}*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
+
+                    <Box
+                        sx={{
+                            top: 8,
+                            left: 8,
+                            px: 1.5,
+                            borderRadius: "1rem",
+                            background: `${theme === "light" ? "rgba(4,4,4,0.50)" : "rgba(255,255,255,0.15)"}`,
+                            // border: "1px solid rgba(255,255,255,0.25)",
+                            backdropFilter: "blur(10px)",
+                            WebkitBackdropFilter: "blur(10px)",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "start",
+                            justifyContent: "center",
+                            textAlign: "start",
+                            zIndex: 2,
+                            maxWidth: '34rem',
+                            height: 'auto',
+                            minHeight: expanded ? 'auto' : 'fit-content',
+                            transition: 'all 0.3s ease',
+                        }}
+                    >
                         <h2> {t('description')}:</h2>
-                        {isLoading ? (
-                            <Skeleton width="34rem" height="10rem"/>
-                        ) : (
-                            <span className={`game__description ${expanded ? "expanded" : ""}`}
-                                  ref={descriptionTextRef}>
+                        <Typography
+                            level="body-md"
+                            className={`game__description ${expanded ? "expanded" : ""}`}
+                            sx={{
+                                color: "whitesmoke",
+                                fontWeight: 700,
+                                fontSize: "1rem",
+                                textShadow: "0 1px 2px rgba(0,0,0,0.4)",
+                            }}
+                        >
+                            {isLoading ? (
+                                <Skeleton width="34rem" height="10rem"/>
+                            ) : (
+                                <span className={`game__description ${expanded ? "expanded" : ""}`}
+                                      ref={descriptionTextRef}>
                             {gameData === undefined ?
                                 "" :
-                                gameData?.summary}</span>
-                        )}
-                        <div style={{display: 'flex', justifyContent: 'flex-end'}}>
-                            {isOverflowing && (
-                                <Button variant='plain' style={{color: 'white', background: 'none'}} className='game__description-button' onClick={() => setExpanded(!expanded)}>
-                                    {expanded ? t('hide') : t('more')}
-                                </Button>
+                                gameData?.summary}
+                            </span>
                             )}
-                        </div>
-                    </div>
+                            <div style={{display: 'flex', justifyContent: 'flex-end'}}>
+                                {isOverflowing && (
+                                    <Button variant='plain' style={{color: 'white', background: 'none'}}
+                                            className='game__description-button' onClick={() => setExpanded(!expanded)}>
+                                        {expanded ? t('hide') : t('more')}
+                                    </Button>
+                                )}
+                            </div>
+                        </Typography>
+                    </Box>
 
                     <AccordionGroup variant='plain'
                                     size="lg"
@@ -213,12 +300,13 @@ function GamePage() {
                                         initial: "0.3s ease-out",
                                         expanded: "0.2s ease",
                                     }}
+                                    style={{width: '100%'}}
                     >
                         {gameData?.collections != null ? (
                                 gameData?.collections?.map((series, index: number) => (
                                     <Accordion
                                         style={{display: 'flex', flexDirection: 'column', padding: '0px 0px 0px 0px'}}>
-                                        <div key={index}>
+                                        <div key={index} >
                                             <AccordionSummary
                                                 variant="plain"
                                                 sx={{
@@ -233,40 +321,19 @@ function GamePage() {
                                             </AccordionSummary>
                                             <AccordionDetails>
                                                 <h2>
-                                                    <Link style={{textDecoration: "none", fontSize: "1.2rem"}}
-                                                          to={`/series/${series.id}`}>{t('read_more')}</Link>
+                                                    <Chip style={{
+                                                        marginBottom: '0.4rem',
+                                                        marginRight: '0.3rem',
+                                                        maxWidth: '14rem',
+                                                    }}
+                                                          key={series.slug}
+                                                          component={Link}
+                                                          to={`/series/${series.slug}`}
+                                                          clickable>
+                                                        {t('read_more')}
+                                                    </Chip>
                                                 </h2>
-                                                <SwiperGames franchiseGames={series.games}/>
-                                            </AccordionDetails>
-                                        </div>
-                                    </Accordion>)
-                                )
-                            ) :
-                            <></>
-                        }
-                        {franchiseGames != null ? (
-                                franchiseGames.map((franchise, index: number) => (
-                                    <Accordion
-                                        style={{display: 'flex', flexDirection: 'column', padding: '0px 0px 0px 0px'}}>
-                                        <div key={index}>
-                                            <AccordionSummary
-                                                variant="plain"
-                                                sx={{
-                                                    '--Icon-color': 'white',
-                                                    // '--joy-palette-text-primary': 'white',
-                                                    // '--joy-palette-text-secondary': 'white',
-                                                    // '--joy-palette-text-icon': 'white',
-                                                    '--joy-palette-neutral-plainColor': 'white',
-                                                    color: 'white',
-                                                }}>
-                                                {t('franchise')}: {franchise.name}
-                                            </AccordionSummary>
-                                            <AccordionDetails>
-                                                <h2>
-                                                    <Link style={{textDecoration: "none", fontSize: "1.2rem"}}
-                                                          to={`/series/${franchise.slug}`}>{t('read_more')}</Link>
-                                                </h2>
-                                                <SwiperGames franchiseGames={franchise.games}/>
+                                                <SwiperGames franchiseGames={series.games} t={t}/>
                                             </AccordionDetails>
                                         </div>
                                     </Accordion>)
@@ -277,8 +344,8 @@ function GamePage() {
                     </AccordionGroup>
                 </Stack>
                 <div style={{opacity: '98%'}}>
-                    {gameStatus ? (<UserGameInfo/>) : <></>}
-                    <Card data-bs-theme="dark" style={{width: '16rem'}}>
+                    {gameStatus ? (<UserGameInfo isOverallStatus={uGameData?.overallStatusManual}/>) : <></>}
+                    <Card data-bs-theme="dark" style={{width: '16rem', border: '0px'}}>
                         <Card.Header>{t('info_about_game')}:</Card.Header>
                         <Card.Body>
                             <strong style={{fontSize: '1.1rem'}}>
@@ -300,7 +367,7 @@ function GamePage() {
                                 {t('genre')}:
                             </strong>
                             <div style={{marginTop: '0.2rem'}}>
-                            {gameData?.genres && (
+                                {gameData?.genres && (
                                     gameData.genres.map((genre) =>
                                         <Chip style={{marginBottom: '0.4rem', marginRight: '0.3rem'}} key={genre.id}>
                                             {genre.name}
@@ -325,7 +392,11 @@ function GamePage() {
                                 {gameData?.involved_companies && (
                                     gameData.involved_companies.map((company) =>
                                         company.publisher ?
-                                            <Chip style={{marginBottom: '0.4rem', marginRight: '0.3rem'}}
+                                            <Chip style={{
+                                                marginBottom: '0.4rem',
+                                                marginRight: '0.3rem',
+                                                maxWidth: '14rem'
+                                            }}
                                                   key={company.company.name}>
                                                 {company.company.name}
                                             </Chip> : null
@@ -338,12 +409,111 @@ function GamePage() {
                             </strong>
                             <div style={{marginTop: '0.2rem'}}>
                                 <Chip>
-                                    {gameData?.game_type != null ? t(CategoryIGDB[gameData?.game_type]) : null}
+                                    {gameData?.game_type != null ? t(CategoryIGDB[gameData?.game_type.id]) : null}
                                 </Chip>
                             </div>
+                            {(gameData?.game_type?.id != undefined) && ![1, 2].includes(gameData?.game_type?.id) && (
+                                <>
+                                    {gameData?.dlcs?.length > 0 && (
+                                        <>
+                                            <Divider style={{margin: '0.4rem'}} component="div" role="presentation"/>
+                                            <strong style={{fontSize: '1.1rem'}}>
+                                                {t('dlcs')}: {gameData?.dlcs != null ? gameData.dlcs.length : null}
+                                            </strong>
+                                            <div style={{marginTop: '0.2rem'}}>
+                                                {gameData?.dlcs ? (
+                                                        gameData.dlcs.map((dlc) =>
+                                                            <Chip style={{
+                                                                marginBottom: '0.4rem',
+                                                                marginRight: '0.3rem',
+                                                                maxWidth: '14rem',
+                                                            }}
+                                                                  color={checkDlc(dlc.id)}
+                                                                  key={dlc.id}
+                                                                  component={Link}
+                                                                  to={`/games/${dlc.id}`}
+                                                                  clickable>
+                                                                {dlc.name}
+                                                            </Chip>
+                                                        )
+                                                    )
+                                                    :
+                                                    <Chip style={{
+                                                        marginBottom: '0.4rem',
+                                                        marginRight: '0.3rem',
+                                                        maxWidth: '14rem'
+                                                    }}>
+                                                        {t('none')}
+                                                    </Chip>
+                                                }
+                                            </div>
+                                        </>
+                                    )}
+                                    {gameData?.expansions?.length > 0 && (
+                                        <>
+                                            <Divider style={{margin: '0.4rem'}} component="div" role="presentation"/>
+                                            <strong style={{fontSize: '1.1rem'}}>
+                                                {t('expansions')}: {gameData?.expansions != null ? gameData.expansions.length : null}
+                                            </strong>
+                                            <div style={{marginTop: '0.2rem'}}>
+                                                {gameData?.expansions ? (
+                                                        gameData.expansions.map((expansion) =>
+                                                            <Chip style={{
+                                                                marginBottom: '0.4rem',
+                                                                marginRight: '0.3rem',
+                                                                maxWidth: '14rem'
+                                                            }}
+                                                                  color={checkDlc(expansion.id)}
+                                                                  key={expansion.id}
+                                                                  component={Link}
+                                                                  to={`/games/${expansion.id}`}
+                                                                  clickable>
+                                                                {expansion.name}
+                                                            </Chip>
+                                                        )
+                                                    )
+                                                    :
+                                                    <Chip style={{
+                                                        marginBottom: '0.4rem',
+                                                        marginRight: '0.3rem',
+                                                        maxWidth: '14rem'
+                                                    }}>
+                                                        {t('none')}
+                                                    </Chip>
+                                                }
+                                            </div>
+                                        </>
+                                    )}
+                                    <Divider style={{margin: '0.4rem'}} component="div" role="presentation"/>
+                                    {((gameData?.expansions?.length > 0) || (gameData?.dlcs?.length > 0)) && (
+                                        <strong style={{fontSize: '1.1rem'}}>
+                                            {t('completed')}: {completedDlcCount}/{(gameData?.expansions?.length ?? 0) + (gameData?.dlcs?.length ?? 0)}
+                                        </strong>
+                                    )}
+                                </>
+                            )}
+                            {(gameData?.game_type?.id != undefined) && [1, 2].includes(gameData?.game_type?.id) && (
+                                <>
+                                    <Divider style={{margin: '0.4rem'}} component="div" role="presentation"/>
+                                    <strong style={{fontSize: '1.1rem'}}>
+                                        {t('parent_game')}:
+                                    </strong>
+                                    <div>
+                                        <Chip style={{
+                                            marginBottom: '0.4rem',
+                                            marginRight: '0.3rem',
+                                            maxWidth: '14rem'
+                                        }}
+                                              key={gameData?.parent_game?.id}
+                                              component={Link}
+                                              to={`/games/${gameData?.parent_game?.id}`}
+                                              clickable>
+                                            {gameData?.parent_game?.name}
+                                        </Chip>
+                                    </div>
+                                </>
+                            )}
                         </Card.Body>
-                        <Card.Footer>
-                        </Card.Footer>
                     </Card>
                     <Stack>
                         {gameStatus ? (

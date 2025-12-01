@@ -1,8 +1,8 @@
 export const enumStatus = {
-    Completed: 0,
-    Playing: 1,
-    Planned: 2,
-    Abandoned: 3
+    Completed: "COMPLETED",
+    Playing: "PLAYING",
+    Planned: "PLANNED",
+    Abandoned: "ABANDONED",
 }
 
 export const CategoryIGDB: Record<number, string> = {

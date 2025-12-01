@@ -6,28 +6,31 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { ReactComponent as Logout } from '../assets/icons/logout.svg';
-import "../assets/styles/nav.css"
+import { ReactComponent as Logout } from '../../assets/icons/logout.svg';
+import "../../assets/styles/nav.css"
+import WbSunnyIcon from '@mui/icons-material/WbSunny';
+import NightlightIcon from '@mui/icons-material/Nightlight';
 
 import "bootstrap-icons/font/bootstrap-icons.css";
 
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "../store/store";
-import {logout} from "../store/authSlice";
-import Badge from "react-bootstrap/Badge";
-import Modal from "react-bootstrap/Modal";
-import {ListGroup} from "react-bootstrap";
+import {RootState} from "../../store/store";
+import {logout} from "../../store/authSlice";
 import debounce from 'lodash/debounce';
 
 import { useTranslation } from 'react-i18next';
-import {LanguageSwitcher} from "./LanguageSwitcher";
-import {getIdgbGames} from "../services/igdbGamesService";
-import NavSearchDropdown from './game/list/NavSearchDropdown';
+import {LanguageSwitcher} from "../LanguageSwitcher";
+import {getIdgbGames} from "../../services/igdbGamesService";
+import NavSearchDropdown from '../game/list/NavSearchDropdown';
+import {useTheme} from "next-themes";
 
 const Navigation: React.FC = () => {
     const { t } = useTranslation();
+
+    const { theme, setTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
 
     const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
@@ -37,6 +40,10 @@ const Navigation: React.FC = () => {
     const [searchResults, setSearchResults] = useState([]);
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
     const wrapperRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -50,6 +57,10 @@ const Navigation: React.FC = () => {
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
+
+    const toggleTheme = () => {
+        setTheme(theme === 'dark' ? 'light' : 'dark');
+    };
 
     const handleSearch = useMemo(() =>
             debounce((value: string) => {
@@ -85,7 +96,11 @@ const Navigation: React.FC = () => {
 
     return (
         <>
-            <Navbar style={{width:'100%', zIndex: 1,}} data-bs-theme="dark" expand="lg" className="bg-body-tertiary">
+            <Navbar style={{width:'100%', zIndex: 1,}}
+                    data-bs-theme={theme === 'dark' ? 'dark' : 'light'}
+                    expand="lg"
+                    // className={theme === 'dark' ? 'bg-dark' : 'bg-light'}
+            >
                 <Container style={{paddingRight: "0px"}}>
                     <Navbar.Brand href="/main"><h1>gamevault</h1></Navbar.Brand>
                     <Navbar id="basic-navbar-nav">
@@ -97,6 +112,29 @@ const Navigation: React.FC = () => {
                                 <Nav.Link className='nav__link' href="/account/games">{t('account')}</Nav.Link>
                             ) : (
                                 <Nav.Link className='nav__link' href="/login">{t('login')}</Nav.Link>
+                            )}
+                            <LanguageSwitcher/>
+                            {mounted && (
+                                <button
+                                    onClick={toggleTheme}
+                                    style={{
+                                        background: 'transparent',
+                                        // border: '1px solid #6c757d',
+                                        borderRadius: '8px',
+                                        padding: '6px 10px',
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        color: theme === 'dark' ? '#fbbf24' : '#3b82f6',
+                                        height: '2.3rem'
+                                    }}
+                                    className="theme-btn"
+                                    aria-label="Toggle theme"
+                                >
+                                    {theme === 'dark'
+                                        ? <NightlightIcon style={{fontSize: '1.3rem', color: "#ffffff"}}/>
+                                        : <WbSunnyIcon style={{fontSize: '1.3rem'}}/>}
+                                </button>
                             )}
                             {/*<Nav.Link href="/search"><i className="bi bi-search" style={{fontSize: '2rem'}}></i></Nav.Link>
                         <Nav.Link href="/account"><i className="bi bi-person-circle" style={{fontSize: '2rem'}}></i></Nav.Link>*/}
@@ -126,15 +164,19 @@ const Navigation: React.FC = () => {
                                     )}
                                 </Form>
                                 {isLogin ? (
-                                    <button style={{
+                                    <button
+                                        style={{
                                         display: 'flex', justifyContent: 'center',
-                                        alignItems: 'center', background: 'transparent', border: 'none'
-                                    }} onClick={handleLogout}><Logout/></button>
+                                        alignItems: 'center', background: 'transparent', border: 'none'}}
+                                        className="logout-btn"
+                                        onClick={handleLogout}
+                                    >
+                                        <Logout/>
+                                    </button>
                                 ) : (
                                     <div style={{width: '36px', height: '26px'}}></div>
                                 )}
                             </div>
-                            <LanguageSwitcher/>
                         </Nav>
                     </Navbar>
                 </Container>

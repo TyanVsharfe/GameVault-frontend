@@ -2,15 +2,15 @@ import React, {useEffect, useState} from "react";
 import Container from "react-bootstrap/Container";
 import {Stack, Toast, ToastContainer} from "react-bootstrap";
 import Row from "react-bootstrap/Row";
-import Nav from "react-bootstrap/Nav";
 import Button from "react-bootstrap/Button";
 import {addImportedSteamGames, ImportedSteamGame, importSteamGames} from "../../services/steamGamesService";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import ImportGamesList from "../../components/game/list/ImportGamesList";
 import "../../assets/styles/account.css"
-import AccountNav from "../../components/AccountNav";
+import AccountNav from "../../components/nav/AccountNav";
 import {useTranslation} from "react-i18next";
+import AccountTabs from "../../components/nav/AccountTabs";
 
 function UserSettingsPage() {
     const { t } = useTranslation();
@@ -61,7 +61,7 @@ function UserSettingsPage() {
     return (
         <>
             <Container style={{display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
-                <AccountNav />
+                <AccountTabs/>
 
                 <Container>
                     <Stack className=".d-flex justify-content-center align-items-center">
@@ -107,7 +107,7 @@ function UserSettingsPage() {
             </Modal>
 
             <Modal show={showImport}
-                   size={"lg"}
+                   size={"xl"}
                    centered={true}
                    onHide={handleCloseImport}
                    // fullscreen={true}
@@ -119,7 +119,7 @@ function UserSettingsPage() {
 
                 <Modal.Body>
                     {isLoading ? (
-                        <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '200px' }}>
+                        <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '200px', width: '150%' }}>
                             <div className="spinner-border text-primary" role="status">
                                 <span className="visually-hidden">{t('loading')}</span>
                             </div>

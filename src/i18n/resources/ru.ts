@@ -4,8 +4,9 @@ export const ru = {
         loading: 'Загрузка...',
         result: 'Результат',
         not_found: 'Не найдено',
+        none: 'Отсутствует',
 
-        //User registration
+        // User registration
         password: 'Пароль',
         no_account: 'Нет аккаунта',
         register: 'Регистрация',
@@ -16,7 +17,7 @@ export const ru = {
         agree_with_terms: 'Согласен с условиями',
         log_in: 'Войти',
 
-        //Nav
+        // Nav
         login: 'Войти',
         logout: 'Выйти',
         language: 'Язык',
@@ -24,7 +25,7 @@ export const ru = {
         search: 'Поиск',
         main: 'Главная',
 
-        //Account nav
+        // Account nav
         profile: 'Профиль',
         my_games: 'Мои игры',
         achievements: 'Достижения',
@@ -37,7 +38,10 @@ export const ru = {
         add: 'Добавить',
         delete_game: 'Удалить игру',
 
-        //Game page
+        select: 'Выбрать',
+        selected: 'Выбрано',
+
+        // Game page
         description: 'Описание',
         info_about_game: 'Информация о игре',
         developer: 'Разработчик',
@@ -45,6 +49,9 @@ export const ru = {
         genre: 'Жанр',
         platforms: 'Платформа',
         type: 'Тип',
+        dlcs: 'Дополнения',
+        expansions: 'Расширения',
+        parent_game: 'Основная игра',
 
         user_informaton: 'Информация пользователя',
         status: 'Статус',
@@ -57,23 +64,29 @@ export const ru = {
         reviews: 'Рецензии',
         user_review: 'Ваша рецензия',
 
-        //Review
+        // Review
         review: 'Рецензия',
         review_text: 'Текст рецензии',
         review_delete: 'Удалить рецензию',
         review_save: 'Сохранить рецензию',
 
-        //Game status
+        // Game status
         all_games: 'Все игры',
         status_completed: 'Пройдено',
-        status_playing: 'В процессе',
+        status_playing: 'Играю',
         status_planned: 'В планах',
         status_abandoned: 'Заброшено',
         none_status: 'Нет статуса',
         status_none: 'Нет статуса',
+        completed: "Завершено",
+        show_statuses: "Статусы",
+        hide_statuses: "Спрятать статусы",
 
-        //Game controls
+        // Game controls
         set_rating: 'Поставить оценку',
+        reset_rating: 'Сбросить оценку',
+        reset_status: 'Сбросить статус',
+        select_mode: 'Выбрать режим',
         graphics: 'Графика',
         story: 'История',
         gameplay: 'Геймплей',
@@ -85,33 +98,34 @@ export const ru = {
         total: ' Всего игр',
         avg_rating: 'Средний рейтинг',
         notes_added: 'Заметок:',
+        total_achievements_completed: 'Достижений получено',
 
-        //Game list
+        // Game list
         read_more: 'Подробнее',
 
         new_badge: 'НОВОЕ',
 
-        //Game settings
+        // Game settings
         import_games_from_steam: 'Импорт игр из Steam',
         imported_games_from_steam: 'Импортированные игры из Steam',
         found_games: 'Найдено',
         enter_steam_id: 'Введите Steam id',
 
-        //Modal
+        // Modal
         save_changes: 'Сохранить изменения',
 
-        //Notes
+        // Notes
         note: 'Заметка',
         add_note: 'Добавить',
         characters: 'символ(ов)',
         note_title: 'Название заметки',
         note_content: 'Текст заметки',
 
-        //Button
+        // Button
         cancel: 'Отмена',
         import: 'Импорт',
 
-        //Text
+        // Text
         hide: 'Скрыть',
         more: 'Читать далее',
 
@@ -130,6 +144,14 @@ export const ru = {
         type_port: 'Порт',
         type_fork: 'Fork',
         type_pack: 'Пак',
-        type_update: 'Обновление'
+        type_update: 'Обновление',
+
+        // Game modes
+        single_player: 'Одиночный',
+        multiplayer: 'Многопользовательский',
+        co_operative: 'Кооператив',
+        split_screen: 'Разделенный экран',
+        mmo: 'MMO',
+        battle_royal: 'Королевская битва',
     },
 } as const;
