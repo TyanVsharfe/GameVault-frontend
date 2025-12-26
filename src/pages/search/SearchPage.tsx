@@ -2,15 +2,14 @@ import React, {useEffect, useState} from "react";
 import Container from "react-bootstrap/Container";
 import {Alert, Badge, Form, Spinner, Stack} from "react-bootstrap";
 import Row from "react-bootstrap/Row";
-import {getIdgbGames} from "../../services/igdbGamesService";
+import {igdbGamesService} from "../../api/services/igdbGamesService";
 import {useNavigate, useSearchParams} from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Col from "react-bootstrap/Col";
-import Card from "react-bootstrap/Card";
 import "../../assets/styles/game-card.css"
-import IgdbGameList from "../../components/game/list/IgdbGameList";
 import {useTranslation} from "react-i18next";
 import {useTheme} from "next-themes";
+import {IgdbGameList} from "../../components/game/list/IgdbGameList";
 
 function SearchPage() {
     const { t } = useTranslation();
@@ -38,7 +37,7 @@ function SearchPage() {
 
         if (searchQuery !== null && searchQuery !== "") {
             setIsLoading(true);
-            getIdgbGames(searchQuery).then(results => {
+            igdbGamesService.getIdgbGames(searchQuery).then(results => {
                 setSearchResults([]);
                 setSearchResults(results);
                 setIsLoading(false);
@@ -62,7 +61,7 @@ function SearchPage() {
         console.log(games);
         if (Array.isArray(games) && games.length > 0) {
             return (
-                <IgdbGameList games={games} gamesPerPage={15}/>
+                <IgdbGameList games={games}/>
             )
         }
         else if(searchParams.get("q") != null) {

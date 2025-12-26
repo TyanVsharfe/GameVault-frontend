@@ -3,7 +3,7 @@ import {Box, Card, CardContent, LinearProgress, Tooltip} from "@mui/joy";
 import {formatDate } from "../../../utils/Utils";
 import "../../../assets/styles/game-card.css"
 import {useTheme} from "next-themes";
-import {UserAchievment} from "../../../services/achievementService";
+import {UserAchievment} from "../../../api/services/achievementService";
 
 interface UserAchievementCardProps {
     uAchievement: UserAchievment;

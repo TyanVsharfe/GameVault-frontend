@@ -55,7 +55,7 @@
 }
 
 .carousel-game-card {
-    min-width: 200px;
+    min-width: 14rem;
     margin-right: 10px;
     /*flex-shrink: 0;*/
     transition: transform 0.3s ease;

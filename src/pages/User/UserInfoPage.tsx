@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
-import {UserStats, getUserStats, getOwnUserStats} from "../../services/userStatsService";
+import {UserStats, userStatsService} from "../../api/services/userStatsService";
 import {Avatar, Box, Card, CardContent, Chip, Stack, Tab, tabClasses, TabList, TabPanel, Tabs} from "@mui/joy";
 import {useTranslation} from "react-i18next";
-import GameStatusChart from "../../components/game/GameStatusChart";
+import GameStatusChart from "../../components/game/stats/GameStatusChart";
 import AccountTabs from "../../components/nav/AccountTabs";
 import {useTheme} from "next-themes";
 
@@ -31,7 +31,7 @@ function UserInfoPage() {
                 'Content-Type': 'application/json'
             },
         });
-        const data = await getOwnUserStats();
+        const data = await userStatsService.getOwnUserStats();
         console.log(data);
         setUserInfo(data);
     };

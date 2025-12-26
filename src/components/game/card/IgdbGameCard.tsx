@@ -2,14 +2,14 @@ import React from "react";
 import {Card, Col} from "react-bootstrap";
 import RatingBadge from "../badge/RatingBadge";
 import DlcBadge from "../badge/DlcBadge";
-import {Chip, Divider, Link, Tooltip} from "@mui/joy";
+import {Box, Chip, Divider, Link, Tooltip, Typography} from "@mui/joy";
 import { statusColors } from "../../../utils/Utils";
-import {IgdbGame} from "../../../services/igdbGamesService";
 import {CategoryIGDB} from "../../../utils/Enums";
 import IgdbGameTypeBadge from "../badge/IgdbGameTypeBadge";
 import "../../../assets/styles/game-card.css"
 import Container from "react-bootstrap/Container";
 import {useTheme} from "next-themes";
+import {IgdbGame} from "../../../types/igdb.game.types";
 
 interface IgdbGameCardProps {
     game: IgdbGame;
@@ -37,10 +37,10 @@ const IgdbGameCard: React.FC<IgdbGameCardProps> = ({ game, t }) => {
                 className={`user-game-list-game-card position-relative ${theme === 'light' ? 'bg-dark text-white' : 'text-light'}`}
             >
 
-                <IgdbGameTypeBadge
-                    gameType={game.game_type.id}
-                    t={t}
-                />
+                {/*<IgdbGameTypeBadge*/}
+                {/*    gameType={game.game_type.id}*/}
+                {/*    t={t}*/}
+                {/*/>*/}
 
                 <div className="game-card__img-wrapper">
                     <div
@@ -58,9 +58,45 @@ const IgdbGameCard: React.FC<IgdbGameCardProps> = ({ game, t }) => {
                 </div>
 
                 <Card.Body className='game__body'>
-                    <Card.Title className="user-game-list-game-card__title text-center">
+                    <Card.Title className="user-game-list-game-card__title text-center"
+                                style={{
+                                    display: '-webkit-box',
+                                    overflow: 'hidden',
+                                    WebkitLineClamp: 2,
+                                    WebkitBoxOrient: 'vertical',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                    >
                         {game.name}
                     </Card.Title>
+                    <Box
+                        sx={{
+                            px: 1.5,
+                            borderRadius: "1rem",
+                            background: "rgba(255,255,255,0.15)",
+                            border: "1px solid rgba(255,255,255,0.25)",
+                            backdropFilter: "blur(10px)",
+                            WebkitBackdropFilter: "blur(10px)",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            textAlign: "center",
+                            zIndex: 2,
+                        }}
+                    >
+                        <Typography
+                            level="body-md"
+                            sx={{
+                                color: "#fff",
+                                fontWeight: 700,
+                                fontSize: "0.95rem",
+                                textShadow: "0 1px 2px rgba(0,0,0,0.4)",
+                            }}
+                        >
+                            {t(`type_main_game`)}
+                        </Typography>
+                    </Box>
                     <Link
                         overlay
                         href={`/games/${game.id}`}

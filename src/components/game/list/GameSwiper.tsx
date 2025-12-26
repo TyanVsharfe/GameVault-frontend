@@ -7,18 +7,18 @@ import {Autoplay, Navigation, Pagination} from "swiper/modules";
 import 'swiper/css';
 import 'swiper/css/navigation'
 import 'swiper/css/pagination'
-import '../../assets/styles/custom-swiper.css'
-import '../../assets/styles/game-card.css'
-import IgdbGameTypeBadge from "./badge/IgdbGameTypeBadge";
-import {UserGame} from "../../services/userGamesService";
-import { IgdbGame } from "../../services/igdbGamesService";
+import '../../../assets/styles/custom-swiper.css'
+import '../../../assets/styles/game-card.css'
+import IgdbGameTypeBadge from "../badge/IgdbGameTypeBadge";
+import {UserGame} from "../../../api/services/userGamesService";
+import { IgdbGame } from "../../../api/services/igdbGamesService";
 
 interface SwiperGamesProps {
     franchiseGames: IgdbGame;
     t: (key: string) => string;
 }
 
-const SwiperGames: React.FC<SwiperGamesProps> = ({franchiseGames, t}) => {
+const GameSwiper: React.FC<SwiperGamesProps> = ({franchiseGames, t}) => {
     const renderUserGames = () => {
         let gamesResultsOut = franchiseGames;
         console.log(gamesResultsOut);
@@ -83,4 +83,4 @@ const SwiperGames: React.FC<SwiperGamesProps> = ({franchiseGames, t}) => {
     );
 }
 
-export default SwiperGames;
+export default GameSwiper;

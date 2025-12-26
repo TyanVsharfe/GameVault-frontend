@@ -1,5 +1,6 @@
 import { FaXbox, FaPlaystation, FaWindows, FaApple, FaLinux, FaAndroid } from 'react-icons/fa';
 import { SiIos, SiNintendoswitch, SiPlaystation3 } from 'react-icons/si';
+import { GoBrowser } from "react-icons/go";
 import { Chip } from '@mui/joy';
 
 const PLATFORM_CONFIG: Record<string, { label: string; color: 'primary' | 'success' | 'neutral' | 'warning' | 'danger'; icon: JSX.Element }> = {
@@ -16,10 +17,11 @@ const PLATFORM_CONFIG: Record<string, { label: string; color: 'primary' | 'succe
     PC:           { label: 'PC',           color: 'neutral', icon: <FaWindows /> },
     MAC:          { label: 'macOS',        color: 'neutral', icon: <FaApple /> },
     LINUX:        { label: 'Linux',        color: 'neutral', icon: <FaLinux /> },
-    ANDROID:      { label: 'Android',      color: 'warning', icon: <FaAndroid /> },
-    IOS:          { label: 'iOS',          color: 'warning', icon: <SiIos /> },
+    ANDROID:      { label: 'Android',      color: 'success', icon: <FaAndroid /> },
+    IOS:          { label: 'iOS',          color: 'neutral', icon: <SiIos /> },
     SWITCH:       { label: 'Switch',       color: 'danger',  icon: <SiNintendoswitch /> },
     'SWITCH-2':       { label: 'Switch 2',       color: 'danger',  icon: <SiNintendoswitch /> },
+    BROWSER:        { label: 'Browser',        color: 'neutral', icon: <GoBrowser /> },
 };
 
 export const PlatformBadge = (platform: string, index: number) => {

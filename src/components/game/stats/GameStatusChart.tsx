@@ -82,9 +82,9 @@ export default function UserStatsChart({ stats }: Props) {
                         <Box key={entry.name}>
                             <Typography level="body-md" fontWeight="lg" style={{padding: '0.5rem'}}>
                                 <Chip size="lg" style={{color:entry.color}}>
-                                    {t(`status_${entry.name.toLowerCase()}`)}
+                                    {t(`status_${entry.name.toLowerCase()}`)}:
                                 </Chip>
-                                <Typography style={{paddingLeft: '0.5rem'}}>{t('games')}: {entry.value}</Typography>
+                                <Typography style={{}}>{entry.value}</Typography>
                                 <Typography textColor="neutral.400" style={{paddingLeft: '0.8rem'}}>
                                     {percent}%
                                 </Typography>

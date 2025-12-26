@@ -2,14 +2,15 @@ import React, {useState} from "react";
 import Container from "react-bootstrap/Container";
 import {Alert, Spinner, Stack} from "react-bootstrap";;
 import "../../assets/styles/account.css"
-import {buildUserGamesUrl, fetchUserGames, PageResponse, UserGame} from "../../services/userGamesService";
 import UserGameList from "../../components/game/list/UserGameList";
 import {useTranslation} from "react-i18next";
 import useSWR from "swr";
-import PaginationComponent from "../../components/PaginationComponent";
+import PaginationComponent from "../../components/ui/PaginationComponent";
 import AccountTabs from "../../components/nav/AccountTabs";
 import {Button, buttonClasses, ToggleButtonGroup} from "@mui/joy";
 import {useTheme} from "next-themes";
+import {PageResponse, UserGame} from "../../types/user.game.types";
+import { userGameService } from "../../api/services/userGamesService";
 
 function UserGamesPage() {
     const { t } = useTranslation();
@@ -20,12 +21,13 @@ function UserGamesPage() {
     const [filterStatus, setFilterStatus] = useState("");
     const [activeFilterButtonIndex, setActiveFilterButton] = useState(0);
     const [currentPage, setCurrentPage] = useState(1);
+    const gamesPerPage = 15;
 
-    const url = buildUserGamesUrl(currentPage - 1, 20, filterStatus || undefined);
+    const url = userGameService.buildUserGamesUrl(currentPage - 1, gamesPerPage, filterStatus || undefined);
 
     const { data, error, isLoading } = useSWR<PageResponse<UserGame>>(
         url,
-        fetchUserGames,
+        userGameService.fetchUserGames,
         {
             revalidateOnFocus: false,
             revalidateOnReconnect: true,
@@ -36,24 +38,13 @@ function UserGamesPage() {
     const handleFilterChange = (index: number, status: string) => {
         setActiveFilterButton(index);
         setFilterStatus(status);
-        setCurrentPage(1); // Сбрасываем на первую страницу при смене фильтра
+        setCurrentPage(1);
     };
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
-
-    // useEffect(() => {
-    //     fetchData();
-    // }, [filterStatus]);
-    //
-    // const fetchData = () => {
-    //     getUserGames(filterStatus).then((data) => {
-    //         setDisplayedGames(data.content);
-    //         setGameListData(data);
-    //     });
-    // };
 
     const statusItems = [
         { status: "", label: t('all_games') },
@@ -136,6 +127,7 @@ function UserGamesPage() {
                     >
                         {statusItems.map((statusItem, index) => (
                             <Button
+                                key={index}
                                 style={{color: theme === 'dark' ? 'white' : 'black'}}
                                 onClick={() => {
                                 setActiveFilterButton(index)

@@ -5,6 +5,8 @@ export const ru = {
         result: 'Результат',
         not_found: 'Не найдено',
         none: 'Отсутствует',
+        close: 'Закрыть',
+        list: 'Список',
 
         // User registration
         password: 'Пароль',
@@ -28,6 +30,7 @@ export const ru = {
         // Account nav
         profile: 'Профиль',
         my_games: 'Мои игры',
+        lists: 'Списки',
         achievements: 'Достижения',
         settings: 'Настройки',
 
@@ -36,8 +39,11 @@ export const ru = {
         change_rating: 'Поменять оценку',
         add_game: 'Добавить игру',
         add: 'Добавить',
+        adding: 'Добавление',
         delete_game: 'Удалить игру',
 
+        add_to_list: 'Добавить в список',
+        add_to_lists: 'Добавить в списки',
         select: 'Выбрать',
         selected: 'Выбрано',
 
@@ -60,6 +66,7 @@ export const ru = {
 
         franchise: 'Франшиза',
         series: 'Серия',
+        company: 'Компания',
         notes: 'Заметки',
         reviews: 'Рецензии',
         user_review: 'Ваша рецензия',
@@ -90,6 +97,14 @@ export const ru = {
         graphics: 'Графика',
         story: 'История',
         gameplay: 'Геймплей',
+
+        overall_rating: 'Общая оценка для игр',
+        overall_rating_hint: 'Поставить общее значение для игры',
+        current_rating: 'Текущая оценка',
+
+        overall_status: 'Общий статус для игр',
+        overall_status_hint: 'Поставить общее значение для статуса',
+        current_status: 'Текущий статус',
 
         user_games: 'Игры пользователя',
 
@@ -153,5 +168,25 @@ export const ru = {
         split_screen: 'Разделенный экран',
         mmo: 'MMO',
         battle_royal: 'Королевская битва',
+
+        //Game list page
+        create_list: 'Создать список',
+        create_new_list: 'Создать новый список',
+        public: 'Публичный',
+        private: 'Приватный',
+        list_description_init: 'Описание (необязательно)',
+
+        copy_list: 'Скопировать список',
+        edit_list: 'Редактировать список',
+        is_public_switch: 'Публичный список',
+        is_public_switch_hint: 'Сделать список доступным для других пользователей',
+        list_title: 'Название списка',
+        change_list_title: 'Изменить название списка',
+        change_list_description: 'Изменить описание',
+        delete_list: 'Удалить список',
+
+        //Switch
+        on: 'Да',
+        off: 'Нет'
     },
 } as const;

@@ -17,7 +17,7 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({
                                                                      onPageChange,
                                                                      maxVisiblePages = 5,
                                                                      showContainer = true,
-                                                                     containerClassName = "d-flex justify-content-center mt-4 mb-5"
+                                                                     containerClassName = "d-flex justify-content-center mt-1"
                                                                  }) => {
     const { theme } = useTheme();
 

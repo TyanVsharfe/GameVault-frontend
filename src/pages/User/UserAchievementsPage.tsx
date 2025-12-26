@@ -1,23 +1,22 @@
 import Container from "react-bootstrap/Container";
-import {Row} from "react-bootstrap";
-
 import "../../assets/styles/style.css"
 import "../../assets/styles/game-card.css"
 import React, {useEffect, useState} from "react";
 import {format, parseISO} from "date-fns";
 import {ru} from "date-fns/locale";
-import {getUserAchievements, UserAchievment} from "../../services/achievementService";
+import {achievementService} from "../../api/services/achievementService";
 import {useTranslation} from "react-i18next";
 import AccountTabs from "../../components/nav/AccountTabs";
 import UserAchievementCard from "../../components/game/card/AchievementCard";
-import {Grid, Stack} from "@mui/joy";
+import {Grid} from "@mui/joy";
+import {UserAchievment} from "../../types/achievement.types";
 
 function UserAchievementsPage() {
     const { t, i18n } = useTranslation();
     const [userAchievments, setUserAchievments] = useState<UserAchievment[]>();
 
     useEffect(() => {
-        const userAchievments = getUserAchievements(i18n.language);
+        const userAchievments = achievementService.getUserAchievements(i18n.language);
         userAchievments.then((data: UserAchievment[]) => {
             setUserAchievments(data)
             console.log(data)

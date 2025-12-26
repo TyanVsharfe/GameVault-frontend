@@ -1,7 +1,6 @@
 import React from "react";
 import { Box, Typography } from "@mui/joy";
 import {getCategoryName} from "../../../utils/Enums";
-import {IgdbGame} from "../../../services/igdbGamesService";
 
 interface IgdbGameTypeBadgeProps {
     gameType: number;

@@ -3,10 +3,10 @@ import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Col from "react-bootstrap/Col";
 import {Alert, Badge} from "react-bootstrap";
-import {getCategory} from "../utils/Enums";
+import {getCategory} from "../../../utils/Enums";
 import React from "react";
 
-function ReleaseGames({releaseGames}) {
+function ReleaseGamesList({releaseGames}) {
     const uniqueGames = new Set();
     const renderUserGames = () => {
         let gamesResultsOut = releaseGames;
@@ -86,4 +86,4 @@ function ReleaseGames({releaseGames}) {
     );
 }
 
-export default ReleaseGames;
+export default ReleaseGamesList;

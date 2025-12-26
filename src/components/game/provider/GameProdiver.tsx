@@ -1,5 +1,5 @@
 import React, {createContext, ReactNode, useContext, useEffect, useState} from 'react';
-import { UserMode } from '../../services/userGamesService';
+import { UserMode } from '../../../api/services/userGamesService';
 
 interface GameContextType {
     userRating: number | undefined;

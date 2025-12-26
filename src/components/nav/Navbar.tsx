@@ -1,29 +1,24 @@
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
-
 import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { ReactComponent as Logout } from '../../assets/icons/logout.svg';
 import "../../assets/styles/nav.css"
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import NightlightIcon from '@mui/icons-material/Nightlight';
-
 import "bootstrap-icons/font/bootstrap-icons.css";
-
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "../../store/store";
 import {logout} from "../../store/authSlice";
 import debounce from 'lodash/debounce';
-
 import { useTranslation } from 'react-i18next';
-import {LanguageSwitcher} from "../LanguageSwitcher";
-import {getIdgbGames} from "../../services/igdbGamesService";
-import NavSearchDropdown from '../game/list/NavSearchDropdown';
+import {LanguageSwitcher} from "../ui/LanguageSwitcher";
+import {igdbGamesService} from "../../api/services/igdbGamesService";
+import NavSearchDropdown from './NavSearchDropdown';
 import {useTheme} from "next-themes";
 
 const Navigation: React.FC = () => {
@@ -65,7 +60,7 @@ const Navigation: React.FC = () => {
     const handleSearch = useMemo(() =>
             debounce((value: string) => {
                 if (value !== null && value !== "") {
-                    getIdgbGames(value).then(results => {
+                    igdbGamesService.getIdgbGames(value).then(results => {
                         setSearchResults([]);
                         console.log(results);
                         setSearchResults(results);
@@ -96,7 +91,7 @@ const Navigation: React.FC = () => {
 
     return (
         <>
-            <Navbar style={{width:'100%', zIndex: 1,}}
+            <Navbar style={{width:'100%', zIndex: 1, paddingTop: '0'}}
                     data-bs-theme={theme === 'dark' ? 'dark' : 'light'}
                     expand="lg"
                     // className={theme === 'dark' ? 'bg-dark' : 'bg-light'}
@@ -114,32 +109,30 @@ const Navigation: React.FC = () => {
                                 <Nav.Link className='nav__link' href="/login">{t('login')}</Nav.Link>
                             )}
                             <LanguageSwitcher/>
-                            {mounted && (
-                                <button
-                                    onClick={toggleTheme}
-                                    style={{
-                                        background: 'transparent',
-                                        // border: '1px solid #6c757d',
-                                        borderRadius: '8px',
-                                        padding: '6px 10px',
-                                        cursor: 'pointer',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        color: theme === 'dark' ? '#fbbf24' : '#3b82f6',
-                                        height: '2.3rem'
-                                    }}
-                                    className="theme-btn"
-                                    aria-label="Toggle theme"
-                                >
-                                    {theme === 'dark'
-                                        ? <NightlightIcon style={{fontSize: '1.3rem', color: "#ffffff"}}/>
-                                        : <WbSunnyIcon style={{fontSize: '1.3rem'}}/>}
-                                </button>
-                            )}
-                            {/*<Nav.Link href="/search"><i className="bi bi-search" style={{fontSize: '2rem'}}></i></Nav.Link>
-                        <Nav.Link href="/account"><i className="bi bi-person-circle" style={{fontSize: '2rem'}}></i></Nav.Link>*/}
+                            {/*{mounted && (*/}
+                            {/*    <button*/}
+                            {/*        onClick={toggleTheme}*/}
+                            {/*        style={{*/}
+                            {/*            background: 'transparent',*/}
+                            {/*            // border: '1px solid #6c757d',*/}
+                            {/*            borderRadius: '8px',*/}
+                            {/*            padding: '6px 10px',*/}
+                            {/*            cursor: 'pointer',*/}
+                            {/*            display: 'flex',*/}
+                            {/*            alignItems: 'center',*/}
+                            {/*            color: theme === 'dark' ? '#fbbf24' : '#3b82f6',*/}
+                            {/*            height: '2.3rem'*/}
+                            {/*        }}*/}
+                            {/*        className="theme-btn"*/}
+                            {/*        aria-label="Toggle theme"*/}
+                            {/*    >*/}
+                            {/*        {theme === 'dark'*/}
+                            {/*            ? <NightlightIcon style={{fontSize: '1.3rem', color: "#ffffff"}}/>*/}
+                            {/*            : <WbSunnyIcon style={{fontSize: '1.3rem'}}/>}*/}
+                            {/*    </button>*/}
+                            {/*)}*/}
                             <div ref={wrapperRef} style={{display: 'flex', justifyContent: 'space-around'}}>
-                                <Form onSubmit={handleSubmit} style={{paddingLeft: '5px'}}>
+                                <Form onSubmit={handleSubmit} style={{paddingLeft: '5px', position: "relative", width: "100%"}}>
                                     <Row>
                                         <Col xs="auto">
                                             <Form.Control
@@ -155,9 +148,6 @@ const Navigation: React.FC = () => {
                                                 }}
                                             />
                                         </Col>
-                                        {/*<Col xs="auto">*/}
-                                        {/*    <Button type="submit" id={"submitButton"}>искать</Button>*/}
-                                        {/*</Col>*/}
                                     </Row>
                                     {isDropdownVisible && searchResults.length > 0 && (
                                         <NavSearchDropdown games={searchResults} />

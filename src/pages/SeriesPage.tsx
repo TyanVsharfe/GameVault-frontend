@@ -5,27 +5,27 @@ import Row from "react-bootstrap/Row";
 import {useNavigate, useParams, useSearchParams} from "react-router-dom";
 import "../assets/styles/game-card.css"
 import {useTranslation} from "react-i18next";
-import {getGameSeries, getIdgbGames} from "../services/igdbGamesService";
-import IgdbGameList from "../components/game/list/IgdbGameList";
+import {igdbGamesService} from "../api/services/igdbGamesService";
+import {IgdbGameList} from "../components/game/list/IgdbGameList";
 
 function SeriesPage() {
     const { t } = useTranslation();
 
-    const igdbId = useParams<{ seriesName: string }>();
+    const seriesSlug = useParams<{ series: string }>();
     const [searchResults, setSearchResults] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
 
-        if (igdbId.seriesName !== null && igdbId.seriesName !== "") {
+        if (seriesSlug.series !== null && seriesSlug.series !== "") {
             setIsLoading(true);
-            getGameSeries(igdbId.seriesName).then(results => {
+            igdbGamesService.getGameSeries(seriesSlug.series).then(results => {
                 setSearchResults([]);
                 setSearchResults(results);
                 setIsLoading(false);
             });
         }
-    }, [igdbId]);
+    }, [seriesSlug]);
 
     const renderSearchResults = () => {
         const games = searchResults;

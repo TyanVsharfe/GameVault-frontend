@@ -8,9 +8,8 @@ import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
 import { ReactComponent as EditLogo } from "../assets/icons/pencil-square.svg";
 import { ReactComponent as DeleteLogo } from "../assets/icons/delete.svg";
-import {addNote, deleteNote, editNote, Note} from "../services/noteService";
+import {noteService, Note} from "../api/services/noteService";
 import {useParams} from "react-router-dom";
-import {getUserGame, UserGame} from "../services/userGamesService";
 import {useTranslation} from "react-i18next";
 import {Input, Textarea, Typography} from "@mui/joy";
 
@@ -74,7 +73,7 @@ function Notes({ notes }: UserNotesProps) {
                                 </Button>
                                 {t('note')} - {note.title}
                                 <Button variant="outline-secondary" onClick={() => {
-                                    deleteNote(note.id);
+                                    noteService.deleteNote(note.id);
                                     // TODO Какой-то мега костыль, потом убрать
                                     setNoteContent("52");
                                 }} size={"sm"} style={
@@ -153,7 +152,7 @@ function Notes({ notes }: UserNotesProps) {
                     {editMode ?
                         <Button variant="primary" onClick={() => {
                             handleClose();
-                            editNote(noteId, noteTitle, noteContent);
+                            noteService.editNote(noteId, noteTitle, noteContent);
                             // TODO Какой-то мега костыль, потом убрать
                             setNoteContent("5");
                             setEditMode(false)
@@ -161,7 +160,7 @@ function Notes({ notes }: UserNotesProps) {
                         :
                         <Button variant="primary" onClick={() => {
                             handleClose();
-                            addNote(igdbId.id, noteTitle, noteContent);
+                            noteService.addNote(igdbId.id, noteTitle, noteContent);
                             // TODO Какой-то мега костыль, потом убрать
                             setNoteContent("5");
                         }}>{t('save_changes')}</Button>}

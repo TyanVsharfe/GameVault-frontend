@@ -6,21 +6,14 @@ import UserGameInfo from "../../components/game/UserGameInfo";
 import GameControls from "../../components/game/GameControls";
 import Notes from "../../components/Notes";
 import {Link, useParams} from "react-router-dom";
-import SwiperGames from "../../components/game/SwiperGames";
-import {getIdgbGame, IgdbGame, Series} from "../../services/igdbGamesService";
-import {
-    addUserGame,
-    checkEntity,
-    deleteGameReview,
-    getGameReviews,
-    getUserGame, updateGameReview,
-    UserGame
-} from "../../services/userGamesService";
+import GameSwiper from "../../components/game/list/GameSwiper";
+import {igdbGamesService} from "../../api/services/igdbGamesService";
+import {userGameService} from "../../api/services/userGamesService";
 import "../../assets/styles/game-card.css"
 import "../../assets/styles/review.css"
 import {CategoryIGDB} from "../../utils/Enums";
-import {GameProvider} from "../../components/game/GameProdiver";
-import {Box, Chip, Divider, Skeleton, Typography} from "@mui/joy";
+import {GameProvider} from "../../components/game/provider/GameProdiver";
+import {Box, Checkbox, Chip, Divider, Skeleton, Typography} from "@mui/joy";
 import Review, { GameReview } from '../../components/Review';
 import {getRatingColor} from "../../utils/Utils";
 import {useTranslation} from "react-i18next";
@@ -32,14 +25,23 @@ import AccordionGroup from '@mui/joy/AccordionGroup';
 import AccordionSummary from '@mui/joy/AccordionSummary';
 import {PlatformBadge} from "../../components/game/badge/PlatformBadge";
 import {useTheme} from "next-themes";
+import {userGameListService} from "../../api/services/userGameListService";
+import useSWR from "swr";
+import {IgdbGame, Platform, Series} from '../../types/igdb.game.types';
+import {PageResponseList, UserGameList} from "../../types/user.game.list.types";
+import {UserGame} from "../../types/user.game.types";
+import {useSelector} from "react-redux";
+import {RootState} from "../../store/store";
 
 function GamePage() {
     const { t } = useTranslation();
     const { theme } = useTheme();
 
+    const { isLogin } = useSelector((state: RootState) => state.auth);
+
     const [gameData, setGameData] = useState<IgdbGame>();
     const [uGameData, setUGameData] = useState<UserGame>();
-    const [gameReviews, setGameReviews] = useState<GameReview[]>();
+    const [gameReviews, setGameReviews] = useState<GameReview[]>([]);
 
     const [gameStatus, setGameStatus] = useState(false);
     const igdbId = useParams<{ id: string }>();
@@ -50,6 +52,7 @@ function GamePage() {
     const [showUserReview, setShowUserReview] = useState(false);
     const [showUserReviews, setShowUserReviews] = useState(false);
     const [showUserNotes, setShowUserNotes] = useState(false);
+    const [showUserLists, setShowUserLists] = useState(false);
 
     const [expanded, setExpanded] = useState(false);
     const [isOverflowing, setIsOverflowing] = useState(false);
@@ -67,7 +70,7 @@ function GamePage() {
     const handleShowUserNotes = () => setShowUserNotes(true);
     const reviewContentChange = (e) => setReviewContent(e.target.value);
 
-    const reviewsWithScores = gameReviews != undefined ? gameReviews.filter(review => review.userRating !== null) : [];
+    const reviewsWithScores = gameReviews != undefined ? gameReviews?.filter?.(review => review.userRating !== null) : [];
 
     const completedDlcCount = useMemo(() => {
         if (!uGameData) return 0;
@@ -83,21 +86,53 @@ function GamePage() {
         return completedDlcs + completedExpansions;
     }, [uGameData?.dlcs, uGameData?.expansions, gameData?.dlcs, gameData?.expansions]);
 
-    const averageScore = reviewsWithScores.length > 0
+    const averageScore = reviewsWithScores?.length > 0
         ? Math.round(reviewsWithScores.reduce((acc, review) => acc + review.userRating, 0) / reviewsWithScores.length)
         : 0;
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const url = userGameListService.buildUserGameListsUrl(currentPage - 1, 20);
+    const { data: gameListData, error: gameListError, isLoading: gameListIsLoading } = useSWR<PageResponseList<UserGameList>>(
+        isLogin ? url : null,
+        userGameListService.fetchUserGameLists,
+        {
+            revalidateOnFocus: false,
+            revalidateOnReconnect: true,
+            dedupingInterval: 2000,
+        }
+    );
+
+    const [selectedListsToAdd, setselectedListsToAdd] = useState<Set<string>>(new Set());
+    const handleCheckboxChange = (listId: string, isChecked: boolean) => {
+        setselectedListsToAdd(prev => {
+            const newSet = new Set(prev);
+            if (isChecked) {
+                newSet.add(listId);
+            } else {
+                newSet.delete(listId);
+            }
+            return newSet;
+        });
+    };
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setIsLoading(true);
-                const status = await checkEntity(igdbId.id)
+                const status = await userGameService.checkEntity(igdbId.id)
                 setGameStatus(status);
 
-                const response = await getIdgbGame(igdbId.id);
+                const response = await igdbGamesService.getIdgbGame(igdbId.id);
+
+                if (!response) {
+                    console.error('No data received from API');
+                    return;
+                }
+
+                console.log(response)
 
                 if (status) {
-                    const uResponse = await getUserGame(igdbId.id);
+                    const uResponse = await userGameService.getUserGame(igdbId.id);
                     console.log("User game data");
                     console.log(uResponse);
                     setUGameData(uResponse);
@@ -111,11 +146,12 @@ function GamePage() {
                     setIsOverflowing(isTextOverflowing);
                 }
 
-                const gameReviews = await getGameReviews(igdbId.id);
-                setGameReviews(gameReviews);
+                await userGameService.getGameReviews(igdbId.id).then(data => {
+                    Array.isArray(data) ? setGameReviews(data) : setGameReviews([])
+                });
 
-                setGameData(response[0]);
-                setFranchiseGames(response[0].franchises);
+                setGameData(response);
+                setFranchiseGames(response[0]?.franchises);
 
                 if (cardRef.current) {
                     setBackgroundHeight(cardRef.current.offsetHeight + 20);
@@ -182,7 +218,7 @@ function GamePage() {
                             ) : (gameStatus) ? (
                                 <GameControls gameModes={uGameData?.userModes ?? gameData?.game_modes}
                                               isOverallRating={uGameData?.overallRatingManual ?? false}
-                                              isOverallStatus={uGameData?.overallStatusManual ?? false}
+                                              isOverallStatus={uGameData?.overallStatus ?? false}
 
                                 />
                             ) : (gameData?.game_modes != null
@@ -190,7 +226,7 @@ function GamePage() {
                                         <Button
                                             type="button"
                                             onClick={() => {
-                                                addUserGame(igdbId.id).then(() => setGameStatus(true));
+                                                userGameService.addUserGame(igdbId.id).then(() => setGameStatus(true));
                                             }}
                                         >
                                             {t('add_game')}
@@ -208,44 +244,39 @@ function GamePage() {
                             )}
                         </Card.Footer>
                     </Card>
-                    {gameStatus ? (
-                        <Button style={{width: '15rem', marginTop: '10px'}} onClick={handleShowUserNotes}>
-                            {t('notes')}
-                        </Button>
-                    ):
-                    <></>}
+                    <Stack>
+                        {gameStatus ? (
+                                <Button style={{width: '15rem', marginTop: '10px'}} onClick={handleShowUserNotes}>
+                                    {t('notes')}
+                                </Button>
+                            ):
+                            <></>}
+                        {isLogin ? (
+                            <Button
+                                sx={{
+                                    marginTop: '1rem',
+                                    width: '15rem',
+                                    fontSize: '1rem',
+                                    fontWeight: 'normal'
+                                }}
+                                onClick={() => {
+                                    setShowUserLists(true);
+                                }}
+                            >
+                                {t('add_to_list')}
+                            </Button>
+                        ):
+                            <></>}
+                    </Stack>
                 </div>
 
                 <Stack style={{maxWidth: '34rem', zIndex: 0, color: 'white', alignItems: 'baseline'}}>
-                    {/*<div style={{maxWidth: '34rem'}}>*/}
-                    {/*    /!*height: '20rem'*!/*/}
-                    {/*    <h2> {t('description')}:</h2>*/}
-                    {/*    {isLoading ? (*/}
-                    {/*        <Skeleton width="34rem" height="10rem"/>*/}
-                    {/*    ) : (*/}
-                    {/*        <span className={`game__description ${expanded ? "expanded" : ""}`}*/}
-                    {/*              ref={descriptionTextRef}>*/}
-                    {/*        {gameData === undefined ?*/}
-                    {/*            "" :*/}
-                    {/*            gameData?.summary}*/}
-                    {/*        </span>*/}
-                    {/*    )}*/}
-                    {/*    <div style={{display: 'flex', justifyContent: 'flex-end'}}>*/}
-                    {/*        {isOverflowing && (*/}
-                    {/*            <Button variant='plain' style={{color: 'white', background: 'none'}}*/}
-                    {/*                    className='game__description-button' onClick={() => setExpanded(!expanded)}>*/}
-                    {/*                {expanded ? t('hide') : t('more')}*/}
-                    {/*            </Button>*/}
-                    {/*        )}*/}
-                    {/*    </div>*/}
-                    {/*</div>*/}
-
                     <Box
                         sx={{
                             top: 8,
                             left: 8,
                             px: 1.5,
-                            borderRadius: "1rem",
+                            borderRadius: "0.5rem",
                             background: `${theme === "light" ? "rgba(4,4,4,0.50)" : "rgba(255,255,255,0.15)"}`,
                             // border: "1px solid rgba(255,255,255,0.25)",
                             backdropFilter: "blur(10px)",
@@ -264,6 +295,7 @@ function GamePage() {
                     >
                         <h2> {t('description')}:</h2>
                         <Typography
+                            component="div"
                             level="body-md"
                             className={`game__description ${expanded ? "expanded" : ""}`}
                             sx={{
@@ -303,10 +335,11 @@ function GamePage() {
                                     style={{width: '100%'}}
                     >
                         {gameData?.collections != null ? (
-                                gameData?.collections?.map((series, index: number) => (
+                                gameData?.collections?.map((series: Series, index: number) => (
                                     <Accordion
+                                        key={index}
                                         style={{display: 'flex', flexDirection: 'column', padding: '0px 0px 0px 0px'}}>
-                                        <div key={index} >
+                                        <div key={index}>
                                             <AccordionSummary
                                                 variant="plain"
                                                 sx={{
@@ -329,11 +362,11 @@ function GamePage() {
                                                           key={series.slug}
                                                           component={Link}
                                                           to={`/series/${series.slug}`}
-                                                          clickable>
+                                                    >
                                                         {t('read_more')}
                                                     </Chip>
                                                 </h2>
-                                                <SwiperGames franchiseGames={series.games} t={t}/>
+                                                <GameSwiper franchiseGames={series.games} t={t}/>
                                             </AccordionDetails>
                                         </div>
                                     </Accordion>)
@@ -344,7 +377,7 @@ function GamePage() {
                     </AccordionGroup>
                 </Stack>
                 <div style={{opacity: '98%'}}>
-                    {gameStatus ? (<UserGameInfo isOverallStatus={uGameData?.overallStatusManual}/>) : <></>}
+                    {gameStatus ? (<UserGameInfo isOverallStatus={uGameData?.overallStatus ?? false}/>) : <></>}
                     <Card data-bs-theme="dark" style={{width: '16rem', border: '0px'}}>
                         <Card.Header>{t('info_about_game')}:</Card.Header>
                         <Card.Body>
@@ -356,7 +389,9 @@ function GamePage() {
                                     gameData.involved_companies.map((company) =>
                                         company.developer ?
                                             <Chip style={{marginBottom: '0.4rem', marginRight: '0.3rem'}}
-                                                  key={company.company.name}>
+                                                  component={Link}
+                                                  to={`/company/${company.company.slug}`}
+                                                  key={company.company.slug}>
                                                 {company.company.name}
                                             </Chip> : null
                                     )
@@ -380,7 +415,7 @@ function GamePage() {
                             </strong>
                             <div style={{marginTop: '0.2rem'}}>
                                 {gameData?.platforms && (
-                                    gameData?.platforms.map((platform, index) =>
+                                    gameData?.platforms.map((platform: Platform, index) =>
                                         PlatformBadge(platform.abbreviation?.replace(' ', '-'), index))
                                 )}
                             </div>
@@ -397,7 +432,9 @@ function GamePage() {
                                                 marginRight: '0.3rem',
                                                 maxWidth: '14rem'
                                             }}
-                                                  key={company.company.name}>
+                                                  component={Link}
+                                                  to={`/company/${company.company.slug}`}
+                                                  key={company.company.slug}>
                                                 {company.company.name}
                                             </Chip> : null
                                     )
@@ -414,7 +451,7 @@ function GamePage() {
                             </div>
                             {(gameData?.game_type?.id != undefined) && ![1, 2].includes(gameData?.game_type?.id) && (
                                 <>
-                                    {gameData?.dlcs?.length > 0 && (
+                                    {(gameData?.dlcs?.length ?? 0) > 0 && (
                                         <>
                                             <Divider style={{margin: '0.4rem'}} component="div" role="presentation"/>
                                             <strong style={{fontSize: '1.1rem'}}>
@@ -427,12 +464,12 @@ function GamePage() {
                                                                 marginBottom: '0.4rem',
                                                                 marginRight: '0.3rem',
                                                                 maxWidth: '14rem',
-                                                            }}
+                                                                }}
                                                                   color={checkDlc(dlc.id)}
                                                                   key={dlc.id}
                                                                   component={Link}
                                                                   to={`/games/${dlc.id}`}
-                                                                  clickable>
+                                                            >
                                                                 {dlc.name}
                                                             </Chip>
                                                         )
@@ -449,7 +486,7 @@ function GamePage() {
                                             </div>
                                         </>
                                     )}
-                                    {gameData?.expansions?.length > 0 && (
+                                    {gameData?.expansions?.length != undefined && gameData?.expansions?.length > 0 && (
                                         <>
                                             <Divider style={{margin: '0.4rem'}} component="div" role="presentation"/>
                                             <strong style={{fontSize: '1.1rem'}}>
@@ -467,7 +504,7 @@ function GamePage() {
                                                                   key={expansion.id}
                                                                   component={Link}
                                                                   to={`/games/${expansion.id}`}
-                                                                  clickable>
+                                                                  >
                                                                 {expansion.name}
                                                             </Chip>
                                                         )
@@ -485,7 +522,7 @@ function GamePage() {
                                         </>
                                     )}
                                     <Divider style={{margin: '0.4rem'}} component="div" role="presentation"/>
-                                    {((gameData?.expansions?.length > 0) || (gameData?.dlcs?.length > 0)) && (
+                                    {(((gameData?.expansions?.length ?? 0)  > 0) || ((gameData?.dlcs?.length ?? 0) > 0)) && (
                                         <strong style={{fontSize: '1.1rem'}}>
                                             {t('completed')}: {completedDlcCount}/{(gameData?.expansions?.length ?? 0) + (gameData?.dlcs?.length ?? 0)}
                                         </strong>
@@ -507,7 +544,7 @@ function GamePage() {
                                               key={gameData?.parent_game?.id}
                                               component={Link}
                                               to={`/games/${gameData?.parent_game?.id}`}
-                                              clickable>
+                                              >
                                             {gameData?.parent_game?.name}
                                         </Chip>
                                     </div>
@@ -557,10 +594,10 @@ function GamePage() {
 
                 <Modal.Footer style={{border: 'none', justifyContent: 'space-between'}}>
                     <Button color="danger" onClick={() => {
-                        deleteGameReview(igdbId.id, reviewContent).then(() => handleCloseUserReview())
+                        userGameService.deleteGameReview(igdbId.id, reviewContent).then(() => handleCloseUserReview())
                     }}>{t('review_delete')}</Button>
                     <Button color="primary" onClick={() => {
-                        updateGameReview(igdbId.id, reviewContent).then(() => handleCloseUserReview())
+                        userGameService.updateGameReview(igdbId.id, reviewContent).then(() => handleCloseUserReview())
                     }}>{t('review_save')}</Button>
                 </Modal.Footer>
             </Modal>
@@ -597,7 +634,7 @@ function GamePage() {
                         <div>
                             <strong>Средняя оценка: {averageScore}</strong><br />
                             <span style={{ fontSize: '0.9rem', color: '#777' }}>
-                                (на основе отзывов с оценкой: {reviewsWithScores.length})
+                                (на основе отзывов с оценкой: {reviewsWithScores?.length})
                             </span>
                         </div>
                     </div>
@@ -614,7 +651,7 @@ function GamePage() {
                                 justifySelf: 'start'
                             }}>
                                 {
-                                    gameReviews.map((gameReview: GameReview) => (
+                                    gameReviews?.map?.((gameReview: GameReview) => (
                                         <Review gameReview={gameReview}/>
                                     ))
                                 }
@@ -650,15 +687,50 @@ function GamePage() {
                 </Modal.Body>
             </Modal>
 
-            {/*<Container style={{display: "flex", justifyContent: "center", textAlign: "center"}}>*/}
-            {/*    <Form.Group controlId="formFile" className="mb-3" style={{width: "290px"}}>*/}
-            {/*        <Form.Label>Upload screenshots</Form.Label>*/}
-            {/*        <Form.Control type="file" style={{ width: "auto", maxWidth: "290px" }}/>*/}
-            {/*        <Button variant="primary" type="submit">*/}
-            {/*            Save*/}
-            {/*        </Button>*/}
-            {/*    </Form.Group>*/}
-            {/*</Container>*/}
+            <Modal show={showUserLists}
+                //size={"lg"}
+                   centered={true}
+                   onHide={() => {
+                       setShowUserLists(false);
+                   }}
+                // fullscreen={true}
+                   aria-labelledby="example-custom-modal-styling-title">
+                <Modal.Header style={{border: 'none', paddingBottom: '0px'}} closeButton>
+                    <Modal.Title>{t('lists')}</Modal.Title>
+                </Modal.Header>
+
+                <Modal.Body className="modal-dialog-scrollable">
+                    <Container style={{minHeight: '10rem', overflowY: 'auto', paddingLeft: '0'}}>
+                        {gameListData?.content?.map((gameList: UserGameList, index: number) => (
+                            <Stack key={index}
+                                   style={{flexDirection: 'row', width: '100%',
+                                       justifyContent: 'space-between', padding: '0.25rem'}}
+                            >
+                                <Typography>
+                                    {gameList.name}
+                                </Typography>
+                                <Checkbox label={t('add')}
+                                          checked={selectedListsToAdd.has(gameList?.uuid)}
+                                          onChange={(e) => handleCheckboxChange(gameList?.uuid, e.target.checked)}
+                                />
+                            </Stack>
+                        ))}
+                    </Container>
+                </Modal.Body>
+                <Modal.Footer style={{border: 'none', justifyContent: 'space-between'}}>
+                    <Button color="primary" onClick={() => {
+                        setShowUserLists(false);
+                    }}>{t('close')}</Button>
+                    <Button color="primary" onClick={() => {
+                        if (selectedListsToAdd.size > 0) {
+                            selectedListsToAdd.values().forEach((list: string) => {
+                                userGameListService.updateUserGameList({games: Array.from([igdbId?.id])}, list)
+                                    .then(() => {setShowUserLists(false);});
+                            })
+                        }
+                    }}>{t('add_to_lists')}</Button>
+                </Modal.Footer>
+            </Modal>
         </GameProvider>
     );
 }

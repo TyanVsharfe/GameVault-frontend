@@ -1,16 +1,16 @@
 import React, {useEffect, useState} from "react";
 import Container from "react-bootstrap/Container";
-import {Stack, Toast, ToastContainer} from "react-bootstrap";
+import {Stack} from "react-bootstrap";
 import Row from "react-bootstrap/Row";
-import Button from "react-bootstrap/Button";
-import {addImportedSteamGames, ImportedSteamGame, importSteamGames} from "../../services/steamGamesService";
-import Modal from "react-bootstrap/Modal";
+import {ImportedSteamGame, steamGamesService} from "../../api/services/steamGamesService";
 import Form from "react-bootstrap/Form";
 import ImportGamesList from "../../components/game/list/ImportGamesList";
 import "../../assets/styles/account.css"
-import AccountNav from "../../components/nav/AccountNav";
 import {useTranslation} from "react-i18next";
 import AccountTabs from "../../components/nav/AccountTabs";
+import {Box, Button, Modal, ModalClose, ModalDialog} from "@mui/joy";
+import ModalOverflow from '@mui/joy/ModalOverflow';
+import {Toast} from "../../components/toast/Toast";
 
 function UserSettingsPage() {
     const { t } = useTranslation();
@@ -40,13 +40,13 @@ function UserSettingsPage() {
     };
 
     useEffect(() => {
-        console.log("Updated importSteamGames:", importSteamGames);
-        console.log("Data length " + importSteamGames.length);
-    }, [importSteamGames]);
+        console.log("Updated importSteamGames:", importedSteamGames);
+        console.log("Data length " + importedSteamGames.length);
+    }, [importedSteamGames]);
 
     const handleImportGames = () => {
         setIsLoading(true);
-        importSteamGames(steamId)
+        steamGamesService.importSteamGames(steamId)
             .then(data => {
                 setImportedSteamGames(data);
                 setIsLoading(false);
@@ -80,84 +80,121 @@ function UserSettingsPage() {
                 </Container>
             </Container>
 
-            <Modal show={show} centered={true} onHide={handleClose}
-                   dialogClassName="modal-90w"
-                   aria-labelledby="example-custom-modal-styling-title">
-                <Modal.Header closeButton>
-                    <Modal.Title>{t('import_games_from_steam')}</Modal.Title>
-                </Modal.Header>
+            <Modal open={show}
+                   layout="center"
+                   onClose={handleClose}
+                   // dialogClassName="modal-90w"
+                   // aria-labelledby="example-custom-modal-styling-title"
+            >
+                <ModalDialog
+                    style={{display: 'flex', gap: '1rem', width: '40rem', minWidth: '22rem'}}
+                >
+                    <div>
+                        <h3>{t('import_games_from_steam')}</h3>
+                        <ModalClose/>
+                    </div>
 
-                <Modal.Body>
-                    <Form>
-                        <Form.Label>{t('enter_steam_id')}:</Form.Label>
-                        <Form.Control type="email" onChange={steamIdInputChange}/>
-                    </Form>
-                </Modal.Body>
+                    <div>
+                        <Form>
+                            <Form.Label>{t('enter_steam_id')}:</Form.Label>
+                            <Form.Control type="email" onChange={steamIdInputChange}/>
+                        </Form>
+                    </div>
 
-                <Modal.Footer>
-                    <Button variant="outline-primary" onClick={handleClose}>
-                        {t('cancel')}
-                    </Button>
-                    <Button variant="primary" onClick={() => {
-                        handleImportGames();
-                    }}>
-                        {isLoading ? t('loading') : t('import')}
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-
-            <Modal show={showImport}
-                   size={"xl"}
-                   centered={true}
-                   onHide={handleCloseImport}
-                   // fullscreen={true}
-                   dialogClassName="modal-90w"
-                   aria-labelledby="example-custom-modal-styling-title">
-                <Modal.Header closeButton>
-                    <Modal.Title>{t('imported_games_from_steam')}</Modal.Title>
-                </Modal.Header>
-
-                <Modal.Body>
-                    {isLoading ? (
-                        <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '200px', width: '150%' }}>
-                            <div className="spinner-border text-primary" role="status">
-                                <span className="visually-hidden">{t('loading')}</span>
-                            </div>
+                    <div style={{display: "flex", justifyContent: "space-between"}}>
+                        <div style={{width: '30%'}}>
+                            <Button fullWidth
+                                    onClick={handleClose}
+                            >
+                                {t('cancel')}
+                            </Button>
                         </div>
-                    ) : (
-                        <>
-                            <Container>
-                                <h2>{t('found_games')}: {importedSteamGames.length}</h2>
-                            </Container>
-                            <ImportGamesList importGames={importedSteamGames} onSwitchChange={handleSwitchChange} />
-                        </>
-                    )}
-                </Modal.Body>
-
-                <Modal.Footer>
-                    <Button variant="outline-primary" onClick={handleCloseImport}>{t('cancel')}</Button>
-                    <Button variant="primary" onClick={() => {
-                        addImportedSteamGames(steamId, importedSteamGames.filter(game => checkedGameIds.includes(game.id)).map(game => game.id)).then();
-                        handleCloseImport();
-                        handleShowToast();
-                    }}>{t('import')}</Button>
-                </Modal.Footer>
+                        <div style={{width: '30%'}}>
+                            <Button fullWidth
+                                    onClick={() => {
+                                        handleImportGames();
+                                    }}>
+                                {isLoading ? t('loading') : t('import')}
+                            </Button>
+                        </div>
+                    </div>
+                </ModalDialog>
             </Modal>
 
-           <ToastContainer position="bottom-end">
-               <Toast onClose={handleCloseToast}
-                      show={showToast}
-                      delay={4500}
-                      autohide
-                      // bg="dark"
-                      animation={true}>
-                   <Toast.Header>
-                       <strong className="me-auto">GameVault</strong>
-                       <small>Import Steam games</small>
-                   </Toast.Header>
-                   <Toast.Body>Games are imported</Toast.Body>
-               </Toast>
-           </ToastContainer>
+            <Modal
+                open={showImport}
+                onClose={handleCloseImport}
+                sx={{
+                    overflow: 'auto',
+                }}
+            >
+                <ModalOverflow>
+                    <ModalDialog
+                        style={{display: 'flex', gap: '1rem', width: '75%', height: '93%'}}
+                    >
+                        <div style={{display: "flex", justifyContent: "space-between"}}>
+                            <h3 style={{paddingLeft: "2rem"}}>{t('imported_games_from_steam')}: {importedSteamGames.length}</h3>
+                            {/*<h3 style={{paddingRight: "2rem"}}>Выбрано: {checkedGameIds.length}</h3>*/}
+                        </div>
+                        <ModalClose/>
+
+                        <div>
+                            {isLoading ? (
+                                <div className="d-flex justify-content-center align-items-center"
+                                     style={{minHeight: '200px', width: '150%'}}>
+                                    <div className="spinner-border text-primary" role="status">
+                                        <span className="visually-hidden">{t('loading')}</span>
+                                    </div>
+                                </div>
+                            ) : (
+                                <>
+                                    {/*<Container>*/}
+                                    {/*    <h2>{t('found_games')}: </h2>*/}
+                                    {/*</Container>*/}
+                                    <ImportGamesList importGames={importedSteamGames}
+                                                     onSwitchChange={handleSwitchChange}/>
+                                    <Box sx={{
+                                        position: 'sticky',
+                                        bottom: 0,
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        gap: 20,
+                                        flexShrink: 0,
+                                    }}>
+                                        <div style={{width: '30vh'}}>
+                                            <Button fullWidth
+                                                    onClick={handleCloseImport}
+                                            >
+                                                {t('cancel')}
+                                            </Button>
+                                        </div>
+                                        <div style={{width: '30vh'}}>
+                                            <Button fullWidth
+                                                    disabled={checkedGameIds.length === 0}
+                                                    onClick={() => {
+                                                        steamGamesService.addImportedSteamGames(steamId, importedSteamGames.filter(
+                                                            game => checkedGameIds.includes(game.id))
+                                                            .map(game => game.id)).then();
+                                                        handleCloseImport();
+                                                        handleShowToast();
+                                                    }}>
+                                                {t('import')} ({checkedGameIds.length})
+                                            </Button>
+                                        </div>
+                                    </Box>
+                                </>
+                            )}
+                        </div>
+                    </ModalDialog>
+                </ModalOverflow>
+            </Modal>
+
+            <Toast
+                module="Import Steam games"
+                message="Games are imported."
+                isSuccess={true}
+                open={showToast}
+            />
         </>
     );
 }

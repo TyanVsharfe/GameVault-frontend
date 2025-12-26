@@ -1,10 +1,11 @@
 import React, {useState} from "react";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
-import {registerUser, User} from "../../services/authService";
 import Container from "react-bootstrap/Container";
 import {useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
+import { User } from "../../types/auth.types";
+import {authService} from "../../api/services/authService";
 
 const RegisterPage: React.FC = () => {
     const { t } = useTranslation();
@@ -17,7 +18,7 @@ const RegisterPage: React.FC = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const user: User = {username: login, password: password};
-        await registerUser(user)
+        await authService.registerUser(user)
         navigate('/account/games')
 
         // try {

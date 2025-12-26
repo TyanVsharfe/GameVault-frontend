@@ -5,6 +5,8 @@ export const en = {
         result: 'Result',
         not_found: 'Not found',
         none: 'Missing',
+        close: 'Close',
+        list: 'List',
 
         // User registration
         password: 'Password',
@@ -28,16 +30,20 @@ export const en = {
         // Account nav
         profile: 'Profile',
         my_games: 'My Games',
+        lists: 'Lists',
         achievements: 'Achievements',
         settings: 'Settings',
 
         // Game Page (Controls)
         change_status: 'Change status',
         change_rating: 'Change rating',
-        add_game: 'Add Game',
+        add_game: 'Add game',
         add: 'Add',
-        delete_game: 'Delete Game',
+        adding: 'Adding',
+        delete_game: 'Delete game',
 
+        add_to_list: 'Add to list',
+        add_to_lists: 'Add to lists',
         select: 'Select',
         selected: 'Selected',
 
@@ -60,6 +66,7 @@ export const en = {
 
         franchise: 'Franchise',
         series: 'Series',
+        company: 'Company',
         notes: 'Notes',
         reviews: 'Reviews',
         user_review: 'Your review',
@@ -90,6 +97,14 @@ export const en = {
         graphics: 'Graphics',
         story: 'Story',
         gameplay: 'Gameplay',
+
+        overall_rating: 'Overall rating for games',
+        overall_rating_hint: 'Set the overall rating for the game',
+        current_rating: 'Current rating',
+
+        overall_status: 'Overall status for the game',
+        overall_status_hint: 'Set the total value for the status',
+        current_status: 'Current status',
 
         user_games: 'User Games',
 
@@ -153,5 +168,25 @@ export const en = {
         split_screen: 'Split screen',
         mmo: 'MMO',
         battle_royal: 'Battle royal',
+
+        //Game list page
+        create_list: 'Create list',
+        create_new_list: 'Create new list',
+        public: 'Public',
+        private: 'Private',
+        list_description_init: 'Description (optional)',
+
+        copy_list: 'Copy list',
+        edit_list: 'Edit the list',
+        is_public_switch: 'Public List',
+        is_public_switch_hint: 'Make the list available to other users',
+        list_title: 'List title',
+        change_list_title: 'Change the name of the list',
+        change_list_description: 'Change the description',
+        delete_list: 'Delete the list',
+
+        //Switch
+        on: 'On',
+        off: 'Off'
     },
 } as const;

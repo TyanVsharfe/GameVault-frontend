@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
-import {loginUser, User} from "../../services/authService";
+import {authService} from "../../api/services/authService";
 import {useNavigate} from "react-router-dom";
 import {useDispatch} from "react-redux";
 import {verifySession} from "../../store/authSlice";
@@ -17,7 +17,7 @@ const LoginPage: React.FC = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         const formData = new FormData(e.currentTarget);
@@ -27,8 +27,8 @@ const LoginPage: React.FC = () => {
         }
 
         try {
-            await loginUser(formData);
-            dispatch(verifySession() as any);
+            await authService.loginUser(formData);
+            await dispatch(verifySession() as any).unwrap();
             navigate('/account/games');
         } catch (error) {
             console.error('Login failed:', error);

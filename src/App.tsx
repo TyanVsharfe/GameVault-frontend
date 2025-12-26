@@ -1,6 +1,6 @@
 import {RootState} from "./store/store";
 import {useDispatch, useSelector} from "react-redux";
-import {Route, Routes, useLocation, useNavigate} from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
 import React, {useEffect} from "react";
 import Navigation from "./components/nav/Navbar";
 import MainPage from "./pages/MainPage";
@@ -18,55 +18,64 @@ import '@fontsource/roboto';
 import "./assets/styles/style.css";
 import "./index.css";
 import SeriesPage from "./pages/SeriesPage";
+import UserCollectionsPage from "./pages/User/UserCollectionsPage";
+import UserCollectionPage from "./pages/User/UserCollectionPage";
+import ProtectedRoute from "./components/ProtectedRoute";
+import CircularProgress from '@mui/joy/CircularProgress';
+import GameCompanyPage from "./pages/GameCompanyPage";
 
 function App() {
     const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const location = useLocation();
-
-    const isLogin = useSelector((state: RootState) => state.auth.isLogin);
-    const loading = useSelector((state: RootState) => state.auth.loading);
+    const { initialized } = useSelector((state: RootState) => state.auth);
 
     useEffect(() => {
-        const checkAuth = async () => {
-            const isAuthenticated = await dispatch(verifySession() as any).unwrap();
+        dispatch(verifySession());
+    }, [dispatch]);
 
-            const requiresAuthPaths = ['/account/games'];
-            const isAuthRequired = requiresAuthPaths.some((path) =>
-                location.pathname.startsWith(path)
-            );
-            const isLoginPage = location.pathname === '/login';
-
-            console.log(
-                'isAuthenticated (from verifySession):', isAuthenticated,
-                'isLogin (from Redux):', isLogin,
-                'loading:', loading,
-                'path:', location.pathname
-            );
-
-            if (!loading && !isAuthenticated && isAuthRequired && !isLoginPage) {
-                navigate('/login');
-            }
-        };
-
-        checkAuth();
-    }, [dispatch, navigate, location.pathname]);
+    if (!initialized) {
+        return (
+            <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100vh',
+                fontSize: '1.5rem'
+            }}>
+                <CircularProgress variant="plain"/>
+            </div>
+        );
+    }
 
     return (
         <>
-            <Navigation />
+            <Navigation/>
             <Routes>
-                <Route path="/main" element={<MainPage />} />
-                <Route path="/search" element={<SearchPage />} />
+                <Route path="/main" element={<MainPage/>}/>
+                <Route path="/search" element={<SearchPage/>}/>
                 <Route path="/login" element={<LoginPage/>} />
                 <Route path="/registration" element={<RegisterPage/>} />
-                <Route path="/account" element={<UserInfoPage />} />
-                <Route path="/account/games" element={<UserGamesPage />} />
-                <Route path="/account/settings" element={<UserSettingsPage />} />
-                <Route path="/account/achievements" element={<UserAchievementsPage />} />
+                <Route path="/account" element={
+                    <ProtectedRoute>
+                        <UserInfoPage />
+                    </ProtectedRoute>
+                } />
+                <Route path="/account/*"
+                       element={
+                           <ProtectedRoute>
+                               <Routes>
+                                   <Route path="games" element={<UserGamesPage />} />
+                                   <Route path="lists" element={<UserCollectionsPage />} />
+                                   <Route path="lists/:id" element={<UserCollectionPage />} />
+                                   <Route path="settings" element={<UserSettingsPage />} />
+                                   <Route path="achievements" element={<UserAchievementsPage />} />
+                               </Routes>
+                           </ProtectedRoute>
+                       }/>
                 <Route path="/games/:id" element={<GamePage />} />
-                <Route path="/series/:seriesName" element={<SeriesPage />} />
+                <Route path="/series/:series" element={<SeriesPage />} />
+                <Route path="/company/:company" element={<GameCompanyPage />} />
                 <Route path="*" element={<NotFoundPage />} />
+                <Route path="/404" element={<NotFoundPage />} />
             </Routes>
         </>
     )

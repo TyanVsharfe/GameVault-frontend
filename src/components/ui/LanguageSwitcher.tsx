@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { changeLanguage } from '../i18n';
+import { changeLanguage } from '../../i18n';
 import { useState } from 'react';
 import LanguageIcon from '@mui/icons-material/Language';
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';

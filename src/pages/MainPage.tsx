@@ -1,9 +1,9 @@
 import React, {useEffect, useRef, useState} from "react";
 import Container from "react-bootstrap/Container";
-import ReleaseGames from "../components/ReleaseGames";
+import ReleaseGamesList from "../components/game/list/ReleaseGamesList";
 import {Alert, Spinner} from "react-bootstrap";
-import GameListCarousel from "../components/game/list/GameListCarousel";
-import {getComingSoonGames} from "../services/igdbGamesService";
+import GameCarousel from "../components/game/list/GameCarousel";
+import {igdbGamesService} from "../api/services/igdbGamesService";
 import "../assets/styles/home-page.css"
 
 function MainPage() {
@@ -23,7 +23,7 @@ function MainPage() {
             //     method: 'GET'
             // });
 
-            const gameReleases = await getComingSoonGames();
+            const gameReleases = await igdbGamesService.getComingSoonGames();
             setReleaseGames(gameReleases);
             setLoading(false);
         } catch (error) {
@@ -50,7 +50,7 @@ function MainPage() {
         }
 
         return (
-            <GameListCarousel games={data} carouselRef={carouselRef} />
+            <GameCarousel games={data} carouselRef={carouselRef} />
             // <ReleaseGames releaseGames={data}/>
         );
     };

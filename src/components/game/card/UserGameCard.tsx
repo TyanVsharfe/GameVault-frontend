@@ -1,10 +1,9 @@
-import React from 'react';
-import { Card, Col } from 'react-bootstrap';
-import { Link, Tooltip } from '@mui/joy';
+import React, {useEffect, useRef, useState} from 'react';
+import {AspectRatio, Card, CardContent, CardOverflow, Link, Stack, Tooltip, Typography} from '@mui/joy';
 import RatingBadge from "../badge/RatingBadge";
 import DlcBadge from "../badge/DlcBadge";
-import {UserGame} from "../../../services/userGamesService";
 import {useTheme} from "next-themes";
+import {UserGame} from "../../../types/user.game.types";
 
 interface UserGameCardProps {
     game: UserGame;
@@ -18,86 +17,78 @@ const UserGameCard: React.FC<UserGameCardProps> = ({ game, statusColors, t }) =>
     const hasRating = game.userRating != null;
     const coverUrl = game.game.coverUrl.replace("t_thumb", "t_cover_big");
 
+    function useOverflow<T extends HTMLElement>() {
+        const ref = useRef<T>(null);
+        const [isOverflow, setIsOverflow] = useState(false);
+
+        useEffect(() => {
+            const el = ref.current;
+            if (!el) return;
+
+            const check = () => {
+                setIsOverflow(el.scrollHeight > el.clientHeight);
+            };
+
+            check();
+
+            const ro = new ResizeObserver(check);
+            ro.observe(el);
+
+            return () => ro.disconnect();
+        }, []);
+
+        return { ref, isOverflow };
+    }
+
+    const { ref, isOverflow } = useOverflow<HTMLParagraphElement>();
+
     return (
-        <Col
-            xs={6}
-            sm={4}
-            md={3}
-            lg={2}
+        <Stack
+            direction="column"
+            sx={{
+                justifyContent: "center",
+                alignItems: "center",
+            }}
             className="mb-4 d-flex justify-content-center user-game-list-col"
         >
             <Card
                 style={{
-                    backgroundColor: "rgba(30, 30, 30, 0.4)",
                     overflow: "hidden",
                     border: "0px",
+                    height: "26.2vh",
+                    width: "18.25vh",
+                    gap: "0",
+                    display: "flex",
+                    flexDirection: "column",
+                    borderRadius: "0.6rem",
                 }}
+                variant="plain"
                 className={`user-game-list-game-card user-game-list-game-card-background position-relative ${theme === 'light' ? 'bg-dark text-white' : 'text-light'}`}
             >
-                {hasRating && <RatingBadge rating={game.userRating} />}
+                <CardOverflow sx={{ flex: "0 0 auto" }}>
+                    <AspectRatio ratio="3/3.9" className="game-card__img-wrapper">
+                        {hasRating && <RatingBadge rating={game.userRating} />}
+                        {isDlcOrExpansion && <DlcBadge />}
 
-                {isDlcOrExpansion && <DlcBadge />}
-
-                <div className="game-card__img-wrapper">
-                    {(isDlcOrExpansion || hasRating) && (
-                        <div
-                            className="blur-top"
+                        {(isDlcOrExpansion || hasRating) && (
+                            <div
+                                className="blur-top"
+                                style={{
+                                    backgroundImage: `url(${coverUrl})`,
+                                    objectPosition: 'top'
+                                }}
+                            />
+                        )}
+                        <img
+                            src={coverUrl}
+                            alt={game.game.title}
+                            // className="game-card__img"
                             style={{
-                                backgroundImage: `url(${coverUrl})`
+                                objectFit: 'cover',
+                                width: '100%',
                             }}
                         />
-                    )}
-                    <Card.Img
-                        variant="top"
-                        src={coverUrl}
-                        alt={game.game.title}
-                        className="game-card__img"
-                    />
-                    {hasRating && <RatingBadge rating={game.userRating} />}
-                </div>
-
-                <Card.Body className="d-flex flex-column align-items-center justify-content-between">
-                    <Tooltip title={game.game.title} arrow variant="plain" placement="top">
-                        <Card.Title className="user-game-list-game-card__title text-center">
-                            {game.game.title}
-                        </Card.Title>
-                    </Tooltip>
-
-                    {(game.status && game.status !== 'None') ? (
-                        <div
-                            style={{
-                                backgroundColor: statusColors[game.status],
-                                display: "flex",
-                                justifyContent: "center",
-                                border: "1px solid rgba(255,255,255,0.05)",
-                                boxShadow: "0 0 6px rgba(0,0,0,0.3)",
-                                backdropFilter: "blur(4px)",
-                                width: "95%",
-                                borderRadius: "1rem",
-                                fontSize: "0.9rem"
-                            }}
-                            className="mb-2 text-uppercase"
-                        >
-                            {t(`status_${game.status.toLowerCase()}`)}
-                        </div>
-                    ) : (
-                        <div
-                            style={{
-                                backgroundColor: statusColors[game.status],
-                                display: "flex",
-                                justifyContent: "center",
-                                border: "1px solid rgba(255,255,255,0.05)",
-                                boxShadow: "0 0 6px rgba(0,0,0,0.3)",
-                                backdropFilter: "blur(4px)",
-                                width: "95%",
-                                borderRadius: "1rem",
-                                fontSize: "0.9rem"
-                            }}
-                            className="mb-2 text-uppercase"
-                        >
-                            {t('new_badge')}
-                        </div>
-                    )}
+                    </AspectRatio>
 
                     <Link
                         overlay
@@ -105,9 +96,91 @@ const UserGameCard: React.FC<UserGameCardProps> = ({ game, statusColors, t }) =>
                         underline="none"
                         sx={{display: 'flex', flexDirection: 'column', alignItems: 'start'}}
                     />
-                </Card.Body>
+                </CardOverflow>
+
+                <CardOverflow
+                    sx={{
+                        flex: 1,
+                        padding: 0,
+                        display: "flex",
+                    }}
+                >
+                    <CardContent
+                        style={{
+                            display: "flex",
+                            flex: 1,
+                            flexDirection: "column",
+                            padding: 0,
+                            margin: "0",
+                            alignItems: "stretch"
+                        }}
+                    >
+                        {/*<div*/}
+                        {/*    style={{*/}
+                        {/*        height: "3rem",*/}
+                        {/*        marginBottom: "0.5vh",*/}
+                        {/*        width: "100%",*/}
+                        {/*        display: "flex",*/}
+                        {/*        justifyContent: "center",*/}
+                        {/*        textAlign: "center",*/}
+                        {/*        alignItems: "center"*/}
+                        {/*    }}*/}
+                        {/*>*/}
+                        {/*    <Tooltip*/}
+                        {/*        ref={ref}*/}
+                        {/*        title={game.game.title} arrow*/}
+                        {/*        variant="plain" placement="top"*/}
+                        {/*        disableHoverListener={!isOverflow}*/}
+                        {/*    >*/}
+                        {/*        <Typography*/}
+                        {/*            textColor="common.white"*/}
+                        {/*            level="body-md"*/}
+                        {/*            sx={{*/}
+                        {/*                width: '8.5rem',*/}
+                        {/*                overflow: 'hidden',*/}
+                        {/*                display: '-webkit-box',*/}
+                        {/*                WebkitLineClamp: 2,*/}
+                        {/*                WebkitBoxOrient: 'vertical',*/}
+                        {/*                cursor: isOverflow ? 'pointer' : 'default',*/}
+                        {/*            }}*/}
+                        {/*        >*/}
+                        {/*            {game.game.title}*/}
+                        {/*        </Typography>*/}
+                        {/*    </Tooltip>*/}
+                        {/*</div>*/}
+
+                        {(game.status && game.status !== 'None') && (
+                            <div
+                                style={{
+                                    color: "white",
+                                    backgroundColor: statusColors[game.status],
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    border: "1px solid rgba(255,255,255,0.05)",
+                                    boxShadow: "0 0 6px rgba(0,0,0,0.3)",
+                                    backdropFilter: "blur(4px)",
+                                    width: "100%",
+                                    alignItems: "center",
+                                    flex: 1,
+                                    // paddingBottom: '10%',
+                                    // borderRadius: "1rem",
+                                    fontSize: "0.9rem",
+                                }}
+                                className="text-uppercase"
+                            >
+                                {t(`status_${game.status.toLowerCase()}`)}
+                            </div>
+                        )}
+                        <Link
+                            overlay
+                            href={`/games/${game.game.igdbId}`}
+                            underline="none"
+                            sx={{display: 'flex', flexDirection: 'column', alignItems: 'start'}}
+                        />
+                    </CardContent>
+                </CardOverflow>
             </Card>
-        </Col>
+        </Stack>
     );
 };
 

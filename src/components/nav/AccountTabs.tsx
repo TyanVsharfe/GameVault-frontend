@@ -10,13 +10,14 @@ function AccountTabs() {
     const { t } = useTranslation();
     const { theme } = useTheme();
     const location = useLocation();
-    const isMobile = useMediaQuery({ maxWidth: 500 });
+    const isMobile = useMediaQuery({ maxWidth: 550 });
 
     const currentPath = location.pathname;
 
     const navItems = [
         { href: "/account", label: t('profile') },
         { href: "/account/games", label: t('my_games') },
+        { href: "/account/lists", label: t('lists') },
         { href: "/account/achievements", label: t('achievements') },
         { href: "/account/settings", label: t('settings') }
     ];
@@ -30,13 +31,15 @@ function AccountTabs() {
 
     if (isMobile) {
         return (
-            <Dropdown style={{ margin: "10px" }}>
-                <Dropdown.Toggle variant="primary" id="account-nav-dropdown">
+            <Dropdown style={{width: "25rem", margin: "10px" }}>
+                <Dropdown.Toggle style={{width: "25rem"}} variant="primary" id="account-nav-dropdown">
                     Меню аккаунта
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                     {navItems.map((item, idx) => (
-                        <Dropdown.Item key={idx} href={item.href} active={idx === activeTabIndex}>
+                        <Dropdown.Item key={idx} href={item.href} active={idx === activeTabIndex}
+                                       style={{width: "25rem"}}
+                        >
                             {item.label}
                         </Dropdown.Item>
                     ))}
