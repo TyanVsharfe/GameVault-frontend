@@ -28,10 +28,12 @@ import {useTheme} from "next-themes";
 import {userGameListService} from "../../api/services/userGameListService";
 import useSWR from "swr";
 import {IgdbGame, Platform, Series} from '../../types/igdb.game.types';
-import {PageResponseList, UserGameList} from "../../types/user.game.list.types";
+import {UserGameList} from "../../types/user.game.list.types";
 import {UserGame} from "../../types/user.game.types";
 import {useSelector} from "react-redux";
 import {RootState} from "../../store/store";
+import { PageResponse } from '../../types/types';
+import {Helmet} from "react-helmet-async";
 
 function GamePage() {
     const { t } = useTranslation();
@@ -92,7 +94,7 @@ function GamePage() {
 
     const [currentPage, setCurrentPage] = useState(1);
     const url = userGameListService.buildUserGameListsUrl(currentPage - 1, 20);
-    const { data: gameListData, error: gameListError, isLoading: gameListIsLoading } = useSWR<PageResponseList<UserGameList>>(
+    const { data: gameListData, error: gameListError, isLoading: gameListIsLoading } = useSWR<PageResponse<UserGameList>>(
         isLogin ? url : null,
         userGameListService.fetchUserGameLists,
         {
@@ -141,11 +143,6 @@ function GamePage() {
                     }
                 }
 
-                if (descriptionTextRef.current) {
-                    const isTextOverflowing = descriptionTextRef.current.scrollHeight > descriptionTextRef.current.clientHeight;
-                    setIsOverflowing(isTextOverflowing);
-                }
-
                 await userGameService.getGameReviews(igdbId.id).then(data => {
                     Array.isArray(data) ? setGameReviews(data) : setGameReviews([])
                 });
@@ -167,6 +164,15 @@ function GamePage() {
     }, [igdbId]);
 
     useEffect(() => {
+        if (!gameData || !descriptionTextRef.current) return;
+
+        requestAnimationFrame(() => {
+            const el = descriptionTextRef.current!;
+            setIsOverflowing(el.scrollHeight > el.clientHeight);
+        });
+    }, [gameData, expanded]);
+
+    useEffect(() => {
         if (cardRef.current) {
             setBackgroundHeight(cardRef.current.offsetHeight + 20);
         }
@@ -180,6 +186,9 @@ function GamePage() {
 
     return (
         <GameProvider initialStatus={uGameData?.status} initialUserRating={uGameData?.userRating} initialUserModes={uGameData?.userModes}>
+            <Helmet>
+                <title>{uGameData?.game?.title ? `${uGameData?.game?.title} | `: ''} GameVault</title>
+            </Helmet>
             <Stack className="game-page" direction="horizontal"
                    style={{
                        paddingTop: "20px",
@@ -297,7 +306,7 @@ function GamePage() {
                         <Typography
                             component="div"
                             level="body-md"
-                            className={`game__description ${expanded ? "expanded" : ""}`}
+                            // className={`game__description ${expanded ? "expanded" : ""}`}
                             sx={{
                                 color: "whitesmoke",
                                 fontWeight: 700,
@@ -308,15 +317,16 @@ function GamePage() {
                             {isLoading ? (
                                 <Skeleton width="34rem" height="10rem"/>
                             ) : (
-                                <span className={`game__description ${expanded ? "expanded" : ""}`}
-                                      ref={descriptionTextRef}>
-                            {gameData === undefined ?
-                                "" :
-                                gameData?.summary}
-                            </span>
+                                <span
+                                    className={`game__description ${expanded ? "expanded" : ""}`}
+                                    ref={descriptionTextRef}>
+                                    {gameData === undefined
+                                        ? ""
+                                        : gameData?.summary}
+                                </span>
                             )}
                             <div style={{display: 'flex', justifyContent: 'flex-end'}}>
-                                {isOverflowing && (
+                                {(isOverflowing || expanded) && (
                                     <Button variant='plain' style={{color: 'white', background: 'none'}}
                                             className='game__description-button' onClick={() => setExpanded(!expanded)}>
                                         {expanded ? t('hide') : t('more')}

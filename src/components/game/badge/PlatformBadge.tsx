@@ -24,7 +24,7 @@ const PLATFORM_CONFIG: Record<string, { label: string; color: 'primary' | 'succe
     BROWSER:        { label: 'Browser',        color: 'neutral', icon: <GoBrowser /> },
 };
 
-export const PlatformBadge = (platform: string, index: number) => {
+export const PlatformBadge = (platform: string, index: number, isShort: boolean) => {
     if (platform == undefined) {
         return "";
     }
@@ -33,11 +33,18 @@ export const PlatformBadge = (platform: string, index: number) => {
 
     if (config) {
         return (
-            <Chip key={index} style={{marginBottom: '0.4rem', marginRight: '0.3rem'}} color={config.color} startDecorator={config.icon}>
-                {config.label}
+            <Chip size={isShort ? 'sm' : 'md'} key={index}
+                  style={{marginBottom: '0.4rem', marginRight: '0.3rem', fontSize: `${isShort ? 0.75 : 0.85}rem`}}
+                  color={config.color} startDecorator={config.icon}
+            >
+                {isShort ? key.replace('-',' ') : config.label}
             </Chip>
         );
     }
 
-    return <Chip key={index} style={{marginBottom: '0.4rem', marginRight: '0.3rem'}} color="neutral">{platform}</Chip>;
+    return (
+        <Chip key={index} style={{marginBottom: '0.4rem', marginRight: '0.3rem', fontSize: `${isShort ? 0.75 : 0.85}rem`}} color="neutral">
+            {platform}
+        </Chip>
+    )
 };

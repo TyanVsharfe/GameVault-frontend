@@ -1,6 +1,7 @@
 import React from 'react';
-import { Container, Pagination } from 'react-bootstrap';
-import {useTheme} from "next-themes";
+import { Box, IconButton, Button } from '@mui/joy';
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 
 export interface PaginationComponentProps {
     currentPage: number;
@@ -17,19 +18,22 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({
                                                                      onPageChange,
                                                                      maxVisiblePages = 5,
                                                                      showContainer = true,
-                                                                     containerClassName = "d-flex justify-content-center mt-1"
+                                                                     containerClassName = ''
                                                                  }) => {
-    const { theme } = useTheme();
-
     const renderPaginationItems = () => {
         let items = [];
 
         items.push(
-            <Pagination.Prev
+            <IconButton
                 key="prev"
                 onClick={() => currentPage > 1 && onPageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-            />
+                variant="outlined"
+                color="neutral"
+                size="sm"
+            >
+                <KeyboardArrowLeftIcon />
+            </IconButton>
         );
 
         let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
@@ -41,47 +45,71 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({
 
         if (startPage > 1) {
             items.push(
-                <Pagination.Item key={1} onClick={() => onPageChange(1)}>
+                <Button
+                    key={1}
+                    onClick={() => onPageChange(1)}
+                    variant="outlined"
+                    color="neutral"
+                    size="sm"
+                >
                     1
-                </Pagination.Item>
+                </Button>
             );
             if (startPage > 2) {
-                items.push(<Pagination.Ellipsis key="ellipsis-start" />);
+                items.push(
+                    <Box key="ellipsis-start" sx={{ px: 1, borderRadius: '1rem'}}>
+                        ...
+                    </Box>
+                );
             }
         }
 
         for (let i = startPage; i <= endPage; i++) {
             items.push(
-                <Pagination.Item
+                <Button
                     key={i}
-                    active={i === currentPage}
                     onClick={() => onPageChange(i)}
+                    variant={i === currentPage ? "solid" : "outlined"}
+                    color={i === currentPage ? "primary" : "neutral"}
+                    size="sm"
                 >
                     {i}
-                </Pagination.Item>
+                </Button>
             );
         }
 
         if (endPage < totalPages) {
             if (endPage < totalPages - 1) {
-                items.push(<Pagination.Ellipsis key="ellipsis-end" />);
+                items.push(
+                    <Box key="ellipsis-end" sx={{ px: 1 }}>
+                        ...
+                    </Box>
+                );
             }
             items.push(
-                <Pagination.Item
+                <Button
                     key={totalPages}
                     onClick={() => onPageChange(totalPages)}
+                    variant="outlined"
+                    color="neutral"
+                    size="sm"
                 >
                     {totalPages}
-                </Pagination.Item>
+                </Button>
             );
         }
 
         items.push(
-            <Pagination.Next
+            <IconButton
                 key="next"
                 onClick={() => currentPage < totalPages && onPageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-            />
+                variant="outlined"
+                color="neutral"
+                size="sm"
+            >
+                <KeyboardArrowRightIcon />
+            </IconButton>
         );
 
         return items;
@@ -91,13 +119,30 @@ const PaginationComponent: React.FC<PaginationComponentProps> = ({
         return null;
     }
 
-    const paginationElement = <Pagination data-bs-theme={`${theme === 'light' ? 'light' : 'dark'}`}>{renderPaginationItems()}</Pagination>;
+    const paginationElement = (
+        <Box
+            sx={{
+                display: 'flex',
+                gap: 0.5,
+                alignItems: 'center'
+            }}
+        >
+            {renderPaginationItems()}
+        </Box>
+    );
 
     if (showContainer) {
         return (
-            <Container className={containerClassName}>
+            <Box
+                className={containerClassName}
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    padding: '1rem'
+                }}
+            >
                 {paginationElement}
-            </Container>
+            </Box>
         );
     }
 

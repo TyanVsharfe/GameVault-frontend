@@ -1,6 +1,8 @@
 import axios from "axios";
-import { PageResponse, UpdateGameRatingParams, UserGame } from "../../types/user.game.types";
+import { UpdateGameRatingParams, UserGame } from "../../types/user.game.types";
 import { apiClient } from "../client";
+import {PageResponse} from "../../types/types";
+import {FilterState} from "../../types/filters";
 
 export const API_PREFIX = "/api/v1"
 export const BASE_ADDRESS = "http://localhost:8080"
@@ -15,7 +17,7 @@ const GAME_ENDPOINTS = {
     GET_GAME_REVIEWS: (igdbId: string) => `/users/games/${igdbId}/reviews`,
     ADD_USER_GAME: (igdbId: string) => `/users/games/${igdbId}`,
     UPDATE_USER_GAME: (igdbId: string) => `/users/games/${igdbId}`,
-    UPDATE_USER_GAME_MODE: (igdbId: string, mode: string) => `/users/games/${igdbId}/mode/${mode}`,
+    UPDATE_USER_GAME_MODE: (igdbId: string, mode: string) => `/users/games/${igdbId}/modes/${mode}`,
     DELETE_USER_GAME: (igdbId: string) => `/users/games/${igdbId}`,
 } as const;
 
@@ -27,12 +29,24 @@ export const userGameService = {
         return response.data;
     },
 
-    buildUserGamesUrl: (page: number, size: number, status?: string): string => {
-        let url = `${SERVICE_URL}?page=${page}&size=${size}`;
-        if (status) {
-            url += `&status=${status}`;
-        }
-        return url;
+    buildUserGamesUrl: (page: number, size: number, filters: FilterState): string => {
+        const params = new URLSearchParams();
+        params.append('page', page.toString());
+        params.append('size', size.toString());
+
+        if (filters.status) params.append('status', filters.status);
+        if (filters.minRating !== null) params.append('minRating', filters.minRating?.toString());
+        if (filters.maxRating !== null) params.append('maxRating', filters.maxRating?.toString());
+        if (filters.hasReview !== null) params.append('hasReview', filters.hasReview?.toString());
+        if (filters.isFullyCompleted !== null) params.append('isFullyCompleted', filters.isFullyCompleted?.toString());
+        if (filters.title) params.append('title', filters?.title);
+        if (filters.createdAfter) params.append('createdAfter', filters.createdAfter?.toISOString().split('T')[0]);
+        if (filters.createdBefore) params.append('createdBefore', filters.createdBefore?.toISOString().split('T')[0]);
+        if (filters.sort) params.append('sort', filters.sort?.sortBy + ',' + filters.sort?.direction);
+
+        console.log(`${SERVICE_URL}?${params.toString()}`)
+
+        return `${SERVICE_URL}?${params.toString()}`;
     },
 
     // Others

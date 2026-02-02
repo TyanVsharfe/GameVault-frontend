@@ -91,15 +91,15 @@ const Navigation: React.FC = () => {
 
     return (
         <>
-            <Navbar style={{width:'100%', zIndex: 1, paddingTop: '0'}}
+            <Navbar className="main-nav" style={{margin: 'auto', zIndex: 1, paddingTop: '0'}}
                     data-bs-theme={theme === 'dark' ? 'dark' : 'light'}
                     expand="lg"
                     // className={theme === 'dark' ? 'bg-dark' : 'bg-light'}
             >
-                <Container style={{paddingRight: "0px"}}>
+                <Container style={{paddingLeft: "0px", paddingRight: "0px"}}>
                     <Navbar.Brand href="/main"><h1>gamevault</h1></Navbar.Brand>
                     <Navbar id="basic-navbar-nav">
-                        <Nav className="container-fluid">
+                        <Nav className="container-fluid" style={{paddingRight: '0'}}>
                             <Nav.Link className='nav__link' href="/main">{t('main')}</Nav.Link>
                             <Nav.Link className='nav__link' href="/search"
                                       style={{textAlign: 'center'}}>{t('search')}</Nav.Link>

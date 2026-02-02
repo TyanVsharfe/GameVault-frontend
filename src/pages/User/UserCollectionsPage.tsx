@@ -12,10 +12,10 @@ import {CardImg} from "react-bootstrap";
 import UserGameCollectionsGrid from "../../components/game/collections/UserGameCollectionsGrid";
 import UserGameCollectionCreateModal from "../../components/game/collections/UserGameCollectionCreateModal";
 import useSWR, {mutate} from "swr";
-import {PageResponse} from "../../api/services/userGamesService";
 import {userGameListService} from "../../api/services/userGameListService";
 import {Helmet} from "react-helmet-async";
 import {UserGameList, UserGameListForm} from "../../types/user.game.list.types";
+import {PageResponse} from "../../types/types";
 
 function UserCollectionsPage() {
     const { t, i18n } = useTranslation();
@@ -69,11 +69,11 @@ function UserCollectionsPage() {
 
 
     return (
-        <>
+        <Box sx={{width: '70rem', alignItems: 'center', margin: 'auto'}} >
             <Helmet>
-                <title>{t('lists')}</title>
+                <title>{t('lists')} | GameVault</title>
             </Helmet>
-            <Container style={{display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
+            <Container style={{display: "flex", padding: '0', flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
                 <AccountTabs/>
                 <UserGameCollectionsGrid
                     collections={data?.content}
@@ -87,7 +87,7 @@ function UserCollectionsPage() {
                     isSubmitting={isCreating}
                 />
             </Container>
-        </>
+        </Box>
     );
 }
 

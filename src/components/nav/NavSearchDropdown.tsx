@@ -6,7 +6,6 @@ import {CategoryIGDB} from "../../utils/Enums";
 import List from '@mui/joy/List';
 import ListItem from '@mui/joy/ListItem'
 import {userGameListService} from "../../api/services/userGameListService";
-import {Game} from "../../api/services/userGamesService";
 import DoneIcon from '@mui/icons-material/Done';
 import ErrorIcon from '@mui/icons-material/Error';
 import { IgdbGame } from '../../types/igdb.game.types';

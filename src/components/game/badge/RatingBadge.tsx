@@ -2,14 +2,14 @@ import React from "react";
 import { Box, Typography } from "@mui/joy";
 import { getRatingColor } from "../../../utils/Utils";
 
-export default function RatingBadge({ rating }: { rating: number }) {
+export default function RatingBadge({ rating, size = "default" }: { rating: number, size: string }) {
     const color = getRatingColor(rating);
 
     return (
         <Box
             sx={{
                 position: "absolute",
-                top: 8,
+                top: size === "default" ? 7 : 5,
                 right: 8,
                 px: 1.5,
                 borderRadius: "1rem",
@@ -30,7 +30,7 @@ export default function RatingBadge({ rating }: { rating: number }) {
                     position: "relative",
                     color: "#fff",
                     fontWeight: 700,
-                    fontSize: "0.9rem",
+                    fontSize: `${size === "default" ? 0.95 : 0.75}rem`,
                     textShadow: "0 1px 2px rgba(0,0,0,0.3)",
                     zIndex: 1,
                 }}

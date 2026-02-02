@@ -1,4 +1,4 @@
-import {Game} from "../api/services/userGamesService";
+import {Game} from "./user.game.types";
 
 export interface UserGameList {
     uuid: string,
@@ -22,14 +22,4 @@ export interface UserGameListForm {
     description?: string;
     isPublic?: boolean;
     games?: number[];
-}
-
-export interface PageResponseList<T> {
-    content: UserGameList[];
-    totalPages: number;
-    totalElements: number;
-    number: number;
-    size: number;
-    first: boolean;
-    last: boolean;
 }

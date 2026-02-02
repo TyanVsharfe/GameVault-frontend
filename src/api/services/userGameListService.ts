@@ -1,6 +1,7 @@
 import axios from "axios";
-import {PageResponseList, UserGameList, UserGameListForm} from "../../types/user.game.list.types";
+import {UserGameList, UserGameListForm} from "../../types/user.game.list.types";
 import { apiClient } from "../client";
+import { PageResponse } from "../../types/types";
 
 export const API_PREFIX = "/api/v1"
 export const BASE_ADDRESS = "http://localhost:8080"
@@ -19,7 +20,7 @@ const GAME_ENDPOINTS = {
 
 export const userGameListService = {
     // SWR
-    fetchUserGameLists: async (url: string): Promise<PageResponseList<UserGameList>> => {
+    fetchUserGameLists: async (url: string): Promise<PageResponse<UserGameList>> => {
         try {
             const headers = { withCredentials: true };
             const response = await axios.get(url, headers);
@@ -63,9 +64,9 @@ export const userGameListService = {
     },
 
     // Others
-    createUserGameList: async ({name, description, isPublic}: UserGameListForm) => {
+    createUserGameList: async ({title, description, isPublic}: UserGameListForm) => {
         const query = {
-            "name": name,
+            "name": title,
             "description": description,
             "isPublic": isPublic,
         };

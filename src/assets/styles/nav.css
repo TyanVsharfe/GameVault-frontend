@@ -60,9 +60,17 @@
     background-color: var(--btn-hover-dark);
 }
 
-@media (max-width: 768px) {
+.main-nav {
+    width: 70rem;
+}
+
+@media (max-width: 900px) {
     .navbar-custom h1 {
         font-size: 1.2rem;
+    }
+
+    .main-nav {
+        width: 60rem;
     }
 
     .nav__link {

@@ -8,17 +8,20 @@ import {achievementService} from "../../api/services/achievementService";
 import {useTranslation} from "react-i18next";
 import AccountTabs from "../../components/nav/AccountTabs";
 import UserAchievementCard from "../../components/game/card/AchievementCard";
-import {Grid} from "@mui/joy";
+import {Button, Grid, Modal, ModalClose, ModalDialog} from "@mui/joy";
 import {UserAchievment} from "../../types/achievement.types";
+import AchievementModal from "../../components/modal/AchievementModal";
 
 function UserAchievementsPage() {
     const { t, i18n } = useTranslation();
-    const [userAchievments, setUserAchievments] = useState<UserAchievment[]>();
+    const [ userAchievements, setUserAchievements ] = useState<UserAchievment[]>();
+    const [ show, setShow ] = useState<boolean>(false);
+    const [ selectedAchievement, setSelectedAchievement ] = useState<UserAchievment | null>(null);
 
     useEffect(() => {
         const userAchievments = achievementService.getUserAchievements(i18n.language);
         userAchievments.then((data: UserAchievment[]) => {
-            setUserAchievments(data)
+            setUserAchievements(data)
             console.log(data)
         })
     }, [i18n.language]);
@@ -41,14 +44,21 @@ function UserAchievementsPage() {
                       gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
                   }}
             >
-                {userAchievments?.map((userAchievment, index) => {
+                {userAchievements?.map((userAchievment, index) => {
                     return (
                         <Grid key={index} xs={12} sm={6} md={4} lg={3}>
-                            <UserAchievementCard uAchievement={userAchievment} t={t} />
+                            <UserAchievementCard
+                                handleShow={(achievement) => {
+                                    setShow(true);
+                                    setSelectedAchievement(achievement);
+                                }}
+                                uAchievement={userAchievment} t={t} />
                         </Grid>
                     );
                 })}
             </Grid>
+
+            <AchievementModal show={show} handleClose={() => setShow(false)} uAchievement={selectedAchievement} t={t}/>
         </Container>
     );
 }

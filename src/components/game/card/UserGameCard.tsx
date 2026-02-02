@@ -48,6 +48,7 @@ const UserGameCard: React.FC<UserGameCardProps> = ({ game, statusColors, t }) =>
             sx={{
                 justifyContent: "center",
                 alignItems: "center",
+                paddingBottom: "0"
             }}
             className="mb-4 d-flex justify-content-center user-game-list-col"
         >
@@ -55,8 +56,8 @@ const UserGameCard: React.FC<UserGameCardProps> = ({ game, statusColors, t }) =>
                 style={{
                     overflow: "hidden",
                     border: "0px",
-                    height: "26.2vh",
-                    width: "18.25vh",
+                    height: "15.75rem",
+                    width: "11rem",
                     gap: "0",
                     display: "flex",
                     flexDirection: "column",

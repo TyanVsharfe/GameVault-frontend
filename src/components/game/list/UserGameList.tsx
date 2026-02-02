@@ -1,19 +1,28 @@
 import React, { useState } from 'react';
-import {Container, Row} from 'react-bootstrap';
 import "../../../assets/styles/style.css"
 import "../../../assets/styles/game-card.css"
-import {UserGame} from "../../../api/services/userGamesService";
 import {statusColors} from "../../../utils/Utils";
 import {useTranslation} from "react-i18next";
 import UserGameCard from "../card/UserGameCard";
 import PaginationComponent from "../../ui/PaginationComponent";
+import {UserGame} from "../../../types/user.game.types";
+import UserGameCardSmall, {UserGameCardProps} from '../card/UserGameCardSmall';
+import {Box, Grid, Stack} from '@mui/joy';
 
 export interface UserGamesListProps {
     games: UserGame[];
     gamesPerPage?: number;
+    listType: number;
 }
 
-const UserGameList: React.FC<UserGamesListProps> = ({ games, gamesPerPage = 10 }) => {
+type CardComponents = Record<number, React.FC<UserGameCardProps>>;
+
+const cardComponents: CardComponents = {
+    0: UserGameCard,
+    1: UserGameCardSmall,
+};
+
+const UserGameList: React.FC<UserGamesListProps> = ({ games, listType, gamesPerPage = 10 }) => {
     const { t } = useTranslation();
 
     const [currentPage, setCurrentPage] = useState<number>(1);
@@ -24,18 +33,34 @@ const UserGameList: React.FC<UserGamesListProps> = ({ games, gamesPerPage = 10 }
 
     return (
         <>
-            <Container className="justify-content-start align-items-center game-list">
-                <Row>
-                    {games.map((game: UserGame, index: number) => (
-                        <UserGameCard
-                            key={game.game.igdbId || index}
+            <Box className="game-list"
+                 sx={{
+                     display: 'grid',
+                     gridTemplateColumns: () =>
+                         listType == 0
+                             ? 'repeat(auto-fill, minmax(10rem, 3fr))'
+                             : 'repeat(auto-fill, minmax(7.5rem, 1fr))',
+                     maxWidth: '85rem',
+                     width: '100%',
+                     mx: 'auto',
+                     pb: '0.75rem',
+                     gap: 2,
+                     justifyItems: 'center'
+                 }}
+            >
+                {games.map((game: UserGame, index: number) => {
+                    const CardComponent = cardComponents[listType] || UserGameCard;
+
+                    return (
+                        <CardComponent
+                            key={game.id}
                             game={game}
                             statusColors={statusColors}
                             t={t}
                         />
-                    ))}
-                </Row>
-            </Container>
+                    )}
+                )}
+            </Box>
 
             <PaginationComponent
                 currentPage={currentPage}

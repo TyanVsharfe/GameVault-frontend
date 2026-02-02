@@ -92,9 +92,12 @@
 /*---------------------------*/
 
 .game-card__img {
-    height: 220px;
     object-fit: cover;
 
+}
+
+.game-card__img:hover {
+    /*filter: brightness(0.7);*/
 }
 
 .game-card__img-wrapper {
@@ -107,7 +110,7 @@
     top: -8px;
     left: -8px;
     width: calc(100% + 16px);
-    height: 56px;
+    height: 48px;
     background-size: cover;
     background-position: top;
     filter: blur(8px);
@@ -142,12 +145,12 @@
 
 .game__description {
     display: flex;
-    max-height: 25rem;
+    max-height: 17rem;
 
     margin-top: 5px;
     overflow: hidden;
     display: -webkit-box;
-    -webkit-line-clamp: 15;
+    -webkit-line-clamp: 11;
     -webkit-box-orient: vertical;
     position: relative;
 }

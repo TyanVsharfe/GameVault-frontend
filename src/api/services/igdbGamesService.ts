@@ -1,10 +1,11 @@
 import { AggregatedRelease } from "../../types/igdb.game.types";
-import {igdbClient} from "../client";
+import {apiClient, igdbClient} from "../client";
 
 const GAME_ENDPOINTS = {
     SEARCH: "/igdb/games",
     RELEASE_DATES: "/igdb/games/release-dates",
     GET_BY_ID: (id: string) => `/igdb/games/${id}`,
+    GET_BY_IDS: "/igdb/games/ids",
     GET_SERIES: (seriesSlug: string) => `/igdb/series/${seriesSlug}`,
     GET_COMPANY: (companySlug: string) => `/igdb/game-company/${companySlug}`,
 } as const;
@@ -26,6 +27,19 @@ export const igdbGamesService = {
 
         try {
             const response = await igdbClient.get(GAME_ENDPOINTS.GET_BY_ID(gameId));
+            return response.data;
+        } catch (error) {
+            console.error('Request error:', error);
+        }
+    },
+
+    getIdgbGamesByIds: async (gameIds: string[]) => {
+        const query = gameIds.map(id => Number(id));
+
+        console.log(gameIds.length);
+
+        try {
+            const response = await apiClient.post(GAME_ENDPOINTS.GET_BY_IDS, query);
             return response.data;
         } catch (error) {
             console.error('Request error:', error);

@@ -1,12 +1,12 @@
 import React from "react";
 import { Box, Typography } from "@mui/joy";
 
-export default function DlcBadge() {
+export default function DlcBadge({size = "default"}: {size: string}) {
     return (
         <Box
             sx={{
                 position: "absolute",
-                top: 8,
+                top: size === "default" ? 7 : 5,
                 left: 8,
                 px: 1.5,
                 borderRadius: "1rem",
@@ -26,7 +26,7 @@ export default function DlcBadge() {
                 sx={{
                     color: "#fff",
                     fontWeight: 700,
-                    fontSize: "0.95rem",
+                    fontSize: `${size === "default" ? 0.95 : 0.75}rem`,
                     textShadow: "0 1px 2px rgba(0,0,0,0.4)",
                 }}
             >

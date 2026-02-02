@@ -160,7 +160,7 @@ function UserCollectionPage() {
     return (
         <>
             <Helmet>
-                <title>{originalTitle}</title>
+                <title>{originalTitle} | GameVault</title>
             </Helmet>
             <Container style={{display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
                 {!error && (

@@ -67,6 +67,7 @@ export const en = {
         franchise: 'Franchise',
         series: 'Series',
         company: 'Company',
+        company_games: 'Company games',
         notes: 'Notes',
         reviews: 'Reviews',
         user_review: 'Your review',
@@ -110,8 +111,10 @@ export const en = {
 
         // Stats Page
         games: 'games',
+        games_upper: 'Games',
         total: ' Total games',
         avg_rating: 'Avg. Rating',
+        rating: 'Rating',
         notes_added: 'Notes',
         total_achievements_completed: 'Achievements completed',
 
@@ -149,7 +152,7 @@ export const en = {
         type_dlc_addon: 'DLC',
         type_expansion: 'Expansion',
         type_bundle: 'Bundle',
-        type_standalone_expansion: 'Standalone expansion',
+        type_standalone_expansion: 'Standalone',
         type_mod: 'Mod',
         type_episode: 'Episode',
         type_season: 'Season',
@@ -187,6 +190,28 @@ export const en = {
 
         //Switch
         on: 'On',
-        off: 'Off'
+        off: 'Off',
+
+        //Filters
+        filter: 'Filter',
+        filter_title: 'Title',
+        set_filters: 'Set filters',
+        reset_filters: 'Reset filters',
+        apply_filters: 'Apply filters',
+        min_rating: 'Min rating',
+        max_rating: 'Max rating',
+        has_review: 'Has review',
+        fully_completed: 'Fully completed',
+        created_at: 'Created at',
+        updated_at: 'Updated at',
+        set_order: 'Set order',
+        asc: 'Asc',
+        desc: 'Desc',
+        sort_by: 'Sort by',
+
+        hide_completed: 'Hide completed',
+        compact_view: 'Compact view',
+        achievement_info: 'Achievement info',
+        all_completed: 'All completed'
     },
 } as const;

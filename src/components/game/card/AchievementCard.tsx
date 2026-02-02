@@ -3,14 +3,15 @@ import {Box, Card, CardContent, LinearProgress, Tooltip} from "@mui/joy";
 import {formatDate } from "../../../utils/Utils";
 import "../../../assets/styles/game-card.css"
 import {useTheme} from "next-themes";
-import {UserAchievment} from "../../../api/services/achievementService";
+import {UserAchievment} from "../../../types/achievement.types";
 
 interface UserAchievementCardProps {
+    handleShow: (achievement: UserAchievment) => void;
     uAchievement: UserAchievment;
     t: (key: string) => string;
 }
 
-const UserAchievementCard: React.FC<UserAchievementCardProps> = ({ uAchievement, t }) => {
+const UserAchievementCard: React.FC<UserAchievementCardProps> = ({ uAchievement, handleShow, t }) => {
     const { name, requiredCount, iconUrl, description, id } = uAchievement.achievement;
     const { currentProgress, achievedAt } = uAchievement;
     const percentage = Math.min(Math.round((currentProgress / requiredCount) * 100), 100);
@@ -29,7 +30,9 @@ const UserAchievementCard: React.FC<UserAchievementCardProps> = ({ uAchievement,
                         fontWeight: "bold",
                         height: "2.8rem",
                     }}>
-                        <Tooltip title={description} arrow size="lg" variant="plain" placement="bottom">
+                        <Tooltip title={description} arrow size="lg" variant="plain" placement="bottom"
+                                 onClick={() => handleShow(uAchievement)}
+                        >
                             <div className="user-game-list-game-card__title text-center"
                                         style={{ cursor: 'pointer' }}>
                                 {name}

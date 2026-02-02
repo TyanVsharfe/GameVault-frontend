@@ -50,13 +50,3 @@ export interface UpdateGameRatingParams {
     gameplay?: number;
     resetUserRating?: boolean;
 }
-
-export interface PageResponse<T> {
-    content: UserGame[];
-    totalPages: number;
-    totalElements: number;
-    number: number;
-    size: number;
-    first: boolean;
-    last: boolean;
-}

@@ -53,11 +53,11 @@ const GameControls: React.FC<GameControlsProps> = ({ gameModes, isOverallRating,
     const [ checkedOverallRating, setCheckedOverallRating ] = React.useState<boolean>(false);
     const [ checkedOverallStatus, setCheckedOverallStatus ] = React.useState<boolean>(false);
 
-    const graphicsSliderChange = (e: Event, value: number) => setGraphicsRating(value);
+    const graphicsSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => setGraphicsRating(Number(e.target.value));
 
-    const storySliderChange = (e: Event, value: number) => setStoryRating(value);
+    const storySliderChange = (e: React.ChangeEvent<HTMLInputElement>) => setStoryRating(Number(e.target.value));
 
-    const gameplaySliderChange = (e: Event, value: number) => setGameplayRating(value);
+    const gameplaySliderChange = (e: React.ChangeEvent<HTMLInputElement>) => setGameplayRating(Number(e.target.value));
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -110,18 +110,17 @@ const GameControls: React.FC<GameControlsProps> = ({ gameModes, isOverallRating,
             >
                 <ModalDialog style={{display: 'flex', gap: '1rem', width: '55%', height: '55%'}}>
                     <div style={{display: 'flex', flexDirection: 'row', gap: '1rem'}}>
-                        {t('set_rating')}
                         <Tabs value={activeEdit} onChange={(e,  newValue) => setActiveEdit(Number(newValue) ?? 0)}>
                             <TabList>
                                 <Tab
                                     variant="plain"
                                     color="neutral" >
-                                    Рейтинг
+                                    {t('rating')}
                                 </Tab>
                                 <Tab
                                     variant="plain"
                                     color="neutral" >
-                                    Статус
+                                    {t('status')}
                                 </Tab>
                             </TabList>
                         </Tabs>

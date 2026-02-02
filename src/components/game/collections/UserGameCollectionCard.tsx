@@ -1,9 +1,10 @@
-import { Card, Typography, Box, AspectRatio, Link } from '@mui/joy';
+import {Card, Typography, Box, AspectRatio, Link, Tooltip} from '@mui/joy';
 import LockIcon from '@mui/icons-material/Lock';
 import {UserGameList} from "../../../types/user.game.list.types";
+import {useTranslation} from "react-i18next";
 
 const UserGameCollectionCard = ({collection}: {collection: UserGameList}) => {
-    console.log(collection);
+    const { t } = useTranslation();
 
     const getAllCoverUrls = (listData: any): string[] => {
         if (!listData.items || listData.items.length === 0) {
@@ -76,9 +77,22 @@ const UserGameCollectionCard = ({collection}: {collection: UserGameList}) => {
                     paddingTop: '0.5rem'
                 }}
             >
-                <Typography level="title-md">{collection.name}</Typography>
+                <Tooltip title={collection.name} arrow placement="top">
+                    <Typography
+                        level="title-md"
+                        sx={{
+                            display: '-webkit-box',
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: 'vertical',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                        }}
+                    >
+                        {collection.name}
+                    </Typography>
+                </Tooltip>
                 <Typography level="body-sm" sx={{display: "flex", justifyContent: "space-between", opacity: 0.7}}>
-                    Игр: {collection?.items?.length ?? 0}
+                    {t('games_upper')}: {collection?.items?.length ?? 0}
                     {!collection?.public && (<LockIcon/>)}
                 </Typography>
             </Box>

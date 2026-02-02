@@ -9,7 +9,7 @@ export const IgdbGameList: React.FC<{ games: IgdbGame[] }> = ({ games }) => {
     return (
         <BaseList
             items={games}
-            itemsPerPage={10}
+            itemsPerPage={12}
             filterItem={(game) => game.cover?.url != null}
             renderItem={(game) => (
                 <IgdbGameCard

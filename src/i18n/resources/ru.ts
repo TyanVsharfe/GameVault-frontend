@@ -67,6 +67,7 @@ export const ru = {
         franchise: 'Франшиза',
         series: 'Серия',
         company: 'Компания',
+        company_games: 'Игры компании',
         notes: 'Заметки',
         reviews: 'Рецензии',
         user_review: 'Ваша рецензия',
@@ -110,8 +111,10 @@ export const ru = {
 
         // Stats Page
         games: 'игр',
+        games_upper: 'Игр',
         total: ' Всего игр',
         avg_rating: 'Средний рейтинг',
+        rating: 'Оценка',
         notes_added: 'Заметок:',
         total_achievements_completed: 'Достижений получено',
 
@@ -149,7 +152,7 @@ export const ru = {
         type_dlc_addon: 'DLC',
         type_expansion: 'Расширение',
         type_bundle: 'Бандл',
-        type_standalone_expansion: 'Самостоятельное дополнение',
+        type_standalone_expansion: 'Отдельное доп.',
         type_mod: 'Мод',
         type_episode: 'Эпизод',
         type_season: 'Сезон',
@@ -187,6 +190,28 @@ export const ru = {
 
         //Switch
         on: 'Да',
-        off: 'Нет'
+        off: 'Нет',
+
+        //Filters
+        filter: 'Фильтр',
+        filter_title: 'Название',
+        set_filters: 'Настроить фильтры',
+        reset_filters: 'Сбросить фильтры',
+        apply_filters: 'Применить фильтры',
+        min_rating: 'Мин. рейтинг',
+        max_rating: 'Макс. рейтинг',
+        has_review: 'Есть рецензия',
+        fully_completed: 'Полностью завершено',
+        created_at: 'Время создания',
+        updated_at: 'Время обновления',
+        set_order: 'Порядок',
+        asc: 'Возр.',
+        desc: 'Убыв.',
+        sort_by: 'Сорт. по',
+
+        hide_completed: 'Спрятать завершенные',
+        compact_view: 'Компактный вид',
+        achievement_info: 'Информация о достижении',
+        all_completed: 'Все завершено'
     },
 } as const;

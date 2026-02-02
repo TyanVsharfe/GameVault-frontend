@@ -1,4 +1,4 @@
-import {AspectRatio, Card, CardOverflow, IconButton, Link, Stack, Typography} from "@mui/joy";
+import {AspectRatio, Card, CardOverflow, IconButton, Link, Stack, Tooltip, Typography} from "@mui/joy";
 import "../../../assets/styles/game-card.css"
 import {useTheme} from "next-themes";
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -6,6 +6,7 @@ import {userGameListService} from "../../../api/services/userGameListService";
 import {useSortable} from "@dnd-kit/sortable";
 import {CSS} from '@dnd-kit/utilities';
 import {Game} from "../../../types/user.game.types";
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
 import React from "react";
 
 interface GameCardProps {
@@ -58,7 +59,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, t, editMode, listId }) => {
         left: '8px',
         background: 'rgba(0, 0, 0, 0.7)',
         color: 'white',
-        padding: '6px 10px',
+        padding: '6px 9px',
         borderRadius: '6px',
         fontSize: '18px',
         lineHeight: 1,
@@ -67,6 +68,25 @@ const GameCard: React.FC<GameCardProps> = ({ game, t, editMode, listId }) => {
         opacity: 0.8,
         zIndex: 10,
         transition: 'opacity 0.2s ease',
+    };
+
+    const removeHandleStyle: React.CSSProperties = {
+        position: 'absolute',
+        top: '8px',
+        right: '8px',
+        background: 'rgba(0, 0, 0, 0.7)',
+        color: 'white',
+        padding: '6px 8px',
+        borderRadius: '6px',
+        fontSize: '18px',
+        lineHeight: 1,
+        pointerEvents: 'auto',
+        userSelect: 'none',
+        opacity: 0.8,
+        zIndex: 10,
+        transition: 'opacity 0.2s ease',
+        backgroundColor: 'white',
+        cursor: 'pointer',
     };
 
     return (
@@ -92,8 +112,32 @@ const GameCard: React.FC<GameCardProps> = ({ game, t, editMode, listId }) => {
                 {/*/>*/}
                 <CardOverflow>
                     {editMode && (
-                        <div style={dragHandleStyle}>
-                            ⋮⋮
+                        <div>
+                            <div style={dragHandleStyle}>
+                                <DragIndicatorIcon sx={{color: "white"}}/>
+                            </div>
+                            <div
+                                style={{
+                                    ...removeHandleStyle,
+                                    transition: 'transform 0.2s ease'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.transform = 'scale(1.1)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.transform = 'scale(1)';
+                                }}>
+                                <RemoveIcon
+                                    sx={{color: "black",
+                                        }}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        userGameListService.deleteUserGameFromList(listId, game.igdbId)
+                                            .then(() => window.location.reload());
+                                    }}
+                                />
+                            </div>
                         </div>
                     )}
                     <AspectRatio ratio="3/3.95" className="game-card__img-wrapper">
@@ -109,30 +153,30 @@ const GameCard: React.FC<GameCardProps> = ({ game, t, editMode, listId }) => {
                             className="game-card__img"
                             style={{objectPosition: 'top'}}
                         />
-                        {editMode && (
-                            <IconButton
-                                style={{
-                                    position: 'absolute',
-                                    top: '10px',
-                                    right: '10px',
-                                    zIndex: 2,
-                                    backgroundColor: 'white'
-                                }}
-                                className="game-card__remove-btn"
-                                onClick={() => userGameListService.deleteUserGameFromList(listId, game.igdbId)}
-                            >
-                                <RemoveIcon/>
-                            </IconButton>
-                        )}
                     </AspectRatio>
                 </CardOverflow>
 
                 <div style={{height: '3rem'}}>
-                    <Typography className="text-center"
-                                style={{color: "white"}}
-                    >
-                        {game.title}
-                    </Typography>
+                    {/*<Typography className="text-center"*/}
+                    {/*            style={{color: "white"}}*/}
+                    {/*>*/}
+                    {/*    {game.title}*/}
+                    {/*</Typography>*/}
+                    <Tooltip title={game.title} arrow placement="top">
+                        <Typography
+                            className="text-center"
+                            sx={{
+                                display: '-webkit-box',
+                                WebkitLineClamp: 2,
+                                WebkitBoxOrient: 'vertical',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                color: "white"
+                            }}
+                        >
+                            {game.title}
+                        </Typography>
+                    </Tooltip>
                     <Link
                         overlay
                         href={`/games/${game.igdbId}`}
