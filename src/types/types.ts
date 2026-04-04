@@ -7,3 +7,8 @@ export interface PageResponse<T> {
     first: boolean;
     last: boolean;
 }
+
+export interface BaseEntity {
+    createdAt: number;
+    updatedAt: number;
+}

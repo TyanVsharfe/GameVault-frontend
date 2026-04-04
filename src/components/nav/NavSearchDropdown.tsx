@@ -25,11 +25,13 @@ const NavSearchDropdown: React.FC<NavSearchDropdownProps> = ({ games, isListPage
 
     const [showSuccessNotification, setShowSuccessNotification] = React.useState(false);
     const [showErrorNotification, setShowErrorNotification] = React.useState(false);
+    const [gameName, setGameName] = React.useState<string>();
 
     const handleAddToList = async (game: IgdbGame) => {
         if (!listId || !onChange) return;
 
         try {
+            setGameName(game.name);
             const updatedList = await userGameListService.updateUserGameList(
                 { games: Array.from([game.id]) },
                 listId
@@ -54,7 +56,6 @@ const NavSearchDropdown: React.FC<NavSearchDropdownProps> = ({ games, isListPage
                     // display: "flex",
                     // justifyContent: "flex-start",
                     position: 'absolute',
-                    zIndex: 10000,
                     maxHeight: '300px',
                     overflowY: 'auto',
                     width: '100%'
@@ -105,15 +106,17 @@ const NavSearchDropdown: React.FC<NavSearchDropdownProps> = ({ games, isListPage
 
                 <Toast
                     module="List"
-                    message="The game has been added to the list."
+                    message={`${gameName} has been added to the list.`}
                     isSuccess={true}
                     open={showSuccessNotification}
+                    onClose={() => setShowSuccessNotification(false)}
                 />
                 <Toast
                     module="List"
                     message="Could not add the game. Please try again."
                     isSuccess={false}
                     open={showErrorNotification}
+                    onClose={() => setShowErrorNotification(false)}
                 />
                 {/*<Snackbar*/}
                 {/*    variant="soft"*/}

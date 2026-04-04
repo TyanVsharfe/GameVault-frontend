@@ -1,70 +1,86 @@
 import React, {useState} from "react";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
 import {useNavigate} from "react-router-dom";
 import {useTranslation} from "react-i18next";
 import { User } from "../../types/auth.types";
 import {authService} from "../../api/services/authService";
+import {Box, Button, Checkbox, Stack} from "@mui/joy";
+import FormLabel from "@mui/joy/FormLabel";
+import FormControl from "@mui/joy/FormControl";
+import Input from "@mui/joy/Input";
 
 const RegisterPage: React.FC = () => {
     const { t } = useTranslation();
 
-    const [login, setLogin] = useState('');
+    const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('')
     const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const user: User = {username: login, password: password};
+        const user: User = {username: username, password: password, email: email};
         await authService.registerUser(user)
         navigate('/account/games')
-
-        // try {
-        //     const user = await loginUser({ login: login, password });
-        //     dispatch(login(user));
-        //     localStorage.setItem('user', JSON.stringify(user));
-        //     navigate('/');
-        // } catch (error) {
-        //     console.error('Login failed:', error);
-        //     alert('Login failed. Please check your credentials.');
-        // }
     };
 
-
     return (
-        <Container style={{ justifyContent: 'center', width: '300px', display: 'flex', flexDirection: 'column', verticalAlign: 'top', height: '70vh' }}>
-            <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-3" controlId="formBasicLogin">
-                    <Form.Label>{t('login')}</Form.Label>
-                    <Form.Control type="text" placeholder="Login"
-                                  onChange={(e) => setLogin(e.target.value)}/>
-                    {/*<Form.Text className="text-muted">*/}
-                    {/*    We'll never share your email with anyone else.*/}
-                    {/*</Form.Text>*/}
-                </Form.Group>
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '70vh',
+                width: '300px',
+                mx: 'auto',
+            }}
+        >
+            <form onSubmit={handleSubmit}>
+                <Stack gap={2}>
+                    <FormControl>
+                        <FormLabel>
+                            {t('username')}
+                        </FormLabel>
+                        <Input type="text"
+                               placeholder={t('username')}
+                               autoComplete={"off"}
+                               value={username}
+                               onChange={(e) => setUsername(e.target.value)}
+                        />
+                    </FormControl>
 
-                <Form.Group className="mb-3" controlId="formBasicEmail">
-                    <Form.Label>{t('email')}</Form.Label>
-                    <Form.Control type="email" placeholder="name@example.com"
-                                  onChange={(e) => setEmail(e.target.value)}/>
-                </Form.Group>
+                    <FormControl>
+                        <FormLabel>{t('email')}</FormLabel>
+                        <Input type="email"
+                               placeholder="name@example.com"
+                               autoComplete={"off"}
+                               value={email}
+                               onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </FormControl>
 
-                <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Label>{t('password')}</Form.Label>
-                    <Form.Control type="password" placeholder="Password"
-                                  onChange={(e) => setPassword(e.target.value)}/>
-                </Form.Group>
+                    <FormControl>
+                        <FormLabel>
+                            {t('password')}
+                        </FormLabel>
+                        <Input
+                            type="password"
+                            placeholder={t('password')}
+                            autoComplete={"off"}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </FormControl>
 
-                <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                    <Form.Check type="checkbox" label={t('agree_with_terms')} />
-                </Form.Group>
-                <Button variant="primary" type="submit">
-                    {t('register')}
-                </Button>
-            </Form>
-        </Container>
+                    <FormControl>
+                        <Checkbox label={t('agree_with_terms')} />
+                    </FormControl>
+                    <Button type="submit">
+                        {t('register')}
+                    </Button>
+                </Stack>
+            </form>
+        </Box>
     );
 };
 

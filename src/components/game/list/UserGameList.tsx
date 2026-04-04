@@ -27,7 +27,7 @@ const UserGameList: React.FC<UserGamesListProps> = ({ games, listType, gamesPerP
 
     const [currentPage, setCurrentPage] = useState<number>(1);
 
-    const gamesWithCovers = games.filter(game => game?.coverUrl != null);
+    const gamesWithCovers = games.filter(game => game?.customCoverUrl != null);
 
     const totalPages = Math.ceil(gamesWithCovers.length / gamesPerPage);
 
@@ -62,11 +62,11 @@ const UserGameList: React.FC<UserGamesListProps> = ({ games, listType, gamesPerP
                 )}
             </Box>
 
-            <PaginationComponent
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-            />
+            {/*<PaginationComponent*/}
+            {/*    currentPage={currentPage}*/}
+            {/*    totalPages={totalPages}*/}
+            {/*    onPageChange={setCurrentPage}*/}
+            {/*/>*/}
         </>
     );
 };

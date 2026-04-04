@@ -18,7 +18,7 @@ export interface UserGameListItem {
 }
 
 export interface UserGameListForm {
-    title?: string;
+    name?: string;
     description?: string;
     isPublic?: boolean;
     games?: number[];

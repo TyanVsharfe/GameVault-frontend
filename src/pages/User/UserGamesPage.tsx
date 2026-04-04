@@ -110,6 +110,7 @@ function UserGamesPage() {
     const handleResetFilters = () => {
         setFilters({
             status: null,
+            dlcOnly: null,
             minRating: null,
             maxRating: null,
             hasReview: null,

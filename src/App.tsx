@@ -23,6 +23,9 @@ import UserCollectionPage from "./pages/User/UserCollectionPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CircularProgress from '@mui/joy/CircularProgress';
 import GameCompanyPage from "./pages/GameCompanyPage";
+import VerifyEmailPage from "./pages/Auth/VerifyEmailPage";
+import ResetPasswordPage from "./pages/Auth/ResetPasswordPage";
+import ResetPasswordVerifyPage from "./pages/Auth/ResetPasswordVerifyPage";
 
 function App() {
     const dispatch = useDispatch();
@@ -54,23 +57,17 @@ function App() {
                 <Route path="/search" element={<SearchPage/>}/>
                 <Route path="/login" element={<LoginPage/>} />
                 <Route path="/registration" element={<RegisterPage/>} />
-                <Route path="/account" element={
-                    <ProtectedRoute>
-                        <UserInfoPage />
-                    </ProtectedRoute>
-                } />
-                <Route path="/account/*"
-                       element={
-                           <ProtectedRoute>
-                               <Routes>
-                                   <Route path="games" element={<UserGamesPage />} />
-                                   <Route path="lists" element={<UserCollectionsPage />} />
-                                   <Route path="lists/:id" element={<UserCollectionPage />} />
-                                   <Route path="settings" element={<UserSettingsPage />} />
-                                   <Route path="achievements" element={<UserAchievementsPage />} />
-                               </Routes>
-                           </ProtectedRoute>
-                       }/>
+                <Route path="/registration/verify" element={<VerifyEmailPage/>} />
+                <Route path="/reset-password" element={<ResetPasswordPage/>} />
+                <Route path="/reset-password/verify" element={<ResetPasswordVerifyPage/>} />
+                <Route element={<ProtectedRoute/>}>
+                    <Route path="/account" element={<UserInfoPage />} />
+                    <Route path="/account/games" element={<UserGamesPage />} />
+                    <Route path="/account/lists" element={<UserCollectionsPage />} />
+                    <Route path="/account/lists/:id" element={<UserCollectionPage />} />
+                    <Route path="/account/settings" element={<UserSettingsPage />} />
+                    <Route path="/account/achievements" element={<UserAchievementsPage />} />
+                </Route>
                 <Route path="/games/:id" element={<GamePage />} />
                 <Route path="/series/:series" element={<SeriesPage />} />
                 <Route path="/company/:company" element={<GameCompanyPage />} />

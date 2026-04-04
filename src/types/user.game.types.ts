@@ -1,13 +1,14 @@
 import {Note} from "../api/services/noteService";
 import {Cover} from "./igdb.game.types";
+import {BaseEntity} from "./types";
 
-export interface UserGame {
+export interface UserGame extends BaseEntity{
     game: Game;
     status: string;
-    overallRatingManual: boolean;
+    overallRating: boolean;
     overallStatus: boolean;
     userRating: number;
-    coverUrl: string;
+    customCoverUrl: string;
     review: string;
     notes: Note[];
     dlcs: DLC[];
@@ -43,10 +44,16 @@ export interface Game {
     authors: string[];
 }
 
+export interface UpdateUserGameModeParams {
+    status: string | undefined;
+    ratingParams: UpdateGameRatingParams;
+}
+
 export interface UpdateGameRatingParams {
-    igdbId?: string;
+    resetUserRating?: boolean;
+    rating?: number;
+
     graphics?: number;
     story?: number;
     gameplay?: number;
-    resetUserRating?: boolean;
 }

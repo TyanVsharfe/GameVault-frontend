@@ -43,7 +43,7 @@ function UserGameInfo({isOverallStatus}: Props) {
                         )
                         : (
                             <>
-                            <Button
+                                <Button
                                     size="sm"
                                     variant="soft"
                                     onClick={() => setShowStatuses(!showStatuses)}

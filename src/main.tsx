@@ -1,7 +1,6 @@
 import React, {StrictMode} from 'react';
 import {createRoot} from 'react-dom/client';
 import {BrowserRouter} from "react-router-dom";
-import 'bootstrap/dist/css/bootstrap.min.css';
 import App from "./App";
 import {Provider} from "react-redux";
 import {store} from "./store/store";
@@ -10,6 +9,7 @@ import theme from "./theme";
 import initI18n from './i18n';
 import { ThemeProvider } from 'next-themes';
 import {HelmetProvider} from "react-helmet-async";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 initI18n().then(() => {
     createRoot(document.getElementById('root')!).render(

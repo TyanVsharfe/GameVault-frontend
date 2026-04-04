@@ -1,5 +1,4 @@
 import React, {useContext, useEffect, useState} from 'react';
-import Form from 'react-bootstrap/Form';
 import {enumStatus} from "../../utils/Enums"
 import {userGameService} from "../../api/services/userGamesService";
 import {useParams} from "react-router-dom";
@@ -7,329 +6,164 @@ import "../../assets/styles/game-card.css"
 import {useGameContext} from "./provider/GameProdiver";
 import {useTranslation} from "react-i18next";
 import Select, {selectClasses} from '@mui/joy/Select';
-import Option from '@mui/joy/Option';
+import Option, { optionClasses } from '@mui/joy/Option';
 import {
+    Box,
     Button, Chip,
-    FormControl,
-    FormHelperText,
-    FormLabel,
-    Modal,
-    ModalClose,
-    ModalDialog, Stack,
-    Switch,
-    Tab,
-    TabList,
-    TabPanel,
-    Tabs
+    Stack, Typography,
 } from "@mui/joy";
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
-import {statusColors} from "../../utils/Utils";
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import {statusColorsHard} from "../../utils/Utils";
 import { GameMode } from '../../types/igdb.game.types';
 import {UserMode} from "../../types/user.game.types";
+import UserGameEditInfoModal from "../modal/UserGameEditInfoModal";
 
 export interface GameControlsProps {
     gameModes: UserMode[] | GameMode[];
     isOverallRating: boolean;
     isOverallStatus: boolean;
+    status: String;
 }
 
-function isUserMode(mode: UserMode | GameMode): mode is UserMode {
-    return (mode as UserMode).status !== undefined;
-}
-
-const GameControls: React.FC<GameControlsProps> = ({ gameModes, isOverallRating, isOverallStatus }) => {
+const GameControls: React.FC<GameControlsProps> = ({ gameModes, isOverallRating, isOverallStatus, status: initStatus }) => {
     const { t } = useTranslation();
 
-    const { userRating, setUserRating, gameStatus, setGameStatus } = useGameContext();
+    const { userRating, setUserRating, gameStatus, setGameStatus, userModes } = useGameContext();
     const igdbId = useParams<{ id: string }>();
-    const [ show, setShow ] = useState(false);
-    const [ activeEdit, setActiveEdit] = useState(0);
-    const [ currentMode, setCurrentMode ] = useState("");
-    const [ graphicsRating, setGraphicsRating ] = useState(5);
-    const [ storyRating, setStoryRating ] = useState(5);
-    const [ gameplayRating, setGameplayRating ] = useState(5);
-    const [ resetUserRating, setResetUserRating ] = useState(false);
+    const [show, setShow] = useState(false);
+    const [status, setStatus] = useState(initStatus ?? "none");
+    const [showStatuses, setShowStatuses] = useState(false);
 
-    const [ checkedOverallRating, setCheckedOverallRating ] = React.useState<boolean>(false);
     const [ checkedOverallStatus, setCheckedOverallStatus ] = React.useState<boolean>(false);
-
-    const graphicsSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => setGraphicsRating(Number(e.target.value));
-
-    const storySliderChange = (e: React.ChangeEvent<HTMLInputElement>) => setStoryRating(Number(e.target.value));
-
-    const gameplaySliderChange = (e: React.ChangeEvent<HTMLInputElement>) => setGameplayRating(Number(e.target.value));
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
     useEffect(() => {
-        setCheckedOverallRating(isOverallRating);
         setCheckedOverallStatus(isOverallStatus);
-        if (gameModes.length === 1) {
-            setCurrentMode(isUserMode(gameModes[0]) ? gameModes[0].mode : gameModes[0].name);
-            setCheckedOverallRating(true);
-        }
     }, [gameModes]);
 
     return (
         <>
-            <Stack gap={2} style={{alignItems: 'center'}}>
-                <Select className="game__button"
-                        placeholder={t('change_status')}
-                        indicator={<KeyboardArrowDown />}
+            <Stack gap={2} style={{alignItems: 'flex-start'}}>
+                {isOverallStatus || isOverallRating ? (
+                    <Select
+                        placeholder={checkedOverallStatus ? t(`status_${status}`) : t('change_status')}
+                        indicator={<KeyboardArrowDown sx={{ color: '#fff' }}/>}
                         sx={{
+                            width: '16rem',
+                            fontWeight: 700,
+                            transition: '0.2s',
+                            backgroundColor: statusColorsHard[status],
+                            color: '#fff !important',
+                            border: 'none',
+                            '--Select-placeholderOpacity': 1,
+                            '--Icon-color': '#fff',
+                            '&:hover': {
+                                backgroundColor: statusColorsHard[status],
+                                transform: 'scale(1.02)',
+                            },
                             [`& .${selectClasses.indicator}`]: {
+                                color: '#fff',
                                 transition: '0.2s',
                                 [`&.${selectClasses.expanded}`]: {
                                     transform: 'rotate(-180deg)',
                                 },
                             },
-                        }}>
-                    <Option value={t('status_completed')} onClick={() => userGameService.updateGameStatus(igdbId.id, enumStatus.Completed).then(() => setGameStatus("completed"))}>
-                        {t('status_completed')}
-                    </Option>
-                    <Option value={t('status_playing')} onClick={() => userGameService.updateGameStatus(igdbId.id, enumStatus.Playing).then(() => setGameStatus("playing"))}>
-                        {t('status_playing')}
-                    </Option>
-                    <Option value={t('status_planned')} onClick={() => userGameService.updateGameStatus(igdbId.id, enumStatus.Planned).then(() => setGameStatus("planned"))}>
-                        {t('status_planned')}
-                    </Option>
-                    <Option value={t('status_abandoned')} onClick={() =>userGameService.updateGameStatus(igdbId.id, enumStatus.Abandoned).then(() => setGameStatus("abandoned"))}>
-                        {t('status_abandoned')}
-                    </Option>
-                </Select>
-                <Button className="game__button" onClick={handleShow}>
-                    {t('change_rating')}
-                </Button>
-                <Button className="game__button" onClick={() => {userGameService.deleteUserGame(igdbId.id).then(() => window.location.reload())}}>
-                    {t('delete_game')}
-                </Button>
+                            [`& .${selectClasses.button}`]: {
+                                color: '#fff !important',
+                                '& > span': {
+                                    color: '#fff !important',
+                                    opacity: 1,
+                                }
+                            },
+                            '& [class*="placeholder"]': {
+                                color: '#fff !important',
+                                opacity: '1 !important',
+                            },
+                        }}
+                    >
+                        {[
+                            { id: 'completed', enum: enumStatus.Completed },
+                            { id: 'playing', enum: enumStatus.Playing },
+                            { id: 'planned', enum: enumStatus.Planned },
+                            { id: 'abandoned', enum: enumStatus.Abandoned },
+                        ].map((item) => (
+                            <Option
+                                key={item.id}
+                                value={t(`status_${item.id}`)}
+                                onClick={() => userGameService.updateGameStatus(igdbId.id, item.enum).then(() => {
+                                    setGameStatus(item.id);
+                                    setStatus(item.id);
+                                })}
+                                sx={{
+                                    borderLeft: `4px solid ${statusColorsHard[item.id]}`,
+                                    margin: '2px 4px',
+                                    borderRadius: 'sm',
+                                    color: statusColorsHard[item.id],
+                                    '&:hover': {
+                                        backgroundColor: `${statusColorsHard[item.id]}95`,
+                                    },
+                                    [`&.${optionClasses.selected}`]: {
+                                        backgroundColor: statusColorsHard[item.id],
+                                        color: '#fff',
+                                    }
+                                }}
+                            >
+                                {t(`status_${item.id}`)}
+                            </Option>
+                        ))}
+                    </Select>
+                ) : (
+                    <>
+                        <Button
+                            size="sm"
+                            variant="soft"
+                            onClick={() => setShowStatuses(!showStatuses)}
+                            style={{width:'100%'}}
+                        >
+                            {showStatuses ? t('hide_statuses') : t('show_statuses')}
+                        </Button>
+                        {showStatuses && (
+                            <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 0.5}}>
+                                {userModes?.map((mode, i) => (
+                                    <Stack direction='row' key={i} sx={{justifyContent: 'space-between', alignItems: 'center', gap: 1, textAlign: 'center'}}>
+
+                                        <Typography sx={{fontSize: '1rem', color: 'black'}}>
+                                            {t(`${mode.mode.replace('-','_')}`)}
+                                        </Typography>
+
+                                        <Chip
+                                            size="sm"
+                                            variant="solid"
+                                            style={{backgroundColor: statusColorsHard[mode.status]}}
+                                            sx={{
+                                                fontSize: '0.95rem',
+                                            }}
+                                        >
+                                            {mode.status == null
+                                                ? t('none_status')
+                                                : t(`status_${mode.status.toLowerCase()}`)}
+                                        </Chip>
+                                    </Stack>
+                                ))}
+                            </Box>
+                        )}
+                    </>
+                )}
+                <Stack style={{width: '14rem', maxWidth: '15rem', gap: '1rem'}} direction="row">
+                    <Button style={{minWidth: '7.5rem'}} startDecorator={<EditIcon/>} onClick={handleShow}>
+                        {t('edit')}
+                    </Button>
+                    <Button style={{minWidth: '7.5rem'}} startDecorator={<DeleteIcon/>} onClick={() => {userGameService.deleteUserGame(igdbId.id).then(() => window.location.reload())}}>
+                        {t('remove')}
+                    </Button>
+                </Stack>
             </Stack>
 
-            <Modal open={show} onClose={handleClose}
-            >
-                <ModalDialog style={{display: 'flex', gap: '1rem', width: '55%', height: '55%'}}>
-                    <div style={{display: 'flex', flexDirection: 'row', gap: '1rem'}}>
-                        <Tabs value={activeEdit} onChange={(e,  newValue) => setActiveEdit(Number(newValue) ?? 0)}>
-                            <TabList>
-                                <Tab
-                                    variant="plain"
-                                    color="neutral" >
-                                    {t('rating')}
-                                </Tab>
-                                <Tab
-                                    variant="plain"
-                                    color="neutral" >
-                                    {t('status')}
-                                </Tab>
-                            </TabList>
-                        </Tabs>
-                    </div>
-                    <ModalClose/>
-
-                    {gameModes.length > 1 && (
-                        <FormControl
-                            orientation="horizontal"
-                            sx={{width: 375, justifyContent: 'space-between'}}
-                        >
-                            <div>
-                                <FormLabel>{activeEdit === 0 ? t('overall_rating') : t('overall_status')}</FormLabel>
-                                <FormHelperText>{activeEdit === 0 ? t('overall_rating_hint') : t('overall_status_hint')}</FormHelperText>
-                            </div>
-                            <Switch
-                                checked={activeEdit === 0 ? checkedOverallRating : checkedOverallStatus}
-                                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                                    activeEdit === 0
-                                        ? setCheckedOverallRating(event.target.checked)
-                                        : setCheckedOverallStatus(event.target.checked)
-                                }
-                                color={activeEdit === 0
-                                    ? checkedOverallRating ? 'success' : 'neutral'
-                                    : checkedOverallStatus ? 'success' : 'neutral'}
-                                variant={activeEdit === 0
-                                    ? checkedOverallRating ? 'solid' : 'outlined'
-                                    : checkedOverallStatus ? 'solid' : 'outlined'}
-                                endDecorator={activeEdit === 0
-                                    ? checkedOverallRating ? t('on') :  t('off')
-                                    : checkedOverallStatus ? t('on') :  t('off')}
-                                slotProps={{
-                                    endDecorator: {
-                                        sx: {
-                                            minWidth: 24,
-                                        },
-                                    },
-                                }}
-                            />
-                        </FormControl>
-                    )}
-
-                    <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'space-between',
-                        gap: '1rem',
-                        height: '100%'
-                    }}>
-                        {((!checkedOverallRating && activeEdit === 0) || (!checkedOverallStatus && gameModes.length > 1 && activeEdit === 1)) &&
-                            (
-                                <Select
-                                    value={currentMode}
-                                    placeholder={t('select_mode')}
-                                    onChange={(event, newValue) => setCurrentMode(newValue ?? "")}
-                                    sx={{minWidth: 120, marginTop: 0}}
-                                >
-                                    {isUserMode(gameModes[0]) ?
-                                        (gameModes as UserMode[]).map((mode) => (
-                                            <Option key={mode.id} value={mode.mode}>
-                                                {t(`${mode.mode.replace('-', '_')}`)}
-                                            </Option>
-                                        )) : (gameModes as GameMode[]).map((mode) => (
-                                            <Option key={mode.id} value={mode.slug}>
-                                                {t(`${mode.slug.replace('-', '_')}`)}
-                                            </Option>
-                                        ))
-                                    }
-                                </Select>
-                            )
-                        }
-                        <div style={{display: 'flex', marginTop: '0.5rem', gap: '1rem'}}>
-                            <h4>{activeEdit === 0 ? t('current_rating') : t('current_status')}</h4>
-                            <h4>
-                                {activeEdit === 0
-                                    ? checkedOverallRating
-                                        ? userRating
-                                        : gameModes.find(mode => mode.mode === currentMode)?.userRating ?? t('none_score')
-                                    : checkedOverallStatus
-                                        ? <Chip size='lg' variant='solid' style={{backgroundColor: statusColors[gameStatus ?? "none"]}}
-                                                        sx={{
-                                                            fontSize: '1rem',
-                                                            padding: '0.2rem 1rem',
-                                                        }}>
-                                            {t(`status_${gameStatus?.toLowerCase()}`)}
-                                          </Chip>
-                                    : <Chip size='lg' variant='solid' style={{backgroundColor: statusColors[gameStatus ?? "none"]}}
-                                            sx={{
-                                                fontSize: '1.15rem',
-                                            }}>
-                                            {t(`status_${gameModes.find(mode => mode.mode === currentMode)?.status ?? 'none'}`).toLowerCase()}
-                                        </Chip>
-                                }
-                            </h4>
-                        </div>
-
-                        {activeEdit == 0 && (
-                            <>
-                                <Form>
-                                    <Form.Label>{t('graphics')}: {graphicsRating}</Form.Label>
-                                    <Form.Range value={graphicsRating} max={10} onChange={graphicsSliderChange}/>
-
-                                    <Form.Label>{t('story')}: {storyRating}</Form.Label>
-                                    <Form.Range value={storyRating} max={10} onChange={storySliderChange}/>
-
-                                    <Form.Label>{t('gameplay')}: {gameplayRating}</Form.Label>
-                                    <Form.Range value={gameplayRating} max={10} onChange={gameplaySliderChange}/>
-                                </Form>
-
-                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                                    <Button onClick={handleClose}>
-                                        {t('cancel')}
-                                    </Button>
-                                    <div style={{display: 'flex', gap: '1rem'}}>
-                                        <Button onClick={() => {
-                                            handleClose();
-                                            userGameService.updateGameRating({
-                                                igdbId: igdbId?.id,
-                                                resetUserRating: true
-                                            }).then(() => setUserRating(undefined));
-                                        }} color="danger">
-                                            {t('reset_rating')}
-                                        </Button>
-                                        <Button onClick={() => {
-                                            handleClose();
-                                            checkedOverallRating
-                                                ? (userGameService.updateGameRating({
-                                                    igdbId: igdbId?.id,
-                                                    graphics: graphicsRating,
-                                                    story: storyRating,
-                                                    gameplay: gameplayRating,
-                                                    resetUserRating: resetUserRating
-                                                }).then(rat => setUserRating(rat)))
-                                                : (userGameService.updateUserGameModeRating(currentMode, false,
-                                                    {
-                                                        igdbId: igdbId?.id,
-                                                        graphics: graphicsRating,
-                                                        story: storyRating,
-                                                        gameplay: gameplayRating,
-                                                    }).then(rat => setUserRating(rat)));
-                                        }}>
-                                            {t('save_changes')}
-                                        </Button>
-                                    </div>
-                                </div>
-                            </>
-                        )}
-
-                        {activeEdit === 1 && (
-                            <>
-                                <Stack gap={3} style={{alignItems: 'center'}}>
-                                    <Select className="game__button"
-                                            placeholder={t('change_status')}
-                                            indicator={<KeyboardArrowDown/>}
-                                            sx={{
-                                                [`& .${selectClasses.indicator}`]: {
-                                                    transition: '0.2s',
-                                                    [`&.${selectClasses.expanded}`]: {
-                                                        transform: 'rotate(-180deg)',
-                                                    },
-                                                },
-                                            }}>
-                                        <Option value={t('status_completed')}
-                                                onClick={() => checkedOverallStatus
-                                                    ? userGameService.updateGameStatus(igdbId?.id, enumStatus.Completed).then(() => setGameStatus("completed"))
-                                                    : userGameService.updateUserGameModeStatus(igdbId?.id, currentMode, enumStatus.Completed).then(() => setGameStatus("completed"))}>
-                                            {t('status_completed')}
-                                        </Option>
-                                        <Option value={t('status_playing')}
-                                                onClick={() => checkedOverallStatus
-                                                    ? userGameService.updateGameStatus(igdbId?.id, enumStatus.Playing).then(() => setGameStatus("playing"))
-                                                    : userGameService.updateUserGameModeStatus(igdbId?.id, currentMode, enumStatus.Playing).then(() => setGameStatus("playing"))}>
-                                            {t('status_playing')}
-                                        </Option>
-                                        <Option value={t('status_planned')}
-                                                onClick={() => checkedOverallStatus
-                                                    ? userGameService.updateGameStatus(igdbId?.id, enumStatus.Planned).then(() => setGameStatus("planned"))
-                                                    : userGameService.updateUserGameModeStatus(igdbId?.id, currentMode, enumStatus.Planned).then(() => setGameStatus("planned"))}>
-                                            {t('status_planned')}
-                                        </Option>
-                                        <Option value={t('status_abandoned')}
-                                                onClick={() => checkedOverallStatus
-                                                    ? userGameService.updateGameStatus(igdbId?.id, enumStatus.Abandoned).then(() => setGameStatus("abandoned"))
-                                                    : userGameService.updateUserGameModeStatus(igdbId?.id, currentMode, enumStatus.Abandoned).then(() => setGameStatus("abandoned"))}>
-                                            {t('status_abandoned')}
-                                        </Option>
-                                    </Select>
-                                </Stack>
-                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                                    <Button onClick={handleClose}>
-                                        {t('cancel')}
-                                    </Button>
-                                    <div style={{display: 'flex', gap: '1rem'}}>
-                                        <Button onClick={() => {
-                                            handleClose();
-                                            userGameService.updateGameStatus(igdbId?.id, "none").then(() => setGameStatus("none"));
-                                        }} color="danger">
-                                            {t('reset_status')}
-                                        </Button>
-                                        <Button onClick={() => {handleClose()}}>
-                                            {t('save_changes')}
-                                        </Button>
-                                    </div>
-                                </div>
-                            </>
-                        )}
-                    </div>
-                </ModalDialog>
-            </Modal>
+            <UserGameEditInfoModal open={show} handleClose={handleClose} gameModes={gameModes} isOverallRating={isOverallRating} isOverallStatus={isOverallStatus} />
         </>
     );
 }

@@ -1,39 +1,43 @@
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import Form from 'react-bootstrap/Form';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
-import { ReactComponent as Logout } from '../../assets/icons/logout.svg';
-import "../../assets/styles/nav.css"
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
+import { useDispatch, useSelector } from "react-redux";
+import { useTranslation } from 'react-i18next';
+import { useTheme } from "next-themes";
+import debounce from 'lodash/debounce';
+import {
+    Box,
+    Typography,
+    Input,
+    IconButton,
+    Stack,
+    Link,
+    Container,
+    Sheet, Divider
+} from '@mui/joy';
+
+import SearchIcon from '@mui/icons-material/Search';
+import LogoutIcon from '@mui/icons-material/Logout';
 import WbSunnyIcon from '@mui/icons-material/WbSunny';
 import NightlightIcon from '@mui/icons-material/Nightlight';
-import "bootstrap-icons/font/bootstrap-icons.css";
-import React, {useEffect, useMemo, useRef, useState} from 'react';
-import { useNavigate } from 'react-router-dom';
-import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "../../store/store";
-import {logout} from "../../store/authSlice";
-import debounce from 'lodash/debounce';
-import { useTranslation } from 'react-i18next';
-import {LanguageSwitcher} from "../ui/LanguageSwitcher";
-import {igdbGamesService} from "../../api/services/igdbGamesService";
+
+import { RootState } from "../../store/store";
+import { logout } from "../../store/authSlice";
+import { igdbGamesService } from "../../api/services/igdbGamesService";
+import { LanguageSwitcher } from "../ui/LanguageSwitcher";
 import NavSearchDropdown from './NavSearchDropdown';
-import {useTheme} from "next-themes";
+import "../../assets/styles/nav.css";
 
 const Navigation: React.FC = () => {
     const { t } = useTranslation();
-
     const { theme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
-
     const [searchTerm, setSearchTerm] = useState('');
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const isLogin = useSelector((state: RootState) => state.auth.isLogin)
-    const [showNotifications, setShowNotifications] = useState(false);
     const [searchResults, setSearchResults] = useState([]);
     const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const isLogin = useSelector((state: RootState) => state.auth.isLogin);
     const wrapperRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -46,11 +50,8 @@ const Navigation: React.FC = () => {
                 setIsDropdownVisible(false);
             }
         };
-
         document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
+        return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
     const toggleTheme = () => {
@@ -58,17 +59,15 @@ const Navigation: React.FC = () => {
     };
 
     const handleSearch = useMemo(() =>
-            debounce((value: string) => {
-                if (value !== null && value !== "") {
-                    igdbGamesService.getIdgbGames(value).then(results => {
-                        setSearchResults([]);
-                        console.log(results);
-                        setSearchResults(results);
-                        setIsDropdownVisible(true);
-                    });
-                }
-            }, 850)
-        , []);
+        debounce((value: string) => {
+            if (value?.trim()) {
+                igdbGamesService.getIdgbGames(value).then(results => {
+                    setSearchResults(results);
+                    setIsDropdownVisible(true);
+                });
+            }
+        }, 850), []
+    );
 
     const onInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -78,100 +77,128 @@ const Navigation: React.FC = () => {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        navigate(`/search?q=${encodeURIComponent(searchTerm)}`);
+        if (searchTerm.trim()) {
+            navigate(`/search?q=${encodeURIComponent(searchTerm)}`);
+            setIsDropdownVisible(false);
+        }
     };
 
     const handleLogout = () => {
         dispatch(logout() as any).then(() => navigate('/login'));
     };
 
-    const handleCloseNotifications = () => {
-        setShowNotifications(false);
-    };
+    if (!mounted) return null;
 
     return (
-        <>
-            <Navbar className="main-nav" style={{margin: 'auto', zIndex: 1, paddingTop: '0'}}
-                    data-bs-theme={theme === 'dark' ? 'dark' : 'light'}
-                    expand="lg"
-                    // className={theme === 'dark' ? 'bg-dark' : 'bg-light'}
+        <Sheet
+            component="nav"
+            sx={{
+                position: 'sticky',
+                top: 0,
+                zIndex: 1000,
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                // borderBottom: '1px solid',
+                borderColor: 'divider',
+                backgroundColor: 'background.surface',
+                py: 1,
+                marginBottom: '0.5rem'
+            }}
+        >
+            <Container maxWidth="lg"
+                       sx={{
+                           px: { xs: 2, md: 0 },
+                           maxWidth: {
+                               xs: '100%',
+                               md: '90%',
+                               lg: '1200px'
+                           },
+                           display: 'flex',
+                           alignItems: 'center'
+                       }}
             >
-                <Container style={{paddingLeft: "0px", paddingRight: "0px"}}>
-                    <Navbar.Brand href="/main"><h1>gamevault</h1></Navbar.Brand>
-                    <Navbar id="basic-navbar-nav">
-                        <Nav className="container-fluid" style={{paddingRight: '0'}}>
-                            <Nav.Link className='nav__link' href="/main">{t('main')}</Nav.Link>
-                            <Nav.Link className='nav__link' href="/search"
-                                      style={{textAlign: 'center'}}>{t('search')}</Nav.Link>
+                <Stack
+                    direction="row"
+                    spacing={2}
+                    alignItems="center"
+                    justifyContent="space-between"
+                    sx={{ width: '100%' }}
+                >
+                    <Link
+                        component={RouterLink}
+                        to="/main"
+                        underline="none"
+                        sx={{ color: 'text.primary' }}
+                    >
+                        <Typography level="h1" sx={{ m: 0, fontSize: '1.75rem', fontWeight: 'bold' }}>
+                            gamevault
+                        </Typography>
+                    </Link>
+
+                    <Stack direction="row">
+                        <Stack direction="row" spacing={2} alignItems="center" sx={{marginRight: '0.5rem'}}>
+                            <Link component={RouterLink} to="/main" color="neutral" sx={{ fontWeight: 400 }}>
+                                {t('main')}
+                            </Link>
+                            <Link component={RouterLink} to="/search" color="neutral" sx={{ fontWeight: 400 }}>
+                                {t('search')}
+                            </Link>
                             {isLogin ? (
-                                <Nav.Link className='nav__link' href="/account/games">{t('account')}</Nav.Link>
+                                <Link component={RouterLink} to="/account/games" color="neutral" sx={{ fontWeight: 400 }}>
+                                    {t('account')}
+                                </Link>
                             ) : (
-                                <Nav.Link className='nav__link' href="/login">{t('login')}</Nav.Link>
+                                <Link component={RouterLink} to="/login" color="neutral" sx={{ fontWeight: 400 }}>
+                                    {t('login')}
+                                </Link>
                             )}
-                            <LanguageSwitcher/>
-                            {/*{mounted && (*/}
-                            {/*    <button*/}
-                            {/*        onClick={toggleTheme}*/}
-                            {/*        style={{*/}
-                            {/*            background: 'transparent',*/}
-                            {/*            // border: '1px solid #6c757d',*/}
-                            {/*            borderRadius: '8px',*/}
-                            {/*            padding: '6px 10px',*/}
-                            {/*            cursor: 'pointer',*/}
-                            {/*            display: 'flex',*/}
-                            {/*            alignItems: 'center',*/}
-                            {/*            color: theme === 'dark' ? '#fbbf24' : '#3b82f6',*/}
-                            {/*            height: '2.3rem'*/}
-                            {/*        }}*/}
-                            {/*        className="theme-btn"*/}
-                            {/*        aria-label="Toggle theme"*/}
-                            {/*    >*/}
-                            {/*        {theme === 'dark'*/}
-                            {/*            ? <NightlightIcon style={{fontSize: '1.3rem', color: "#ffffff"}}/>*/}
-                            {/*            : <WbSunnyIcon style={{fontSize: '1.3rem'}}/>}*/}
-                            {/*    </button>*/}
-                            {/*)}*/}
-                            <div ref={wrapperRef} style={{display: 'flex', justifyContent: 'space-around'}}>
-                                <Form onSubmit={handleSubmit} style={{paddingLeft: '5px', position: "relative", width: "100%"}}>
-                                    <Row>
-                                        <Col xs="auto">
-                                            <Form.Control
-                                                style = {{width: '15rem'}}
-                                                type="text"
-                                                placeholder={t('search')}
-                                                className=" mr-sm-2"
-                                                id={"gameNameInput"}
-                                                value={searchTerm}
-                                                onChange={onInputChange}
-                                                onFocus={() => {
-                                                    if (searchResults.length > 0) setIsDropdownVisible(true);
-                                                }}
-                                            />
-                                        </Col>
-                                    </Row>
-                                    {isDropdownVisible && searchResults.length > 0 && (
+
+                            <LanguageSwitcher />
+
+                            {/*<IconButton*/}
+                            {/*    variant="outlined"*/}
+                            {/*    color="neutral"*/}
+                            {/*    onClick={toggleTheme}*/}
+                            {/*    size="sm"*/}
+                            {/*>*/}
+                            {/*    {theme === 'dark' ? <NightlightIcon /> : <WbSunnyIcon />}*/}
+                            {/*</IconButton>*/}
+                        </Stack>
+
+                        <Stack direction="row" spacing={1} alignItems="center" ref={wrapperRef}>
+                            <form onSubmit={handleSubmit} style={{ position: 'relative' }}>
+                                <Input
+                                    placeholder={t('search')}
+                                    value={searchTerm}
+                                    onChange={onInputChange}
+                                    onFocus={() => searchResults.length > 0 && setIsDropdownVisible(true)}
+                                    startDecorator={<SearchIcon />}
+                                    sx={{ width: 240 }}
+                                />
+                                {isDropdownVisible && searchResults.length > 0 && (
+                                    <Box sx={{ position: 'absolute', top: '100%', left: 0, width: '100%', zIndex: 10 }}>
                                         <NavSearchDropdown games={searchResults} />
-                                    )}
-                                </Form>
-                                {isLogin ? (
-                                    <button
-                                        style={{
-                                        display: 'flex', justifyContent: 'center',
-                                        alignItems: 'center', background: 'transparent', border: 'none'}}
-                                        className="logout-btn"
-                                        onClick={handleLogout}
-                                    >
-                                        <Logout/>
-                                    </button>
-                                ) : (
-                                    <div style={{width: '36px', height: '26px'}}></div>
+                                    </Box>
                                 )}
-                            </div>
-                        </Nav>
-                    </Navbar>
-                </Container>
-            </Navbar>
-        </>
+                            </form>
+
+                            {isLogin && (
+                                <IconButton
+                                    variant="plain"
+                                    color="danger"
+                                    onClick={handleLogout}
+                                    title={t('logout')}
+                                >
+                                    <LogoutIcon />
+                                </IconButton>
+                            )}
+                        </Stack>
+                    </Stack>
+                </Stack>
+            </Container>
+        </Sheet>
     );
 }
 

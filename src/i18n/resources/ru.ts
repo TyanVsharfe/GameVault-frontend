@@ -7,6 +7,8 @@ export const ru = {
         none: 'Отсутствует',
         close: 'Закрыть',
         list: 'Список',
+        reset: 'Сбросить',
+        save: 'Сохранить',
 
         // User registration
         password: 'Пароль',
@@ -18,6 +20,13 @@ export const ru = {
         email: 'Адрес электронной почты',
         agree_with_terms: 'Согласен с условиями',
         log_in: 'Войти',
+        username: 'Имя пользователя',
+        new_password: 'Новый пароль',
+        confirm_password: 'Повторите пароль',
+        reset_password: 'Сброс пароля',
+        write_email: 'Email адрес',
+        send_reset_password_link: 'Отправить ссылку для сброса',
+        update_password: 'Обновить пароль',
 
         // Nav
         login: 'Войти',
@@ -60,9 +69,12 @@ export const ru = {
         parent_game: 'Основная игра',
 
         user_informaton: 'Информация пользователя',
+        game_details: 'Детали игры',
         status: 'Статус',
         score: 'Оценка',
+        your_score: 'Ваша оценка',
         none_score: 'не оценено',
+        added: 'Добавлено',
 
         franchise: 'Франшиза',
         series: 'Серия',
@@ -73,12 +85,21 @@ export const ru = {
         user_review: 'Ваша рецензия',
 
         // Review
+        what_do_you_think: 'Что вы думаете?',
+        helper_reviews: 'Помогите сообществу, поделившись своим опытом с этой игрой.',
+        register_and_review: 'Авторизация и отзыв',
+        rate_and_review: 'Оценка и отзыв',
+        read_reviews: 'Прочитать рецензии',
+        view_all_reviews: 'Смотреть рецензии',
+        your_review: 'Ваша рецензия',
+        posted: 'Опубликовано',
         review: 'Рецензия',
         review_text: 'Текст рецензии',
         review_delete: 'Удалить рецензию',
         review_save: 'Сохранить рецензию',
 
         // Game status
+        select_status: 'Выбрать статус',
         all_games: 'Все игры',
         status_completed: 'Пройдено',
         status_playing: 'Играю',
@@ -91,6 +112,9 @@ export const ru = {
         hide_statuses: "Спрятать статусы",
 
         // Game controls
+        play_status: 'Состояние игры',
+        edit: 'Изменить',
+        remove: 'Удалить',
         set_rating: 'Поставить оценку',
         reset_rating: 'Сбросить оценку',
         reset_status: 'Сбросить статус',
@@ -98,6 +122,9 @@ export const ru = {
         graphics: 'Графика',
         story: 'История',
         gameplay: 'Геймплей',
+        previous_score: 'Предыдущая',
+        new_score: 'Новая оценка',
+        average_score: 'Средняя оценка',
 
         overall_rating: 'Общая оценка для игр',
         overall_rating_hint: 'Поставить общее значение для игры',
@@ -115,8 +142,8 @@ export const ru = {
         total: ' Всего игр',
         avg_rating: 'Средний рейтинг',
         rating: 'Оценка',
-        notes_added: 'Заметок:',
-        total_achievements_completed: 'Достижений получено',
+        notes_added: 'Заметок',
+        total_achievements_completed: 'Достижений',
 
         // Game list
         read_more: 'Подробнее',
@@ -133,8 +160,15 @@ export const ru = {
         save_changes: 'Сохранить изменения',
 
         // Notes
+        your_notes: 'Ваши заметки',
+        your_notes_for: 'Ваши заметки для',
+        you_have: 'Заметок для этой игры',
+        notes_for_this_game: '',
+        modal_notes_description: 'Управляйте своими личными мыслями и стратегиями',
         note: 'Заметка',
         add_note: 'Добавить',
+        create_note: 'Создать',
+        edit_note: 'Редактировать заметку',
         characters: 'символ(ов)',
         note_title: 'Название заметки',
         note_content: 'Текст заметки',
@@ -163,6 +197,23 @@ export const ru = {
         type_fork: 'Fork',
         type_pack: 'Пак',
         type_update: 'Обновление',
+
+        // CategoryIGDB short
+        type_main_game_short: 'Осн',
+        type_dlc_addon_short: 'DLC',
+        type_expansion_short: 'Расш',
+        type_bundle_short: 'Бандл',
+        type_standalone_expansion_short: 'Отд доп',
+        type_mod_short: 'Мод',
+        type_episode_short: 'Эп',
+        type_season_short: 'Сез',
+        type_remake_short: 'Рем',
+        type_remaster_short: 'Ремаст',
+        type_expanded_game_short: 'Расш изд',
+        type_port_short: 'Порт',
+        type_fork_short: 'Форк',
+        type_pack_short: 'Пак',
+        type_update_short: 'Обн',
 
         // Game modes
         single_player: 'Одиночный',
@@ -209,8 +260,30 @@ export const ru = {
         desc: 'Убыв.',
         sort_by: 'Сорт. по',
 
+        "filters": {
+            "review": {
+                "label": "Рецензия",
+                "any": "С рецензиями и без",
+                "with": "С рецензиями",
+                "without": "Без рецензий"
+            },
+            "game_type": {
+                "label": "Тип игры",
+                "any": "Любой тип",
+                "only_dlc": "Только DLC",
+                "without_dlc": "Исключая DLC"
+            }
+        },
+
+        "edit_user_game_info_modal": {
+            "global_configuration": "Глобальная конфигурация",
+            "title": "Управление режимами игры",
+            "description": "Настройте статус и рейтинг для каждого игрового режима",
+        },
+
         hide_completed: 'Спрятать завершенные',
         compact_view: 'Компактный вид',
+        view_all: 'Смотреть все',
         achievement_info: 'Информация о достижении',
         all_completed: 'Все завершено'
     },

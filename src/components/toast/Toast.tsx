@@ -8,15 +8,17 @@ export interface ToastProps {
     message: string;
     isSuccess: boolean;
     open: boolean;
+    onClose: () => void;
 }
 
-export const Toast: React.FC<ToastProps> = ({module, message, isSuccess, open}) => {
+export const Toast: React.FC<ToastProps> = ({module, message, isSuccess, open, onClose}) => {
     return (
         <Snackbar
             variant="soft"
             color={isSuccess ? "success" :"warning"}
             autoHideDuration={4000}
             open={open}
+            onClose={onClose}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             startDecorator={isSuccess ? <DoneIcon/> : <ErrorIcon/>}
         >

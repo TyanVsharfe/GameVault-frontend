@@ -1,12 +1,12 @@
-import Button from "react-bootstrap/Button";
-import Card from "react-bootstrap/Card";
 import {Link} from "react-router-dom";
 import React from "react";
 import {AggregatedRelease} from "../../../types/igdb.game.types";
 import {PlatformBadge} from "../badge/PlatformBadge";
 import IgdbGameTypeBadge from "../badge/IgdbGameTypeBadge";
 import {useTranslation} from "react-i18next";
-import {Chip} from "@mui/joy";
+import {AspectRatio, Button, Card, CardContent, CardOverflow, Chip, Typography} from "@mui/joy";
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
 export interface GameListProps {
     games: AggregatedRelease[];
@@ -32,47 +32,68 @@ const GameCarousel: React.FC<GameListProps> = ({ games, carouselRef, width }) =>
     return (
         <div className="carousel-container">
             <Button variant="light" className="carousel-control left" onClick={() => handleScrollLeft(carouselRef)}>
-                <i className="bi bi-chevron-compact-left" style={{marginLeft: '2px'}}></i>
+                <ChevronLeftIcon/>
+                {/*<i className="bi bi-chevron-compact-left" style={{marginLeft: '2px', width: '10rem', height: '30rem'}}></i>*/}
             </Button>
 
-            <div className="carousel-items" style={{width: `${width}rem`}} ref={carouselRef}>
+            <div className="carousel-items" style={{width: `${width}rem`, margin: '0 0.5rem'}} ref={carouselRef}>
                 {games.filter((releaseGame: AggregatedRelease) => releaseGame?.coverUrl != undefined)
                     .map((releaseGame: AggregatedRelease, index: number) => (
-                        <Card key={index} className="carousel-game-card">
+                        <Card key={index}
+                              className="carousel-game-card"
+                              style={{
+                                  overflow: "hidden",
+                                  paddingBottom: '0.25rem'
+                                  // border: "0px",
+                              }}
+
+                              // sx={{
+                              //     width: "10rem",
+                              //     height: "15.5rem",
+                              //     display: "grid",
+                              //     gap: "0.2rem"
+                              // }}
+                        >
                             {releaseGame?.coverUrl && (
-                                <div style={{position: 'relative', overflow: 'hidden', height: '16.5rem'}}>
-                                    <Card.Img
-                                        variant="top"
-                                        src={releaseGame?.coverUrl?.replace('t_thumb', 't_cover_big') || ''}
-                                        alt={releaseGame?.gameName}
-                                        style={{
-                                            height: '100%',
-                                            objectFit: 'cover',
-                                            objectPosition: 'top',
-                                        }}
-                                    />
-                                    <div style={{
-                                        position: 'absolute',
-                                        bottom: 0,
-                                        left: 0,
-                                        right: 0,
-                                        height: '1rem',
-                                        background: 'linear-gradient(to bottom, transparent, rgba(0,0,0,0.7))'
-                                    }}/>
-                                    <IgdbGameTypeBadge
-                                        gameType={releaseGame.gameType}
-                                        t={t}
-                                    />
-                                </div>
+                                <CardOverflow sx={{ flex: "0 0 auto", padding: 0, alignItems: "center"}}>
+                                    <AspectRatio ratio="3/4" className="game-card__img-wrapper"
+                                                 sx={{
+                                                     width: "100%",
+                                                     padding: 0
+                                                 }}
+                                    >
+                                        <IgdbGameTypeBadge
+                                            gameType={releaseGame.gameType}
+                                            t={t}
+                                        />
+                                        {releaseGame?.coverUrl ? (
+                                            <img
+                                                src={releaseGame?.coverUrl?.replace('t_thumb', 't_cover_big') || ''}
+                                                alt={releaseGame.gameName}
+                                                style={{
+                                                    objectPosition: 'top',
+                                                    objectFit: 'cover',
+                                                    width: '100%',
+                                                }}
+                                            />
+                                        ) : (
+                                            <div style={{
+                                                textAlign: 'center', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '13.5rem'
+                                            }}>
+                                                {releaseGame.gameName}
+                                            </div>
+                                        )}
+                                    </AspectRatio>
+                                </CardOverflow>
                             )}
-                            <div style={{flex: 1, display: 'flex', flexDirection: 'column', padding: '1rem'}}>
-                                <Card.Title style={{marginBottom: '0.5rem'}}>
+                            <div style={{flex: 1, display: 'flex', flexDirection: 'column'}}>
+                                <Typography style={{marginBottom: '0.5rem'}}>
                                     <Link to={`/games/${releaseGame.gameId}`}
                                           style={{textDecoration: 'none', color: 'inherit'}}>
                                         {releaseGame?.gameName || 'Название неизвестно'}
                                     </Link>
-                                </Card.Title>
-                                <Card.Body style={{padding: '0', flex: 1, overflow: 'auto'}}>
+                                </Typography>
+                                <CardContent style={{padding: '0', flex: 1, overflow: 'auto', alignItems: "center"}}>
                                     {releaseGame?.platforms.slice(0, 4).map((platform, index) =>
                                         PlatformBadge(platform.abbreviation?.replace(' ', '-'), index))
                                     }
@@ -81,18 +102,18 @@ const GameCarousel: React.FC<GameListProps> = ({ games, carouselRef, width }) =>
                                             +{releaseGame.platforms.length - 4}
                                         </Chip>
                                     )}
-                                </Card.Body>
-                                <Card.Footer className="text-muted"
+                                </CardContent>
+                                <div className="text-muted"
                                              style={{background: 'none', border: 'none', padding: '0.5rem 0 0 0'}}>
                                     {releaseGame?.earliestRelease?.human}
-                                </Card.Footer>
+                                </div>
                             </div>
                         </Card>
                     ))}
             </div>
 
             <Button variant="light" className="carousel-control right" onClick={() => handleScrollRight(carouselRef)}>
-                <i className="bi bi-chevron-compact-right" style={{marginLeft: '2px'}}></i>
+                <ChevronRightIcon/>
             </Button>
         </div>
     );

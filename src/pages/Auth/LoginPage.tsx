@@ -1,20 +1,22 @@
 import React, {useState} from 'react';
-import Form from 'react-bootstrap/Form';
-import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
 import {authService} from "../../api/services/authService";
-import {useNavigate} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
 import {useDispatch} from "react-redux";
 import {verifySession} from "../../store/authSlice";
-import {Stack} from "react-bootstrap";
 import {useTranslation} from "react-i18next";
+import {Box, Button, Checkbox, Container, FormControl, Input, Link, Stack, Typography} from "@mui/joy";
+import FormLabel from "@mui/joy/FormLabel";
 
 const LoginPage: React.FC = () => {
     const { t } = useTranslation();
 
+    const navigate = useNavigate();
+    const location = useLocation();
+    const from = location.state?.from ?? '/account/games';
+
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('')
-    const navigate = useNavigate();
+
     const dispatch = useDispatch();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -29,7 +31,8 @@ const LoginPage: React.FC = () => {
         try {
             await authService.loginUser(formData);
             await dispatch(verifySession() as any).unwrap();
-            navigate('/account/games');
+
+            navigate(from, { replace: true });
         } catch (error) {
             console.error('Login failed:', error);
             alert('Login failed. Please check your credentials.');
@@ -38,45 +41,71 @@ const LoginPage: React.FC = () => {
 
 
     return (
-        <Container style={{ justifyContent: 'center', width: '300px', display: 'flex', flexDirection: 'column', verticalAlign: 'top', height: '70vh' }}>
-            <Form onSubmit={handleSubmit}>
-                <Form.Group className="mb-3" controlId="formBasicLogin">
-                    <Form.Label>
-                        {t('login')}
-                    </Form.Label>
-                    <Form.Control type="text"
-                                  name="username"
-                                  placeholder="Login"
-                                  value={login}
-                                  onChange={(e) => setLogin(e.target.value)}/>
-                </Form.Group>
+        <Box
+            sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '70vh',
+                width: '300px',
+                mx: 'auto',
+            }}
+        >
+            <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+                <Stack spacing={2}>
+                    <FormControl>
+                        <FormLabel>{t('username')}</FormLabel>
+                        <Input
+                            type="text"
+                            name="username"
+                            placeholder={t('username')}
+                            autoComplete={"username"}
+                            value={login}
+                            onChange={(e) => setLogin(e.target.value)}
+                        />
+                    </FormControl>
 
-                <Form.Group className="mb-3" controlId="formBasicPassword">
-                    <Form.Label>
-                        {t('password')}
-                    </Form.Label>
-                    <Form.Control type="password"
-                                  name="password"
-                                  placeholder="Password"
-                                  value={password}
-                                  onChange={(e) => setPassword(e.target.value)}/>
-                    <Form.Text className="text-muted">
-                        <br/>
-                        <p style={{display: 'flex', justifyContent: 'space-between'}}>
-                            {t('no_account')}? <a href="/registration">{t('need_register')}</a>
-                        </p>
-                        <p><a href="/forgot-password">{t('forgot_password')}?</a></p>
-                    </Form.Text>
-                </Form.Group>
+                    <FormControl>
+                        <FormLabel>{t('password')}</FormLabel>
+                        <Input
+                            type="password"
+                            name="password"
+                            placeholder={t('password')}
+                            autoComplete={"current-password"}
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
 
-                <Stack direction='horizontal' style={{'justifyContent': 'space-between'}}>
-                    <Button variant="primary" type="submit">
-                        {t('log_in')}
-                    </Button>
-                    <Form.Check type="checkbox" name="remember-me" label={t('remember_me')} />
+                        <Box sx={{ mt: 1.5 }}>
+                            <Typography level="body-sm" sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                                {t('no_account')}?
+                                <Link href="/registration" fontSize="xs">{t('need_register')}</Link>
+                            </Typography>
+                            <Typography level="body-xs" sx={{ mt: 0.5 }}>
+                                <Link href="/reset-password" fontSize="xs">{t('forgot_password')}?</Link>
+                            </Typography>
+                        </Box>
+                    </FormControl>
+
+                    <Stack
+                        direction="row"
+                        justifyContent="space-between"
+                        alignItems="center"
+                        sx={{ mt: 1 }}
+                    >
+                        <Button type="submit">
+                            {t('login')}
+                        </Button>
+                        <Checkbox
+                            label={t('remember_me')}
+                            name="remember-me"
+                            size="sm"
+                        />
+                    </Stack>
                 </Stack>
-            </Form>
-        </Container>
+            </form>
+        </Box>
     );
 };
 

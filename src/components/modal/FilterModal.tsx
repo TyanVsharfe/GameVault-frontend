@@ -5,7 +5,7 @@ import {
     Input,
     Modal,
     ModalClose,
-    ModalDialog,
+    ModalDialog, Stack,
     Switch,
     Typography
 } from "@mui/joy";
@@ -81,7 +81,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({show, handleClose, init
 
     return (
         <Modal open={show} onClose={handleClose}>
-            <ModalDialog style={{display: 'flex', gap: '1rem', width: '55%', height: '55%'}}>
+            <ModalDialog style={{display: 'flex', gap: '1rem', height: '55%'}}>
                 <div style={{display: 'flex', flexDirection: 'row', gap: '1rem'}}>
                     {t('set_filters')}
                 </div>
@@ -93,68 +93,112 @@ export const FilterModal: React.FC<FilterModalProps> = ({show, handleClose, init
                     justifyContent: 'space-between',
                     height: '100%'
                 }}>
-                    <Input
-                        placeholder={t('filter_title')}
-                        value={filters.title}
-                        onChange={(e) => dispatch({
-                            type: 'SET_FIELD',
-                            field: 'title',
-                            value: e.target.value
-                        })}
-                    />
+                    <Stack direction="row" gap={1}>
+                        <Input
+                            placeholder={t('filter_title')}
+                            value={filters.title}
+                            onChange={(e) => dispatch({
+                                type: 'SET_FIELD',
+                                field: 'title',
+                                value: e.target.value
+                            })}
+                        />
 
-                    <Select
-                        placeholder={t('status')}
-                        value={filters.status}
-                        onChange={(_, value) => dispatch({
-                            type: 'SET_FIELD',
-                            field: 'status',
-                            value
-                        })}
-                    >
-                        {statusItems.map((statusItem, index) => (
-                            <Option
-                                key={index}
-                                value={statusItem.status}
-                            >
-                                {statusItem.label}
+                        <Select
+                            placeholder={t('status')}
+                            value={filters.status}
+                            onChange={(_, value) => dispatch({
+                                type: 'SET_FIELD',
+                                field: 'status',
+                                value
+                            })}
+                            sx={{width: '12.5rem'}}
+                        >
+                            {statusItems.map((statusItem, index) => (
+                                    <Option
+                                        key={index}
+                                        value={statusItem.status}
+                                    >
+                                        {statusItem.label}
+                                    </Option>
+                                )
+                            )}
+                        </Select>
+                        <Select
+                            placeholder={t('filters.game_type.label')}
+                            value={filters.dlcOnly}
+                            onChange={(_, value) =>
+                                dispatch({
+                                    type: 'SET_FIELD',
+                                    field: 'dlcOnly',
+                                    value
+                                })
+                            }
+                            sx={{width: '12.5rem'}}
+                        >
+                            <Option value={null}>
+                                {t('filters.game_type.any')}
                             </Option>
-                            )
-                        )}
-                    </Select>
+
+                            <Option value={true}>
+                                {t('filters.game_type.only_dlc')}
+                            </Option>
+
+                            <Option value={false}>
+                                {t('filters.game_type.without_dlc')}
+                            </Option>
+                        </Select>
+                    </Stack>
 
                     <div style={{display: 'flex', gap: '1rem'}}>
-                        <Input
-                            type="number"
-                            placeholder={t('min_rating')}
-                            value={filters.minRating ?? ''}
-                            onChange={(e) => dispatch({
-                                type: 'SET_FIELD',
-                                field: 'minRating',
-                                value: e.target.value ? Number(e.target.value) : null
-                            })}
-                        />
-                        <Input
-                            type="number"
-                            placeholder={t('max_rating')}
-                            value={filters.maxRating ?? ''}
-                            onChange={(e) => dispatch({
-                                type: 'SET_FIELD',
-                                field: 'maxRating',
-                                value: e.target.value ? Number(e.target.value) : null
-                            })}
-                        />
-
-                        <div style={{display: 'flex', gap: '2rem', alignItems: 'center'}}>
-                            <Checkbox
-                                label={t('has_review')}
-                                checked={filters.hasReview ?? false}
+                        <Stack direction="row" sx={{width: '45%'}} gap={1}>
+                            <Input
+                                type="number"
+                                placeholder={t('min_rating')}
+                                value={filters.minRating ?? ''}
                                 onChange={(e) => dispatch({
                                     type: 'SET_FIELD',
-                                    field: 'hasReview',
-                                    value: e.target.checked
+                                    field: 'minRating',
+                                    value: e.target.value ? Number(e.target.value) : null
                                 })}
                             />
+                            <Input
+                                type="number"
+                                placeholder={t('max_rating')}
+                                value={filters.maxRating ?? ''}
+                                onChange={(e) => dispatch({
+                                    type: 'SET_FIELD',
+                                    field: 'maxRating',
+                                    value: e.target.value ? Number(e.target.value) : null
+                                })}
+                            />
+                        </Stack>
+
+                        <div style={{display: 'flex', gap: '2rem', alignItems: 'center'}}>
+                            <Select
+                                placeholder={t('filters.review.label')}
+                                value={filters.hasReview}
+                                onChange={(_, value) =>
+                                    dispatch({
+                                        type: 'SET_FIELD',
+                                        field: 'hasReview',
+                                        value
+                                    })
+                                }
+                                sx={{width: '12.5rem'}}
+                            >
+                                <Option value={null}>
+                                    {t('filters.review.any')}
+                                </Option>
+
+                                <Option value={true}>
+                                    {t('filters.review.with')}
+                                </Option>
+
+                                <Option value={false}>
+                                    {t('filters.review.without')}
+                                </Option>
+                            </Select>
 
                             <Checkbox
                                 label={t('fully_completed')}
@@ -164,6 +208,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({show, handleClose, init
                                     field: 'isFullyCompleted',
                                     value: e.target.checked
                                 })}
+                                sx={{width: '2rem'}}
                             />
                         </div>
                     </div>

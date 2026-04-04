@@ -1,21 +1,20 @@
 import React, {useEffect, useState} from "react";
-import {Alert, Badge, Form, Spinner, Stack} from "react-bootstrap";
+import {Alert, Spinner} from "react-bootstrap";
 import Row from "react-bootstrap/Row";
 import {igdbGamesService} from "../../api/services/igdbGamesService";
 import {useNavigate, useSearchParams} from "react-router-dom";
-import Button from "react-bootstrap/Button";
-import Col from "react-bootstrap/Col";
 import "../../assets/styles/game-card.css"
 import {useTranslation} from "react-i18next";
 import {useTheme} from "next-themes";
-import {IgdbGameList} from "../../components/game/list/IgdbGameList";
+import {EnrichedIgdbGameList} from "../../components/game/list/EnrichedIgdbGameList";
 import Select from "@mui/joy/Select";
-import {Box, buttonClasses, IconButton, Option, ToggleButtonGroup} from "@mui/joy";
+import {Box, Button, buttonClasses, IconButton, Input, Option, Stack, ToggleButtonGroup} from "@mui/joy";
 import IgdbGameEnhancedList from "../../components/game/list/IgdbGameEnhancedList";
 import {SearchFilterModal} from "../../components/modal/SearchFilterModal";
 import {Helmet} from "react-helmet-async";
 import ViewModuleIcon from "@mui/icons-material/ViewModule";
 import ViewListIcon from '@mui/icons-material/ViewList';
+import {EnrichedGameSearch, enrichedGamesService} from "../../api/services/enrichedGamesService";
 
 function SearchPage() {
     const { t } = useTranslation();
@@ -23,6 +22,7 @@ function SearchPage() {
 
     const [searchParams] = useSearchParams();
     const [searchResults, setSearchResults] = useState([]);
+    const [enrichedSearchResults, setEnrichedSearchResults] = useState<EnrichedGameSearch[]>([]);
     const navigate = useNavigate();
 
     const [ showFilterModal, setShowFilterModal ] = useState(false);
@@ -51,8 +51,29 @@ function SearchPage() {
                 setSearchResults(results);
                 setIsLoading(false);
             });
+            enrichedGamesService.searchGames(searchQuery).then(results => {
+                setEnrichedSearchResults([]);
+                setEnrichedSearchResults(results);
+                setIsLoading(false);
+            });
         }
     }, [searchParams]);
+
+    const updateGameStatus = (gameId: number, status: string) => {
+        setEnrichedSearchResults(prev =>
+            prev.map(game =>
+                game.id === gameId
+                    ? {
+                        ...game,
+                        userData: {
+                            ...(game.userData ?? {}),
+                            status,
+                        },
+                    }
+                    : game
+            )
+        );
+    };
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -66,12 +87,10 @@ function SearchPage() {
 
     const renderSearchResults = () => {
         const games = searchResults;
-        console.log("render search results");
-        console.log(games);
         if (Array.isArray(games) && games.length > 0) {
             return (
-                // <IgdbGameList games={games}/>
-                <IgdbGameEnhancedList games={games} listType={listType}/>
+                //<IgdbGameEnhancedList games={games} listType={listType}/>
+                <EnrichedIgdbGameList games={enrichedSearchResults} listType={listType} onStatusChange={updateGameStatus}/>
             )
         }
         else if(searchParams.get("q") != null) {
@@ -91,28 +110,42 @@ function SearchPage() {
             <Stack className=".d-flex justify-content-center align-items-center">
                 {/*<h2 className='page-title'>{searchParams.get("q") == null ? t('search') : t('result')}</h2>*/}
                 <Box style={{textAlign: "center", width: '35rem', paddingBottom: "10px"}}>
-                    <Form className="mb-2 w-100" style={{maxWidth: "600px"}} onSubmit={handleSubmit}>
-                        <Row className="justify-content-center g-2 mt-2">
-                            <Col xs="auto" className="mx-2">
-                                <Form.Control
-                                    type="text"
-                                    placeholder="Введите поисковый запрос..."
-                                    value={searchTerm}
-                                    onChange={(e) => setsearchTerm(e.target.value)}
-                                    style={{width: '250px'}}
-                                    data-bs-theme={`${theme === 'light' ? 'light' : 'dark'}`}
-                                />
-                            </Col>
-                            <Col xs="auto" className="mx-2">
-                                <Button variant="primary" type="submit">
-                                    {t('search')}
-                                </Button>
-                                {/*<Button onClick={() => setShowFilterModal(true)}>*/}
-                                {/*    {t('search_filter')}*/}
-                                {/*</Button>*/}
-                            </Col>
-                        </Row>
-                    </Form>
+                    <form className="mb-2 w-100" style={{maxWidth: "600px"}} onSubmit={handleSubmit}>
+                        <Stack direction="row" gap={2} className="justify-content-center g-2 mt-2">
+                            <Input
+                                type="text"
+                                placeholder="Введите поисковый запрос..."
+                                value={searchTerm}
+                                onChange={(e) => setsearchTerm(e.target.value)}
+                                style={{width: '250px'}}
+                                data-bs-theme={`${theme === 'light' ? 'light' : 'dark'}`}
+                            />
+                            <Button type="submit">
+                                {t('search')}
+                            </Button>
+                            {/*<Button onClick={() => setShowFilterModal(true)}>*/}
+                            {/*    {t('search_filter')}*/}
+                            {/*</Button>*/}
+                            {/*<Col xs="auto" className="mx-2">*/}
+                            {/*    <FormControl*/}
+                            {/*        type="text"*/}
+                            {/*        placeholder="Введите поисковый запрос..."*/}
+                            {/*        value={searchTerm}*/}
+                            {/*        onChange={(e) => setsearchTerm(e.target.value)}*/}
+                            {/*        style={{width: '250px'}}*/}
+                            {/*        data-bs-theme={`${theme === 'light' ? 'light' : 'dark'}`}*/}
+                            {/*    />*/}
+                            {/*</Col>*/}
+                            {/*<Col xs="auto" className="mx-2">*/}
+                            {/*    <Button variant="primary" type="submit">*/}
+                            {/*        {t('search')}*/}
+                            {/*    </Button>*/}
+                            {/*    /!*<Button onClick={() => setShowFilterModal(true)}>*!/*/}
+                            {/*    /!*    {t('search_filter')}*!/*/}
+                            {/*    /!*</Button>*!/*/}
+                            {/*</Col>*/}
+                        </Stack>
+                    </form>
                     <div style={{width: '15rem', display: 'flex', justifyContent: 'center', margin: 'auto'}}>
                         <ToggleButtonGroup
                             sx={{
@@ -156,7 +189,7 @@ function SearchPage() {
                         </ToggleButtonGroup>
                     </div>
                 </Box>
-                <Row className="flex-wrap" style={{display: 'flex', alignItems: 'flex-end'}} gap="4">
+                <Stack className="flex-wrap" style={{display: 'flex', alignItems: 'flex-end'}} gap="4">
                     {isLoading ? (
                         <Box style={{display: "flex", justifyContent: "center", paddingBottom: '20px'}}>
                             <Spinner animation="border" variant="primary"/>
@@ -167,7 +200,7 @@ function SearchPage() {
                             {/*<SearhResult searchResults={searchResults}/>*/}
                         </Box>
                     )}
-                </Row>
+                </Stack>
 
                 <SearchFilterModal show={showFilterModal} handleClose={() => setShowFilterModal(false)}/>
             </Stack>

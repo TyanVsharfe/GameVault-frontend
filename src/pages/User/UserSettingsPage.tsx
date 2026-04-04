@@ -101,7 +101,7 @@ function UserSettingsPage() {
                                                 level="body-xs"
                                                 sx={{ alignSelf: "flex-end", color: "hsl(09698 80% 30%)" }}
                                             >
-                                                {(steamId.length < 17 || steamId.length > 17) && "Steam id must be 17 chars"}
+                                                {(steamId?.length < 17 || steamId?.length > 17) && "Steam id must be 17 chars"}
                                             </Typography>
                                         </>
                                     ) : (
@@ -267,6 +267,7 @@ function UserSettingsPage() {
                 message="Games are imported."
                 isSuccess={true}
                 open={showToast}
+                onClose={() => setShowToast(false)}
             />
         </>
     );

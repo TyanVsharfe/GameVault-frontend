@@ -3,10 +3,7 @@ import "../../../assets/styles/style.css"
 import "../../../assets/styles/game-card.css"
 import {statusColors} from "../../../utils/Utils";
 import {useTranslation} from "react-i18next";
-import UserGameCard from "../card/UserGameCard";
 import PaginationComponent from "../../ui/PaginationComponent";
-import {UserGame} from "../../../types/user.game.types";
-import UserGameCardSmall, {UserGameCardProps} from '../card/UserGameCardSmall';
 import {Box, Grid, Stack} from '@mui/joy';
 import IgdbGameCard, {IgdbGameCardProps} from "../card/IgdbGameCard";
 import IgdbGameCardLarge from "../card/IgdbGameCardLarge";

@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
-import { Container } from "react-bootstrap";
 import { getScoreClass } from "../utils/Utils";
+import {Box} from "@mui/joy";
 
 export interface ReviewProps {
     gameReview: GameReview;
@@ -26,21 +26,26 @@ const Review: React.FC<ReviewProps> = ({ gameReview }) => {
     }, [gameReview.review]);
 
     return (
-        <Container style={{width: '30rem', maxHeight: '20rem'}} className='review'>
-    <Container className='review-header'>
-        <div>{gameReview.username}</div>
-    {gameReview.userRating != undefined &&
-    <div className={getScoreClass(gameReview.userRating)}>{gameReview.userRating}</div>}
-    </Container>
-    <Container className={`review-text ${expanded ? "expanded" : ""}`} ref={reviewTextRef}>
-        {gameReview.review}
-        </Container>
-        {isOverflowing && (
-            <button className='review-text-button' onClick={() => setExpanded(!expanded)}>
-            {expanded ? "Скрыть" : "Читать далее"}
-            </button>
-        )}
-        </Container>
+        <Box style={{width: '36.5rem'}}>
+            <Box className='review-header'>
+                <div>
+                    {gameReview.username}
+                </div>
+                {gameReview.userRating != undefined && (
+                    <div className={getScoreClass(gameReview.userRating)}>
+                        {gameReview.userRating}
+                    </div>
+                )}
+            </Box>
+            <Box className={`review-text ${expanded ? "expanded" : ""}`} ref={reviewTextRef}>
+                {gameReview.review}
+            </Box>
+            {isOverflowing && (
+                <button className='review-text-button' onClick={() => setExpanded(!expanded)}>
+                    {expanded ? "Скрыть" : "Читать далее"}
+                </button>
+            )}
+        </Box>
     );
     }
 

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { UpdateGameRatingParams, UserGame } from "../../types/user.game.types";
+import {UpdateGameRatingParams, UpdateUserGameModeParams, UserGame} from "../../types/user.game.types";
 import { apiClient } from "../client";
 import {PageResponse} from "../../types/types";
 import {FilterState} from "../../types/filters";
@@ -35,6 +35,7 @@ export const userGameService = {
         params.append('size', size.toString());
 
         if (filters.status) params.append('status', filters.status);
+        if (filters.dlcOnly !== null) params.append('dlcOnly', filters.dlcOnly.toString());
         if (filters.minRating !== null) params.append('minRating', filters.minRating?.toString());
         if (filters.maxRating !== null) params.append('maxRating', filters.maxRating?.toString());
         if (filters.hasReview !== null) params.append('hasReview', filters.hasReview?.toString());
@@ -97,6 +98,27 @@ export const userGameService = {
         return response.data;
     },
 
+    updateUserGame: async (igdbId: string | undefined, mode: string | undefined, params: UpdateUserGameModeParams) => {
+        const { graphics = 0, story = 0, gameplay = 0, resetUserRating = false } = params.ratingParams;
+
+        let rating: number | undefined;
+
+        if (!resetUserRating) {
+            rating = params.ratingParams.rating ? params.ratingParams.rating : calculateUserRating(graphics, story, gameplay);
+        }
+
+        const query = {
+            ...(params?.status !== undefined && { status: params?.status }),
+            ...(rating !== undefined && { userRating: rating }),
+        };
+
+        const response = await apiClient.put(GAME_ENDPOINTS.UPDATE_USER_GAME_MODE(igdbId ?? "", mode ?? ""), query);
+
+        //await apiRequest(response)
+
+        return rating;
+    },
+
     updateUserGameModeStatus: async (igdbId: string | undefined,
                                                    mode: string | undefined, status: string) => {
         const query = {
@@ -110,13 +132,13 @@ export const userGameService = {
         return response.data;
     },
 
-    updateUserGameModeRating: async (mode: string | undefined, overallRating :boolean, params: UpdateGameRatingParams) => {
-        const { igdbId, graphics = 0, story = 0, gameplay = 0, resetUserRating = false } = params;
+    updateUserGameModeRating: async (igdbId: string | undefined, mode: string | undefined, overallRating :boolean, params: UpdateGameRatingParams) => {
+        const { graphics = 0, story = 0, gameplay = 0, resetUserRating = false } = params;
 
         let rating: number | undefined;
 
         if (!resetUserRating) {
-            rating = getRating(graphics, story, gameplay);
+            rating = params?.rating ? params?.rating : calculateUserRating(graphics, story, gameplay);
         }
 
         const query = {
@@ -151,17 +173,16 @@ export const userGameService = {
     },
 
 
-    updateGameRating: async (params: UpdateGameRatingParams) => {
-        const { igdbId, graphics = 0, story = 0, gameplay = 0, resetUserRating = false } = params;
+    updateGameRating: async (igdbId: string | undefined, params: UpdateGameRatingParams) => {
+        const { graphics = 0, story = 0, gameplay = 0, resetUserRating = false, rating } = params;
+        let rat = rating;
 
-        let rating: number | undefined;
-
-        if (!resetUserRating) {
-            rating = getRating(graphics, story, gameplay);
+        if (!resetUserRating && rating == undefined) {
+            rat = calculateUserRating(graphics, story, gameplay);
         }
 
         const query = {
-            ...(rating !== undefined && { userRating: rating }),
+            ...(rating !== undefined && { userRating: rat }),
             resetUserRating
         };
 
@@ -217,7 +238,7 @@ export const userGameService = {
     }
 }
 
-const getRating = (graphics: number, story: number, gameplay: number) => {
+export const calculateUserRating = (graphics: number, story: number, gameplay: number) => {
     return graphics * 2 + story * 3.5 + gameplay * 4.5
 }
 

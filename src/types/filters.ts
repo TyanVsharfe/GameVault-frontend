@@ -1,5 +1,6 @@
 export interface FilterState {
     status: string | null;
+    dlcOnly: boolean | null;
     minRating: number | null;
     maxRating: number | null;
     hasReview: boolean | null;
@@ -12,6 +13,7 @@ export interface FilterState {
 
 export const DEFAULT_FILTERS: FilterState = {
     status: null,
+    dlcOnly: null,
     minRating: null,
     maxRating: null,
     hasReview: null,

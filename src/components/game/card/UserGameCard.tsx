@@ -4,6 +4,7 @@ import RatingBadge from "../badge/RatingBadge";
 import DlcBadge from "../badge/DlcBadge";
 import {useTheme} from "next-themes";
 import {UserGame} from "../../../types/user.game.types";
+import {statusColors} from "../../../utils/Utils";
 
 interface UserGameCardProps {
     game: UserGame;
@@ -116,40 +117,6 @@ const UserGameCard: React.FC<UserGameCardProps> = ({ game, statusColors, t }) =>
                             alignItems: "stretch"
                         }}
                     >
-                        {/*<div*/}
-                        {/*    style={{*/}
-                        {/*        height: "3rem",*/}
-                        {/*        marginBottom: "0.5vh",*/}
-                        {/*        width: "100%",*/}
-                        {/*        display: "flex",*/}
-                        {/*        justifyContent: "center",*/}
-                        {/*        textAlign: "center",*/}
-                        {/*        alignItems: "center"*/}
-                        {/*    }}*/}
-                        {/*>*/}
-                        {/*    <Tooltip*/}
-                        {/*        ref={ref}*/}
-                        {/*        title={game.game.title} arrow*/}
-                        {/*        variant="plain" placement="top"*/}
-                        {/*        disableHoverListener={!isOverflow}*/}
-                        {/*    >*/}
-                        {/*        <Typography*/}
-                        {/*            textColor="common.white"*/}
-                        {/*            level="body-md"*/}
-                        {/*            sx={{*/}
-                        {/*                width: '8.5rem',*/}
-                        {/*                overflow: 'hidden',*/}
-                        {/*                display: '-webkit-box',*/}
-                        {/*                WebkitLineClamp: 2,*/}
-                        {/*                WebkitBoxOrient: 'vertical',*/}
-                        {/*                cursor: isOverflow ? 'pointer' : 'default',*/}
-                        {/*            }}*/}
-                        {/*        >*/}
-                        {/*            {game.game.title}*/}
-                        {/*        </Typography>*/}
-                        {/*    </Tooltip>*/}
-                        {/*</div>*/}
-
                         {(game.status && game.status !== 'None') && (
                             <div
                                 style={{
@@ -163,8 +130,7 @@ const UserGameCard: React.FC<UserGameCardProps> = ({ game, statusColors, t }) =>
                                     width: "100%",
                                     alignItems: "center",
                                     flex: 1,
-                                    // paddingBottom: '10%',
-                                    // borderRadius: "1rem",
+                                    fontWeight: '400',
                                     fontSize: "0.9rem",
                                 }}
                                 className="text-uppercase"

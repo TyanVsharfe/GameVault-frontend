@@ -184,7 +184,7 @@ function UserCollectionPage() {
                         {editMode && (
                             <>
                                 <div ref={wrapperRef}>
-                                    <Form style={{position: "relative", width: "100%"}}
+                                    <Form style={{position: "relative", width: "100%", zIndex: '10'}}
                                           onSubmit={(e) => {
                                               e.preventDefault();
                                               setIsDropdownVisible(true);
@@ -243,7 +243,7 @@ function UserCollectionPage() {
                                         sx={{
                                             display: 'flex',
                                             gap: 5,
-                                            width: '50rem',
+                                            width: '50rem'
                                         }}
                                     >
 

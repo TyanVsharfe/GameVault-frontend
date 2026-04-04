@@ -39,7 +39,7 @@ const IgdbGameCard: React.FC<IgdbGameCardProps> = ({ game, t }) => {
                              }}
                 >
                     <IgdbGameTypeBadge
-                        gameType={game.game_type.id}
+                        gameType={game?.game_type?.id}
                         t={t}
                     />
                     {/*<div*/}

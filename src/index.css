@@ -19,6 +19,7 @@ html.dark body {
 }
 
 html.light body {
+  /*background-color: #e9ecef;*/
   background-color: #ffffff;
   color: #000000;
 }

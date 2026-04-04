@@ -1,6 +1,19 @@
 import React, {useEffect, useState} from "react";
 import {UserStats, userStatsService} from "../../api/services/userStatsService";
-import {Avatar, Box, Card, CardContent, Chip, Stack, Tab, tabClasses, TabList, TabPanel, Tabs} from "@mui/joy";
+import {
+    Avatar,
+    Box,
+    Card,
+    CardContent,
+    Chip,
+    Stack,
+    Tab,
+    tabClasses,
+    TabList,
+    TabPanel,
+    Tabs,
+    Typography
+} from "@mui/joy";
 import {useTranslation} from "react-i18next";
 import GameStatusChart from "../../components/game/stats/GameStatusChart";
 import AccountTabs from "../../components/nav/AccountTabs";
@@ -53,22 +66,22 @@ function UserInfoPage() {
         <Box style={{display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
             <AccountTabs/>
              {/*onChange={(e, newValue) => setActiveEdit(newValue)}*/}
-            <Box id="user-tabs"
+            <Stack id="user-tabs"
+                   direction="row"
+                   sx={{paddingTop: '0.5rem'}}
             >
-                <Stack className="mt-4"
-                       direction="row"
-                       spacing={2}
-                       sx={{
-                           justifyContent: "center",
-                           alignItems: "center",
-                       }}
+                <Stack
+                    direction="column"
+                    sx={{
+                        justifyContent: "start",
+                        alignItems: "center",
+                    }}
                 >
-                    <Card className="mb-4 shadow-sm" style={{ display: "flex", justifyContent: "center", marginRight: "15px", width: "30rem", border: "none"}}
+                    <Card className="mb-4" style={{ display: "flex", justifyContent: "center", marginRight: "15px", width: "20rem"}}
                           sx={{
                               gap: 0.5,
                               marginBottom: 1,
-                              borderRadius: 'xl',
-                              bgcolor: theme === 'dark' ? 'background.level1' : 'background.level1',
+                              borderRadius: 'xl'
                           }}
                     >
                         <CardContent
@@ -90,7 +103,7 @@ function UserInfoPage() {
                                 {/*    {userInfo?.username}*/}
                                 {/*</div>*/}
                                 <div style={{display: 'flex', justifyContent: 'center', padding: '1rem'}}>
-                                    <Avatar sx={{width: 64, height: 64}} alt="Upload new avatar" src={avatarSrc}/>
+                                    <Avatar variant="plain" sx={{width: 64, height: 64}} src={avatarSrc}/>
                                 </div>
                                 <h3>{userInfo?.username}</h3>
                                 {/*<Badge bg={userInfo?.subscription === "Premium" ? "success" : "secondary"}*/}
@@ -107,34 +120,6 @@ function UserInfoPage() {
                                 width: '80%',
                                 margin: 'auto'
                             }}>
-                                <div>
-                                    <div>
-                                        <h5>{t('total')}</h5>
-                                        <div style={{fontSize: "24px", fontWeight: "bold"}}>
-                                            {userInfo?.totalGames}
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h5>{t('total_achievements_completed')}</h5>
-                                        <div style={{fontSize: "24px", fontWeight: "bold"}}>
-                                            {userInfo?.totalCompletedAchievements}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <div>
-                                        <h5>{t('notes_added')}</h5>
-                                        <div style={{fontSize: "24px", fontWeight: "bold"}}>
-                                            {userInfo?.totalNotes}
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h5>{t('status_completed')}</h5>
-                                        <div style={{fontSize: "24px", fontWeight: "bold"}}>
-                                            {userInfo?.gamesByStatus["completed"]}
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                             <div style={{
                                 display: "flex",
@@ -152,7 +137,9 @@ function UserInfoPage() {
                                 {/*        </div>*/}
                                 {/*    </div>*/}
                                 {/*))}*/}
-                                <Chip size="lg" variant="soft" color="primary">{t('avg_rating')}: {userInfo?.averageRating ? userInfo?.averageRating?.toFixed(1) : 0}</Chip>
+                                <Chip size="lg" variant="outlined">
+                                    {t('avg_rating')}: {userInfo?.averageRating ? userInfo?.averageRating?.toFixed(1) : 0}
+                                </Chip>
                             </div>
                         </CardContent>
 
@@ -168,8 +155,50 @@ function UserInfoPage() {
                         {/*</Card.Footer>*/}
                     </Card>
                 </Stack>
-            </Box>
-            {userInfo != undefined && (<GameStatusChart stats={userInfo}/>)}
+
+                <Stack direction="column"
+                       spacing={2}
+                >
+                    <Stack direction="row"
+                           spacing={2}
+                           sx={{justifyContent: 'space-between'}}
+                    >
+                        <Card sx={{width: '10rem', height: '6rem'}}>
+                            <CardContent>
+                                <Typography level="h2">
+                                    {userInfo?.totalGames}
+                                </Typography>
+                                <h6>{t('total')}</h6>
+                            </CardContent>
+                        </Card>
+                        <Card sx={{width: '10rem', height: '6rem'}}>
+                            <CardContent>
+                                <Typography level="h2">
+                                    {userInfo?.totalCompletedAchievements}
+                                </Typography>
+                                <h6>{t('total_achievements_completed')}</h6>
+                            </CardContent>
+                        </Card>
+                        <Card sx={{width: '10rem', height: '6rem'}}>
+                            <CardContent>
+                                <Typography level="h2">
+                                    {userInfo?.totalNotes}
+                                </Typography>
+                                <h6>{t('notes_added')}</h6>
+                            </CardContent>
+                        </Card>
+                        <Card sx={{width: '10rem', height: '6rem'}}>
+                            <CardContent>
+                                <Typography level="h2">
+                                    {userInfo?.gamesByStatus["completed"]}
+                                </Typography>
+                                <h6>{t('status_completed')}</h6>
+                            </CardContent>
+                        </Card>
+                    </Stack>
+                    {userInfo != undefined && (<GameStatusChart stats={userInfo}/>)}
+                </Stack>
+            </Stack>
         </Box>
     );
 }

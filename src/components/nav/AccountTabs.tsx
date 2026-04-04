@@ -31,7 +31,7 @@ function AccountTabs() {
 
     if (isMobile) {
         return (
-            <Dropdown style={{width: "25rem", margin: "10px" }}>
+            <Dropdown style={{width: "25rem", margin: "10px"}}>
                 <Dropdown.Toggle style={{width: "25rem"}} variant="primary" id="account-nav-dropdown">
                     Меню аккаунта
                 </Dropdown.Toggle>
@@ -49,7 +49,7 @@ function AccountTabs() {
     }
 
     return (
-        <Tabs aria-label="tabs" value={activeTabIndex} sx={{ bgcolor: 'transparent' }}>
+        <Tabs aria-label="tabs" value={activeTabIndex} sx={{ bgcolor: 'transparent'}}>
             <TabList
                 disableUnderline
                 sx={{

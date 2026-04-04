@@ -64,9 +64,9 @@ export const userGameListService = {
     },
 
     // Others
-    createUserGameList: async ({title, description, isPublic}: UserGameListForm) => {
+    createUserGameList: async ({name, description, isPublic}: UserGameListForm) => {
         const query = {
-            "name": title,
+            "name": name,
             "description": description,
             "isPublic": isPublic,
         };
