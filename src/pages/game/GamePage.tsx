@@ -248,6 +248,7 @@ function GamePage() {
                            width: '100%',
                            alignItems: 'flex-start',
                            justifyContent: 'center',
+                           flexWrap: 'wrap'
                        }}
                        gap={5}>
                     {/*<div*/}
@@ -358,7 +359,7 @@ function GamePage() {
                                         : <></>
                                 )}
                             </CardContent>
-                            <Divider/>
+                            {gameStatus ? <Divider/> : <></>}
                             {uGameData?.createdAt && (
                                 <Typography
                                     level="body-xs"
@@ -397,7 +398,9 @@ function GamePage() {
                         sx={{ flex: 1, minWidth: 0, gap: '1rem'}}
                     >
                         <Stack direction='row'>
-                            <Card style={{width: '60rem', border: '0', padding: 0}}>
+                            <Card
+                                style={{backgroundColor: 'white', width: '60rem', border: '0', padding: 0}}
+                            >
                                 <CardContent>
                                     <Stack direction="row" style={{display: 'flex', justifyContent: 'space-between'}}>
                                         <Stack direction="column">
@@ -1069,7 +1072,7 @@ function GamePage() {
                         }}
                     >
                         <div style={{border: 'none', paddingBottom: '0px'}}>
-                            <Typography level="h3">Рецензии пользователей</Typography>
+                            <Typography level="h3">{t('user_reviews')}</Typography>
                         </div>
                         <ModalClose/>
 
@@ -1083,17 +1086,33 @@ function GamePage() {
                                 alignItems: 'center',
                                 gap: '10px'
                             }}>
-                                <div style={{
+                                <div
+                                    style={{
                                     width: '20px',
                                     height: '20px',
                                     borderRadius: '50%',
-                                    backgroundColor: getRatingColor(averageScore, 1)
-                                }}></div>
+                                    backgroundColor: reviewsWithScores?.length >= 5
+                                        ? getRatingColor(averageScore, 1)
+                                        : getRatingColor(undefined, 1)
+                                }}/>
                                 <div>
-                                    <strong>Средняя оценка: {averageScore}</strong><br />
-                                    <span style={{ fontSize: '0.9rem', color: '#777' }}>
-                                (на основе отзывов с оценкой: {reviewsWithScores?.length})
-                            </span>
+                                    {reviewsWithScores?.length >= 5
+                                        ? (
+                                            <div style={{display: 'flex', flexDirection: 'column'}}>
+                                                <strong>{t('average_score')}: {averageScore}</strong>
+                                                <span style={{ fontSize: '0.9rem', color: '#777' }}>
+                                                    ({t('user_reviews_description')}: {reviewsWithScores?.length})
+                                                </span>
+                                            </div>)
+                                        : (
+                                            <div style={{display: 'flex', flexDirection: 'column'}}>
+                                                <strong>{t('average_score')}: {t('none')}</strong>
+                                                <span style={{ fontSize: '0.9rem', color: '#777' }}>
+                                                    ({t('user_no_reviews_description')})
+                                                </span>
+                                            </div>
+                                        )
+                                    }
                                 </div>
                             </div>
                         )}
@@ -1116,12 +1135,6 @@ function GamePage() {
                                 </>
                             ) : <></>}
                         </div>
-
-                        {/*<div style={{border: 'none'}}>*/}
-                        {/*    <Button color="primary" onClick={() => {*/}
-                        {/*        handleCloseUsersReview()*/}
-                        {/*    }}>Закрыть</Button>*/}
-                        {/*</div>*/}
                     </ModalDialog>
                 </Modal>
 

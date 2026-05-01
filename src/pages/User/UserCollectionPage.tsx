@@ -1,5 +1,3 @@
-import Container from "react-bootstrap/Container";
-
 import "../../assets/styles/style.css"
 import "../../assets/styles/game-card.css"
 import React, {useEffect, useMemo, useRef, useState} from "react";
@@ -8,20 +6,16 @@ import {useTheme} from "next-themes";
 import {userGameListService} from "../../api/services/userGameListService";
 import {useNavigate, useParams} from "react-router-dom";
 import UserGameCollectionList from "../../components/game/collections/UserGameCollectionList";
-import {Box, Button, Switch, Textarea, Typography} from "@mui/joy";
+import {Box, Button, Stack, Switch, Textarea, Typography} from "@mui/joy";
 import NavSearchDropdown from "../../components/nav/NavSearchDropdown";
 import debounce from "lodash/debounce";
 import {igdbGamesService} from "../../api/services/igdbGamesService";
-import Form from "react-bootstrap/Form";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
 import NotFoundPage from "../NotFoundPage";
 import {Helmet} from "react-helmet-async";
 import FormControl from '@mui/joy/FormControl';
 import FormLabel from '@mui/joy/FormLabel';
 import FormHelperText from '@mui/joy/FormHelperText';
 import Input from '@mui/joy/Input';
-import Stack from '@mui/material/Stack';
 import {UserGameList, UserGameListForm, UserGameListItem} from "../../types/user.game.list.types";
 
 function UserCollectionPage() {
@@ -162,12 +156,12 @@ function UserCollectionPage() {
             <Helmet>
                 <title>{originalTitle} | GameVault</title>
             </Helmet>
-            <Container style={{display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
+            <Box style={{display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
                 {!error && (
                     <>
-                        <h2>
+                        <h1>
                             {originalTitle}
-                        </h2>
+                        </h1>
                         <Typography
                             // variant="body2" color="textSecondary"
                                     sx={{
@@ -184,34 +178,32 @@ function UserCollectionPage() {
                         {editMode && (
                             <>
                                 <div ref={wrapperRef}>
-                                    <Form style={{position: "relative", width: "100%", zIndex: '10'}}
+                                    <form style={{position: "relative", width: "100%", zIndex: '10'}}
                                           onSubmit={(e) => {
                                               e.preventDefault();
                                               setIsDropdownVisible(true);
                                           }}
                                     >
-                                        <Row>
-                                            <Col xs="auto">
-                                                <Form.Control
-                                                    style={{width: '25rem'}}
-                                                    type="text"
-                                                    placeholder={t('add_game')}
-                                                    className=" mr-sm-2"
-                                                    id={"gameNameInput"}
-                                                    value={searchTerm}
-                                                    onChange={onInputChange}
-                                                    onFocus={() => {
-                                                        if (searchResults.length > 0) setIsDropdownVisible(true);
-                                                    }}
-                                                />
-                                            </Col>
-                                        </Row>
+                                        <Stack>
+                                            <Input
+                                                style={{width: '25rem'}}
+                                                type="text"
+                                                placeholder={t('add_game')}
+                                                className=" mr-sm-2"
+                                                id={"gameNameInput"}
+                                                value={searchTerm}
+                                                onChange={onInputChange}
+                                                onFocus={() => {
+                                                    if (searchResults.length > 0) setIsDropdownVisible(true);
+                                                }}
+                                            />
+                                        </Stack>
                                         {isDropdownVisible && searchResults.length > 0 && (
                                             <NavSearchDropdown games={searchResults} isListPage={true} listId={listId.id}
                                                                onChange={handleGameListUpdate}
                                             />
                                         )}
-                                    </Form>
+                                    </form>
                                 </div>
                             </>
                         )}
@@ -330,7 +322,7 @@ function UserCollectionPage() {
                 {error && (
                     <NotFoundPage/>
                 )}
-            </Container>
+            </Box>
         </>
     );
 }

@@ -80,8 +80,10 @@ const aggregateReleasesByGame = async (releaseDates: any[]): Promise<AggregatedR
     const gameMap = new Map<number, AggregatedRelease>();
 
     for (const release of releaseDates) {
-        console.log(release.game.game_type);
         const gameInfo = release.game;
+        if (gameInfo === undefined) {
+            continue;
+        }
         const gameId = gameInfo.id;
 
         if (!gameMap.has(gameId)) {

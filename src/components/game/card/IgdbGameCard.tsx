@@ -19,7 +19,6 @@ const IgdbGameCard: React.FC<IgdbGameCardProps> = ({ game, t }) => {
     return (
         <Card
             style={{
-                backgroundColor: "rgba(30, 30, 30, 0.4)",
                 overflow: "hidden",
                 border: "0px",
             }}

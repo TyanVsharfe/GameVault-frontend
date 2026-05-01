@@ -9,7 +9,6 @@ import theme from "./theme";
 import initI18n from './i18n';
 import { ThemeProvider } from 'next-themes';
 import {HelmetProvider} from "react-helmet-async";
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 initI18n().then(() => {
     createRoot(document.getElementById('root')!).render(

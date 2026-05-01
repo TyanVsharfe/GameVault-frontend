@@ -33,18 +33,24 @@ const UserGameList: React.FC<UserGamesListProps> = ({ games, listType, gamesPerP
 
     return (
         <>
-            <Box className="game-list"
+            <Box
                  sx={{
                      display: 'grid',
-                     gridTemplateColumns: () =>
-                         listType == 0
-                             ? 'repeat(auto-fill, minmax(10rem, 3fr))'
+                     gridTemplateColumns: {
+                         xs: listType == 0
+                             ? 'repeat(auto-fill, minmax(12rem, 1fr))'
+                             : 'repeat(auto-fill, minmax(6rem, 1fr))',
+                         sm: listType == 0
+                             ? 'repeat(auto-fill, minmax(11.25rem, 1fr))'
                              : 'repeat(auto-fill, minmax(7.5rem, 1fr))',
-                     maxWidth: '85rem',
+                         md: listType == 0
+                             ? 'repeat(auto-fill, minmax(11.5rem, 1fr))'
+                             : 'repeat(auto-fill, minmax(7.5rem, 1fr))',
+                     },
                      width: '100%',
                      mx: 'auto',
                      pb: '0.75rem',
-                     gap: 2,
+                     gap: { xs: 1, sm: 1.5, md: 2 },
                      justifyItems: 'center'
                  }}
             >

@@ -1,14 +1,10 @@
-import Container from "react-bootstrap/Container";
-
 import "../../assets/styles/style.css"
 import "../../assets/styles/game-card.css"
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {useTranslation} from "react-i18next";
 import AccountTabs from "../../components/nav/AccountTabs";
-import {AspectRatio, Box, Card, CardContent, CardCover, CardOverflow, Divider, Grid, Link, Stack} from "@mui/joy";
-import IgdbGameTypeBadge from "../../components/game/badge/IgdbGameTypeBadge";
+import {Box} from "@mui/joy";
 import {useTheme} from "next-themes";
-import {CardImg} from "react-bootstrap";
 import UserGameCollectionsGrid from "../../components/game/collections/UserGameCollectionsGrid";
 import UserGameCollectionCreateModal from "../../components/game/collections/UserGameCollectionCreateModal";
 import useSWR, {mutate} from "swr";
@@ -73,7 +69,7 @@ function UserCollectionsPage() {
             <Helmet>
                 <title>{t('lists')} | GameVault</title>
             </Helmet>
-            <Container style={{display: "flex", padding: '0', flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
+            <Box style={{display: "flex", padding: '0', flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
                 <AccountTabs/>
                 <UserGameCollectionsGrid
                     collections={data?.content}
@@ -86,7 +82,7 @@ function UserCollectionsPage() {
                     onSubmit={handleCreateList}
                     isSubmitting={isCreating}
                 />
-            </Container>
+            </Box>
         </Box>
     );
 }

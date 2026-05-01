@@ -1,12 +1,10 @@
 import React, {useEffect, useState} from "react";
-import Container from "react-bootstrap/Container";
-import {Alert, Spinner, Stack} from "react-bootstrap";
-import Row from "react-bootstrap/Row";
 import {useNavigate, useParams, useSearchParams} from "react-router-dom";
 import "../assets/styles/game-card.css"
 import {useTranslation} from "react-i18next";
 import {igdbGamesService} from "../api/services/igdbGamesService";
 import {IgdbGameList} from "../components/game/list/IgdbGameList";
+import {Card, CircularProgress, Stack} from "@mui/joy";
 
 function SeriesPage() {
     const { t } = useTranslation();
@@ -36,37 +34,37 @@ function SeriesPage() {
         }
         else {
             return (
-                <Container style={{textAlign: "center", maxWidth: "500px"}}>
-                    <Alert>{t('not_found')}</Alert>
-                </Container>
+                <div style={{textAlign: "center", maxWidth: "500px"}}>
+                    <Card>{t('not_found')}</Card>
+                </div>
             )
         }
     };
 
     return (
-        <Container>
-            <Stack className=".d-flex justify-content-center align-items-center">
-                <Container style={{textAlign: "center", width: '35rem', paddingBottom: "10px"}}>
+        <div>
+            <Stack style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                <div style={{textAlign: "start", width: '75rem', paddingBottom: "10px"}}>
                     {searchResults[0]?.name != null && (
                         <h2 className='page-title' style={{justifyContent: 'flex-start'}}>
                             {`${t('series')}: ${searchResults[0].name}`}
                         </h2>)
                     }
-                </Container>
-                <Row className="flex-wrap" style={{display: 'flex', alignItems: 'flex-end'}} gap="4">
+                </div>
+                <Stack style={{display: 'flex', alignItems: 'flex-end'}} gap="4">
                     {isLoading ? (
-                        <Container style={{display: "flex", justifyContent: "center", paddingBottom: '20px'}}>
-                            <Spinner animation="border" variant="primary"/>
-                        </Container>
+                        <div style={{display: "flex", justifyContent: "center", paddingBottom: '20px'}}>
+                            <CircularProgress/>
+                        </div>
                     ) : (
-                        <Container className="justify-content-start align-items-center">
+                        <div>
                             {renderSearchResults()}
                             {/*<SearhResult searchResults={searchResults}/>*/}
-                        </Container>
+                        </div>
                     )}
-                </Row>
+                </Stack>
             </Stack>
-        </Container>
+        </div>
     );
 }
 

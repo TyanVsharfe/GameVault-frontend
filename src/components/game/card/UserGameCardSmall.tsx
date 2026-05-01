@@ -1,9 +1,10 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {AspectRatio, Card, CardContent, CardOverflow, Link, Stack, Tooltip, Typography} from '@mui/joy';
+import {AspectRatio, Box, Card, CardContent, CardOverflow, Link, Stack, Tooltip, Typography} from '@mui/joy';
 import RatingBadge from "../badge/RatingBadge";
 import DlcBadge from "../badge/DlcBadge";
 import {useTheme} from "next-themes";
 import {UserGame} from "../../../types/user.game.types";
+import {statusColors} from "../../../utils/Utils";
 
 export interface UserGameCardProps {
     game: UserGame;
@@ -11,8 +12,8 @@ export interface UserGameCardProps {
     t: (key: string) => string;
 }
 
-const UserGameCardSmall: React.FC<UserGameCardProps> = ({ game, statusColors, t }) => {
-    const { theme } = useTheme();
+const UserGameCardSmall: React.FC<UserGameCardProps> = ({game, statusColors, t}) => {
+    const {theme} = useTheme();
     const isDlcOrExpansion = ["DLC", "EXPANSION"].includes(game?.game?.category);
     const hasRating = game.userRating != null;
     const coverUrl = game.game.coverUrl.replace("t_thumb", "t_cover_big");
@@ -37,18 +38,18 @@ const UserGameCardSmall: React.FC<UserGameCardProps> = ({ game, statusColors, t 
             return () => ro.disconnect();
         }, []);
 
-        return { ref, isOverflow };
+        return {ref, isOverflow};
     }
 
-    const { ref, isOverflow } = useOverflow<HTMLParagraphElement>();
+    const {ref, isOverflow} = useOverflow<HTMLParagraphElement>();
 
     return (
         <Card
             style={{
                 overflow: "hidden",
                 border: "0px",
-                height: "11.25rem",
-                width: "8rem",
+                height: "auto",
+                width: "100%",
                 gap: "0",
                 display: "flex",
                 flexDirection: "column",
@@ -57,10 +58,10 @@ const UserGameCardSmall: React.FC<UserGameCardProps> = ({ game, statusColors, t 
             variant="plain"
             className={`user-game-list-game-card user-game-list-game-card-background position-relative ${theme === 'light' ? 'bg-dark text-white' : 'text-light'}`}
         >
-            <CardOverflow sx={{ flex: "0 0 auto" }}>
-                <AspectRatio ratio="3/3.9" className="game-card__img-wrapper">
+            <CardOverflow sx={{flex: "0 0 auto"}}>
+                <AspectRatio ratio="3/4" className="game-card__img-wrapper">
                     {hasRating && <RatingBadge rating={game.userRating} size="small"/>}
-                    {isDlcOrExpansion && <DlcBadge size="small" />}
+                    {isDlcOrExpansion && <DlcBadge size="small"/>}
 
                     {(isDlcOrExpansion || hasRating) && (
                         <div
@@ -94,6 +95,18 @@ const UserGameCardSmall: React.FC<UserGameCardProps> = ({ game, statusColors, t 
                             width: '100%',
                         }}
                     />
+
+                    <Box
+                        className="status-bar"
+                        sx={{
+                            position: "absolute",
+                            bottom: 0,
+                            width: "100%",
+                            height: "0.65rem",
+                            backgroundColor: statusColors[game.status],
+                            opacity: 1,
+                        }}
+                    />
                 </AspectRatio>
 
                 <Link
@@ -114,6 +127,7 @@ const UserGameCardSmall: React.FC<UserGameCardProps> = ({ game, statusColors, t 
                 <CardContent
                     style={{
                         display: "flex",
+                        zIndex: 0,
                         flex: 1,
                         flexDirection: "column",
                         padding: 0,
@@ -123,30 +137,6 @@ const UserGameCardSmall: React.FC<UserGameCardProps> = ({ game, statusColors, t 
                     }}
                 >
 
-                    {/*{(game.status && game.status !== 'None') && (*/}
-                    {/*    <div*/}
-                    {/*        style={{*/}
-                    {/*            color: "white",*/}
-                    {/*            backgroundColor: statusColors[game.status],*/}
-                    {/*            display: "flex",*/}
-                    {/*            justifyContent: "center",*/}
-                    {/*            border: "1px solid rgba(255,255,255,0.05)",*/}
-                    {/*            boxShadow: "0 0 6px rgba(0,0,0,0.3)",*/}
-                    {/*            backdropFilter: "blur(4px)",*/}
-                    {/*            width: "1.25rem",*/}
-                    {/*            height: "1.25rem",*/}
-                    {/*            position: "absolute",*/}
-                    {/*            top: "-2rem",*/}
-                    {/*            left: 8,*/}
-                    {/*            // paddingBottom: '10%',*/}
-                    {/*            // borderRadius: "1rem",*/}
-                    {/*            fontSize: "0.9rem",*/}
-                    {/*        }}*/}
-                    {/*        className="text-uppercase"*/}
-                    {/*    >*/}
-                    {/*        /!*{t(`status_${game.status.toLowerCase()}`)}*!/*/}
-                    {/*    </div>*/}
-                    {/*)}*/}
                 </CardContent>
             </CardOverflow>
         </Card>

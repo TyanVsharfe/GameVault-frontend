@@ -55,9 +55,15 @@ export default function UserStatsChart({ stats }: Props) {
                  borderRadius: 'xl',
              }}
         >
-            <Typography level="h4" className="text-lg font-semibold mb-2">
-                <SignalCellularAltIcon/> {stats.username}'s Game Status
-            </Typography>
+            <Stack direction="row">
+                <Typography level="h4">
+                    <SignalCellularAltIcon/>
+                </Typography>
+                <Typography level="h4">
+                    {stats.username}'s Game Status
+                </Typography>
+            </Stack>
+
 
             <ResponsiveContainer width="100%" height={40}>
                 <BarChart layout="vertical"

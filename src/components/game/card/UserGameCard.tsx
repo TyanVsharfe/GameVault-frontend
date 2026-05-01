@@ -57,9 +57,9 @@ const UserGameCard: React.FC<UserGameCardProps> = ({ game, statusColors, t }) =>
                 style={{
                     overflow: "hidden",
                     border: "0px",
-                    height: "15.75rem",
-                    width: "11rem",
-                    gap: "0",
+                    height: "auto",
+                    width: "100%",
+                    gap: 0,
                     display: "flex",
                     flexDirection: "column",
                     borderRadius: "0.6rem",
@@ -68,7 +68,7 @@ const UserGameCard: React.FC<UserGameCardProps> = ({ game, statusColors, t }) =>
                 className={`user-game-list-game-card user-game-list-game-card-background position-relative ${theme === 'light' ? 'bg-dark text-white' : 'text-light'}`}
             >
                 <CardOverflow sx={{ flex: "0 0 auto" }}>
-                    <AspectRatio ratio="3/3.9" className="game-card__img-wrapper">
+                    <AspectRatio ratio="3/4" className="game-card__img-wrapper">
                         {hasRating && <RatingBadge rating={game.userRating} />}
                         {isDlcOrExpansion && <DlcBadge />}
 
@@ -104,7 +104,7 @@ const UserGameCard: React.FC<UserGameCardProps> = ({ game, statusColors, t }) =>
                     sx={{
                         flex: 1,
                         padding: 0,
-                        display: "flex",
+                        display: "flex"
                     }}
                 >
                     <CardContent
@@ -113,37 +113,42 @@ const UserGameCard: React.FC<UserGameCardProps> = ({ game, statusColors, t }) =>
                             flex: 1,
                             flexDirection: "column",
                             padding: 0,
-                            margin: "0",
+                            margin: 0,
                             alignItems: "stretch"
                         }}
                     >
-                        {(game.status && game.status !== 'None') && (
-                            <div
-                                style={{
-                                    color: "white",
-                                    backgroundColor: statusColors[game.status],
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    border: "1px solid rgba(255,255,255,0.05)",
-                                    boxShadow: "0 0 6px rgba(0,0,0,0.3)",
-                                    backdropFilter: "blur(4px)",
-                                    width: "100%",
-                                    alignItems: "center",
-                                    flex: 1,
-                                    fontWeight: '400',
-                                    fontSize: "0.9rem",
-                                }}
-                                className="text-uppercase"
-                            >
-                                {t(`status_${game.status.toLowerCase()}`)}
-                            </div>
-                        )}
-                        <Link
-                            overlay
-                            href={`/games/${game.game.igdbId}`}
-                            underline="none"
-                            sx={{display: 'flex', flexDirection: 'column', alignItems: 'start'}}
-                        />
+                        <Typography
+                            level="title-sm"
+                            sx={{
+                                position: "absolute",
+                                bottom: 8,
+                                left: 8,
+                                right: 8,
+                                height: '1.25rem',
+
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                zIndex: 5,
+
+                                backgroundColor: statusColors[game.status],
+                                color: "white",
+
+                                padding: "4px 10px",
+                                borderRadius: "999px",
+                                fontSize: "0.85rem",
+                                fontWeight: 700,
+                                backdropFilter: "blur(4px)",
+                                boxShadow: "0 4px 10px rgba(0,0,0,0.4)",
+                                textAlign: "center",
+                                maxWidth: "calc(100% - 16px)",
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                            }}
+                        >
+                            {t(`status_${game.status.toLowerCase()}`)}
+                        </Typography>
                     </CardContent>
                 </CardOverflow>
             </Card>

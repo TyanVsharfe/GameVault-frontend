@@ -22,8 +22,9 @@ const EnrichedGameCardLarge: React.FC<EnrichedGameCardProps> = ({ game, t, onSta
 
     return (
         <Card
+            variant="black"
             style={{
-                backgroundColor: "rgba(30, 30, 30, 0.4)",
+                color: 'white',
                 overflow: "hidden",
                 border: "0px",
             }}
@@ -94,7 +95,6 @@ const EnrichedGameCardLarge: React.FC<EnrichedGameCardProps> = ({ game, t, onSta
                                     padding: 0,
                                     zIndex: 10
                                 }}
-                                className="text-uppercase"
                             >
                                 {t(`status_${game.userData.status.toLowerCase()}`)}
                             </Typography>
@@ -116,21 +116,23 @@ const EnrichedGameCardLarge: React.FC<EnrichedGameCardProps> = ({ game, t, onSta
                     />
                 </AspectRatio>
 
-                <div style={{width: "12.5rem", display: "flex", justifyContent: "flex-start", flexDirection: "column"}}>
-                    <div className="text-center"
+                <div style={{width: "12.2rem", display: "flex", justifyContent: "flex-start", flexDirection: "column", marginLeft: '0.25rem'}}>
+                    <Typography level='title-md' className="text-center"
                          style={{
+                             textAlign: 'center',
                              display: '-webkit-box',
                              overflow: 'hidden',
                              WebkitLineClamp: 2,
                              WebkitBoxOrient: 'vertical',
-                             justifyContent: 'center',
-                             alignItems: 'center',
-                             margin: '0 0.4rem',
+                             justifyContent: 'start',
+                             alignItems: 'flex-start',
+                             // margin: '0 0.25rem',
                              height: "3rem",
+                             color: "white"
                          }}
                     >
                         {game.name}
-                    </div>
+                    </Typography>
                     <Divider style={{margin: '0.4rem'}} component="div" role="presentation"/>
                     <div style={{margin: "0 1rem", height: "5rem", textAlign: "center", padding: "0 0.5rem"}}>
                         {game?.platforms?.slice(0, 4).map((platform, index) =>

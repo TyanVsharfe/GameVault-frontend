@@ -1,12 +1,12 @@
 import React, {useEffect, useRef, useState} from "react";
-import Container from "react-bootstrap/Container";
-import ReleaseGamesList from "../components/game/list/ReleaseGamesList";
-import {Alert, Spinner} from "react-bootstrap";
 import GameCarousel from "../components/game/list/GameCarousel";
 import {igdbGamesService} from "../api/services/igdbGamesService";
 import "../assets/styles/home-page.css"
+import {Card, CircularProgress, Stack} from "@mui/joy";
+import {useTranslation} from "react-i18next";
 
 function MainPage() {
+    const { t } = useTranslation();
     const [releaseGames, setReleaseGames] = useState([]);
 
     const [loading, setLoading] = useState(false);
@@ -35,17 +35,17 @@ function MainPage() {
     const renderCarousel = (data: any, loading: boolean, carouselRef: React.RefObject<HTMLDivElement>) => {
         if (loading) {
             return (
-                <Container style={{ display: "flex", justifyContent: "center", paddingBottom: '20px' }}>
-                    <Spinner animation="border" variant="primary" />
-                </Container>
+                <div style={{ display: "flex", justifyContent: "center", paddingBottom: '20px' }}>
+                    <CircularProgress/>
+                </div>
             );
         }
 
         if (!data || data.length === 0) {
             return (
-                <Container style={{ textAlign: "center", maxWidth: "500px" }}>
-                    <Alert>Игры не найдены</Alert>
-                </Container>
+                <div style={{ textAlign: "center", maxWidth: "500px" }}>
+                    <Card>{t('not_found')}</Card>
+                </div>
             );
         }
 
@@ -56,14 +56,36 @@ function MainPage() {
     };
 
     return (
-        <Container style={{textAlign: "center"}}>
-            <h1>Main</h1>
-            <h2>Release dates of the games</h2>
-            <Container>
+        <div style={{textAlign: "center"}}>
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "start",
+                    width: "100%",
+                    maxWidth: '75rem',
+                    margin: "auto",
+                    padding: '0 3rem'
+                }}
+            >
+                <h1>{t('release_calendar')}</h1>
+                <h5>{t('release_calendar_description')}.</h5>
+            </div>
+            <div
+                style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "100%",
+                    maxWidth: '75rem',
+                    margin: "auto",
+                }}
+            >
                 {/*<ReleaseGames releaseGames={releaseGames}/>*/}
                 {renderCarousel(releaseGames, loading, carouselRef)}
-            </Container>
-        </Container>
+            </div>
+        </div>
     );
 }
 

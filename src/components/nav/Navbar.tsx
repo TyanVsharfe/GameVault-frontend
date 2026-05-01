@@ -137,7 +137,7 @@ const Navigation: React.FC = () => {
                         </Typography>
                     </Link>
 
-                    <Stack direction="row">
+                    <Stack direction="row" style={{flexWrap: 'wrap'}}>
                         <Stack direction="row" spacing={2} alignItems="center" sx={{marginRight: '0.5rem'}}>
                             <Link component={RouterLink} to="/main" color="neutral" sx={{ fontWeight: 400 }}>
                                 {t('main')}

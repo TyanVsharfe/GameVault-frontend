@@ -43,7 +43,6 @@ const GameCard: React.FC<GameCardProps> = ({ game, t, editMode, listId }) => {
     };
 
     const cardStyle: React.CSSProperties = {
-        backgroundColor: "rgba(30, 30, 30, 0.4)",
         overflow: "hidden",
         border: "0",
         cursor: editMode ? 'grab' : 'default',
@@ -100,6 +99,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, t, editMode, listId }) => {
             className="mb-4 d-flex justify-content-center"
         >
             <Card
+                variant="black"
                 style={cardStyle}
                 ref={setNodeRef}
                 {...attributes}
@@ -164,14 +164,14 @@ const GameCard: React.FC<GameCardProps> = ({ game, t, editMode, listId }) => {
                     {/*</Typography>*/}
                     <Tooltip title={game.title} arrow placement="top">
                         <Typography
-                            className="text-center"
                             sx={{
                                 display: '-webkit-box',
                                 WebkitLineClamp: 2,
                                 WebkitBoxOrient: 'vertical',
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
-                                color: "white"
+                                color: "white",
+                                textAlign: 'center',
                             }}
                         >
                             {game.title}

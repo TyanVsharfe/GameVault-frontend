@@ -10,6 +10,10 @@ export const ru = {
         reset: 'Сбросить',
         save: 'Сохранить',
 
+        // Main page
+        release_calendar: 'Календарь релизов',
+        release_calendar_description: 'Предстоящие игры и даты их выхода',
+
         // User registration
         password: 'Пароль',
         no_account: 'Нет аккаунта',
@@ -85,6 +89,10 @@ export const ru = {
         user_review: 'Ваша рецензия',
 
         // Review
+        user_reviews: 'Рецензии пользователей',
+        user_reviews_description: 'на основе отзывов с оценкой',
+        user_no_reviews_description: 'недостаточно рецензий для оценки',
+
         what_do_you_think: 'Что вы думаете?',
         helper_reviews: 'Помогите сообществу, поделившись своим опытом с этой игрой.',
         register_and_review: 'Авторизация и отзыв',
@@ -160,6 +168,12 @@ export const ru = {
         save_changes: 'Сохранить изменения',
 
         // Notes
+        tag_general: 'Разное',
+        tag_gameplay: 'Геймплей',
+        tag_guide: 'Гайд',
+        tag_combat: 'Сражения',
+        tag_lore: 'Лор',
+
         your_notes: 'Ваши заметки',
         your_notes_for: 'Ваши заметки для',
         you_have: 'Заметок для этой игры',

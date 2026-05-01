@@ -1,70 +1,192 @@
-# Getting Started with Create React App
+# GameVault Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Frontend-приложение для GameVault: личной игровой библиотеки с поиском игр, профилем пользователя, коллекциями, списками, достижениями и интеграциями с внешними игровыми данными.
 
-## Available Scripts
+Проект построен на React, TypeScript и Vite. Интерфейс использует MUI Joy, Redux Toolkit, React Router, axios и набор UI-библиотек для карточек, списков, графиков и интерактивных элементов.
 
-In the project directory, you can run:
+## Содержание
 
-### `npm start`
+- [Возможности](#возможности)
+- [Технологии](#технологии)
+- [Требования](#требования)
+- [Быстрый старт](#быстрый-старт)
+- [Переменные окружения](#переменные-окружения)
+- [Скрипты](#скрипты)
+- [Структура проекта](#структура-проекта)
+- [API](#api)
+- [Маршруты приложения](#маршруты-приложения)
+- [Сборка](#сборка)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Возможности
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Поиск и просмотр игр.
+- Страницы игр, серий и игровых компаний.
+- Регистрация, вход, подтверждение email и восстановление пароля.
+- Защищенный личный кабинет пользователя.
+- Управление пользовательской библиотекой игр.
+- Пользовательские списки и коллекции игр.
+- Достижения, заметки, статусы и статистика.
+- Локализация интерфейса на русском и английском языках.
 
-### `npm test`
+## Технологии
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- [React 18](https://react.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Vite](https://vite.dev/)
+- [React Router](https://reactrouter.com/)
+- [Redux Toolkit](https://redux-toolkit.js.org/)
+- [React Query](https://tanstack.com/query/v3/)
+- [SWR](https://swr.vercel.app/)
+- [axios](https://axios-http.com/)
+- [MUI Joy](https://mui.com/joy-ui/getting-started/)
+- [Recharts](https://recharts.org/)
+- [Swiper](https://swiperjs.com/)
+- [dnd kit](https://dndkit.com/)
+- [i18next](https://www.i18next.com/)
 
-### `npm run build`
+## Требования
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Node.js 18 или новее.
+- npm 9 или новее.
+- Запущенный backend GameVault API. По умолчанию frontend ожидает API на `http://localhost:8080`.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Быстрый старт
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+git clone <repository-url>
+cd GameVault-frontend
+npm install
+npm run dev
+```
 
-### `npm run eject`
+После запуска приложение будет доступно по адресу:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```text
+http://localhost:3000
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Переменные окружения
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Frontend читает адрес backend API из переменной `VITE_API_URL`.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Создайте файл `.env.local` в корне проекта, если backend запущен не на стандартном адресе:
 
-## Learn More
+```env
+VITE_API_URL=http://localhost:8080
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Итоговый base URL собирается так:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+```text
+VITE_API_URL + /api/v1
+```
 
-### Code Splitting
+Если `VITE_API_URL` не задан, используется значение по умолчанию:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```text
+http://localhost:8080/api/v1
+```
 
-### Analyzing the Bundle Size
+## Скрипты
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```bash
+npm run dev
+```
 
-### Making a Progressive Web App
+Запускает Vite dev server на порту `3000`.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```bash
+npm run build
+```
 
-### Advanced Configuration
+Собирает production-версию приложения в папку `dist`.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```bash
+npm run preview
+```
 
-### Deployment
+Запускает локальный preview production-сборки.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## Структура проекта
 
-### `npm run build` fails to minify
+```text
+src/
+  api/              axios-клиенты, interceptors и сервисы API
+  assets/           иконки, изображения и глобальные стили
+  components/       переиспользуемые UI-компоненты
+  config/           конфигурация приложения
+  i18n/             локализация и словари
+  pages/            страницы приложения
+  store/            Redux store, slices и работа с localStorage
+  types/            TypeScript-типы доменной модели
+  utils/            общие утилиты и enum-значения
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Ключевые файлы:
+
+- `src/main.tsx` - точка входа приложения.
+- `src/App.tsx` - маршруты и базовая композиция приложения.
+- `src/config/api.config.ts` - конфигурация backend API.
+- `src/api/client.ts` - axios-клиенты для JSON API и IGDB-запросов.
+- `vite.config.ts` - конфигурация Vite, React и SVGR.
+
+## API
+
+Приложение использует два axios-клиента:
+
+- `apiClient` - основной JSON-клиент с `withCredentials: true`.
+- `igdbClient` - клиент для текстовых IGDB-запросов с `Accept: application/json`.
+
+Сервисы API находятся в `src/api/services`:
+
+- `authService.ts`
+- `igdbGamesService.ts`
+- `enrichedGamesService.ts`
+- `steamGamesService.ts`
+- `userGamesService.ts`
+- `userGameListService.ts`
+- `userProfileService.ts`
+- `userStatsService.ts`
+- `achievementService.ts`
+- `noteService.ts`
+
+## Маршруты приложения
+
+Публичные маршруты:
+
+- `/main` - главная страница.
+- `/search` - поиск игр.
+- `/login` - вход.
+- `/registration` - регистрация.
+- `/registration/verify` - подтверждение email.
+- `/reset-password` - восстановление пароля.
+- `/reset-password/verify` - подтверждение восстановления пароля.
+- `/games/:id` - страница игры.
+- `/series/:series` - страница серии.
+- `/company/:company` - страница компании.
+
+Защищенные маршруты:
+
+- `/account` - профиль пользователя.
+- `/account/games` - библиотека игр пользователя.
+- `/account/lists` - коллекции пользователя.
+- `/account/lists/:id` - отдельная коллекция.
+- `/account/settings` - настройки аккаунта.
+- `/account/achievements` - достижения пользователя.
+
+## Сборка
+
+Для production-сборки выполните:
+
+```bash
+npm run build
+```
+
+Для локальной проверки собранного приложения:
+
+```bash
+npm run preview
+```
+
+
+

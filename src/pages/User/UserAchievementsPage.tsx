@@ -1,4 +1,3 @@
-import Container from "react-bootstrap/Container";
 import "../../assets/styles/style.css"
 import "../../assets/styles/game-card.css"
 import React, {useEffect, useState} from "react";
@@ -7,8 +6,8 @@ import {ru} from "date-fns/locale";
 import {achievementService} from "../../api/services/achievementService";
 import {useTranslation} from "react-i18next";
 import AccountTabs from "../../components/nav/AccountTabs";
-import UserAchievementCard from "../../components/game/card/AchievementCard";
-import {Button, Grid, Modal, ModalClose, ModalDialog} from "@mui/joy";
+import UserAchievementCard from "../../components/game/card/UserAchievementCard";
+import {Box, Button, Grid, Modal, ModalClose, ModalDialog} from "@mui/joy";
 import {UserAchievment} from "../../types/achievement.types";
 import AchievementModal from "../../components/modal/AchievementModal";
 
@@ -35,31 +34,48 @@ function UserAchievementsPage() {
     };
 
     return (
-        <Container style={{display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
+        <Box
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "100%",
+                maxWidth: '80rem',
+                mx: "auto",
+            }}
+        >
             <AccountTabs/>
-            <Grid className="mt-4"
-                  container
-                  spacing={2}
-                  sx={{
-                      gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
-                  }}
+            <Box
+                sx={{
+                    display: 'grid',
+                    gridTemplateColumns: {
+                        xs: 'repeat(auto-fill, minmax(15.5rem, 1fr))',
+                        sm: 'repeat(auto-fill, minmax(15.75rem, 1fr))',
+                        md: 'repeat(auto-fill, minmax(15.5rem, 1fr))'
+                    },
+                    width: '100%',
+                    mx: 'auto',
+                    mt: '1rem',
+                    pb: '0.75rem',
+                    gap: { xs: 1, sm: 1.5, md: 2 },
+                    justifyItems: 'center'
+                }}
             >
                 {userAchievements?.map((userAchievment, index) => {
                     return (
-                        <Grid key={index} xs={12} sm={6} md={4} lg={3}>
-                            <UserAchievementCard
-                                handleShow={(achievement) => {
-                                    setShow(true);
-                                    setSelectedAchievement(achievement);
-                                }}
-                                uAchievement={userAchievment} t={t} />
-                        </Grid>
+                        <UserAchievementCard
+                            handleShow={(achievement) => {
+                                setShow(true);
+                                setSelectedAchievement(achievement);
+                            }}
+                            uAchievement={userAchievment} t={t} />
                     );
                 })}
-            </Grid>
+            </Box>
 
             <AchievementModal show={show} handleClose={() => setShow(false)} uAchievement={selectedAchievement} t={t}/>
-        </Container>
+        </Box>
     );
 }
 

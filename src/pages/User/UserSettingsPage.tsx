@@ -1,7 +1,5 @@
 import React, {useEffect, useState} from "react";
-import Container from "react-bootstrap/Container";
 import {ImportedSteamGame, steamGamesService} from "../../api/services/steamGamesService";
-import Form from "react-bootstrap/Form";
 import ImportGamesList from "../../components/game/list/ImportGamesList";
 import "../../assets/styles/account.css"
 import {useTranslation} from "react-i18next";
@@ -10,6 +8,7 @@ import {Box, Button, Input, Modal, ModalClose, ModalDialog, Stack, Typography} f
 import ModalOverflow from '@mui/joy/ModalOverflow';
 import {Toast} from "../../components/toast/Toast";
 import {UserProfile, userProfileService} from "../../api/services/userProfileService";
+import FormLabel from "@mui/joy/FormLabel";
 
 function UserSettingsPage() {
     const { t } = useTranslation();
@@ -74,14 +73,13 @@ function UserSettingsPage() {
 
     return (
         <>
-            <Container style={{display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
+            <Box style={{display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
                 <AccountTabs/>
 
-                <Container>
+                <Box>
                     <Stack className=".d-flex justify-content-center align-items-center">
                         <h1>{t('settings')}</h1>
                     </Stack>
-                    <br/>
                     <Stack className=".d-flex justify-content-center align-items-center" sx={{width: "100%"}}>
                         <Stack style={{justifyContent: "flex-start", gap: "1rem"}}>
                             <Stack
@@ -152,8 +150,8 @@ function UserSettingsPage() {
                             {/*}}>Show import games</Button>*/}
                         </Stack>
                     </Stack>
-                </Container>
-            </Container>
+                </Box>
+            </Box>
 
             <Modal open={show}
                    onClose={handleClose}
@@ -169,10 +167,10 @@ function UserSettingsPage() {
                     </div>
 
                     <div>
-                        <Form>
-                            <Form.Label>{t('enter_steam_id')}:</Form.Label>
-                            <Form.Control type="email" onChange={steamIdInputChange}/>
-                        </Form>
+                        <form>
+                            <FormLabel>{t('enter_steam_id')}:</FormLabel>
+                            <Input type="email" onChange={steamIdInputChange}/>
+                        </form>
                     </div>
 
                     <div style={{display: "flex", justifyContent: "space-between"}}>

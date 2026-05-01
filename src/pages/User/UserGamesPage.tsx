@@ -1,6 +1,4 @@
 import React, {ChangeEvent, useMemo, useState} from "react";
-import Container from "react-bootstrap/Container";
-import {Alert, Spinner} from "react-bootstrap";
 import "../../assets/styles/account.css"
 import UserGameList from "../../components/game/list/UserGameList";
 import {useTranslation} from "react-i18next";
@@ -14,7 +12,9 @@ import {
     Option,
     IconButton, Stack,
     Typography,
-    Input,
+    Input, Box,
+    CircularProgress,
+    Card,
 } from "@mui/joy";
 import {useTheme} from "next-themes";
 import {UserGame, UserMode} from "../../types/user.game.types";
@@ -44,7 +44,7 @@ function UserGamesPage() {
     const [currentPage, setCurrentPage] = useState(1);
     //const [listType, setListType] = useState('0');
 
-    const gamesPerPage = listType === '0' ? 21 : 36;
+    const gamesPerPage = listType === '0' ? 24 : 36;
 
     const url = userGameService.buildUserGamesUrl(currentPage - 1, gamesPerPage, filters);
 
@@ -140,31 +140,32 @@ function UserGamesPage() {
     const renderUserGames = () => {
         if (isLoading) {
             return (
-                <Container style={{ textAlign: "center", padding: "50px" }}>
-                    <Spinner animation="border" role="status">
-                        <span className="visually-hidden">Loading...</span>
-                    </Spinner>
-                </Container>
+                <Box style={{ textAlign: "center", padding: "50px" }}>
+                    <CircularProgress>
+                    </CircularProgress >
+                </Box>
             );
         }
 
         if (error) {
             return (
-                <Container style={{ textAlign: "center", maxWidth: "500px" }}>
-                    <Alert variant="danger">
+                <Box style={{ textAlign: "center", maxWidth: "500px" }}>
+                    <Card>
                         {error.response?.status === 401
                             ? t('error_unauthorized')
                             : t('error_loading')}
-                    </Alert>
-                </Container>
+                    </Card>
+                </Box>
             );
         }
 
         if (!data || data.content.length === 0) {
             return (
-                <Container style={{ textAlign: "center", maxWidth: "500px" }}>
-                    <Alert>{t('not_found')}</Alert>
-                </Container>
+                <Box style={{alignItems: 'center', textAlign: "center", maxWidth: "500px" }}>
+                    <Card>
+                        {t('not_found')}
+                    </Card>
+                </Box>
             );
         }
 
@@ -185,10 +186,10 @@ function UserGamesPage() {
     };
 
     return (
-        <Container style={{display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
+        <Box style={{display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"}}>
             <AccountTabs/>
 
-            <Container>
+            <Box style={{display: 'contents'}}>
                 <Stack
                     sx={{
                         display: 'flex',
@@ -335,8 +336,10 @@ function UserGamesPage() {
                         </Stack>
                     </div>
                 </Stack>
-                {renderUserGames()}
-            </Container>
+                <Stack sx={{width: '100%', maxWidth: '90vw', px: 2}}>
+                    {renderUserGames()}
+                </Stack>
+            </Box>
 
             <FilterModal
                 show={showFilterModal}
@@ -345,7 +348,7 @@ function UserGamesPage() {
                 onApply={handleApplyFilters}
                 onReset={handleResetFilters}
             />
-        </Container>
+        </Box>
     );
 }
 

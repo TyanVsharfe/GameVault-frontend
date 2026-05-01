@@ -1,16 +1,16 @@
 import React from "react";
-import Dropdown from "react-bootstrap/Dropdown";
 import { useMediaQuery } from "react-responsive";
 import {useTranslation} from "react-i18next";
-import {Link, Tab, tabClasses, TabList, Tabs} from "@mui/joy";
+import {Link, Tab, tabClasses, TabList, Tabs, Option} from "@mui/joy";
 import {useTheme} from "next-themes";
 import { useLocation } from "react-router-dom";
+import Select from "@mui/joy/Select";
 
 function AccountTabs() {
     const { t } = useTranslation();
     const { theme } = useTheme();
     const location = useLocation();
-    const isMobile = useMediaQuery({ maxWidth: 550 });
+    const isMobile = useMediaQuery({ maxWidth: 675 });
 
     const currentPath = location.pathname;
 
@@ -31,20 +31,15 @@ function AccountTabs() {
 
     if (isMobile) {
         return (
-            <Dropdown style={{width: "25rem", margin: "10px"}}>
-                <Dropdown.Toggle style={{width: "25rem"}} variant="primary" id="account-nav-dropdown">
-                    Меню аккаунта
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                    {navItems.map((item, idx) => (
-                        <Dropdown.Item key={idx} href={item.href} active={idx === activeTabIndex}
-                                       style={{width: "25rem"}}
-                        >
-                            {item.label}
-                        </Dropdown.Item>
-                    ))}
-                </Dropdown.Menu>
-            </Dropdown>
+            <Select placeholder={`Меню аккаунта`} style={{width: "25rem", margin: "10px"}}>
+                {navItems.map((item, idx) => (
+                    <Option component={Link} key={idx} href={item.href} disabled={idx === activeTabIndex}
+                            style={{width: "25rem"}}
+                    >
+                        {item.label}
+                    </Option>
+                ))}
+            </Select>
         );
     }
 

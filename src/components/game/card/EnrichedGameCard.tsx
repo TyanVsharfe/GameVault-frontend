@@ -41,6 +41,7 @@ export const EnrichedGameCard: React.FC<EnrichedGameCardProps> = ({ game, t, onS
             className="mb-4 d-flex justify-content-center user-game-list-col"
         >
             <Card
+                variant="black"
                 onMouseEnter={() => setHovered(true)}
                 onMouseLeave={() => setHovered(false)}
                 sx={{
@@ -53,7 +54,6 @@ export const EnrichedGameCard: React.FC<EnrichedGameCardProps> = ({ game, t, onS
                     flexDirection: "column",
                     borderRadius: "0.6rem",
                 }}
-                variant="plain"
                 className={`user-game-list-game-card user-game-list-game-card-background position-relative ${theme === 'light' ? 'bg-dark text-white' : 'text-light'}`}
             >
                 <CardOverflow sx={{ flex: "0 0 auto" }}>

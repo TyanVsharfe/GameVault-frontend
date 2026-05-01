@@ -55,7 +55,7 @@ const AchievementGameCard: React.FC<AchievementGameCardProps> = ({ game, statusC
                 flexDirection: "column",
                 borderRadius: "0.6rem",
             }}
-            variant="plain"
+            variant="black"
             className={`user-game-list-game-card user-game-list-game-card-background position-relative ${theme === 'light' ? 'bg-dark text-white' : 'text-light'}`}
         >
             <CardOverflow sx={{ flex: "0 0 auto" }}>

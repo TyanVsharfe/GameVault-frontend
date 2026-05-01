@@ -1,4 +1,3 @@
-import Container from "react-bootstrap/Container";
 import React, {useEffect} from "react";
 import {authService} from "../../api/services/authService";
 import {useNavigate, useSearchParams} from "react-router-dom";
@@ -18,12 +17,12 @@ const VerifyEmailPage: React.FC = () => {
     }, [token]);
 
     return (
-        <Container style={{textAlign: "center", display: "flex", alignItems: "center", height: "80vh"}}>
-            <Container>
+        <div style={{display: "flex", justifyContent: "center",textAlign: "center", alignItems: "center", height: "80vh"}}>
+            <div>
                 <h2>Verifying email...</h2>
                 <h3>Redirect</h3>
-            </Container>
-        </Container>
+            </div>
+        </div>
     );
 };
 

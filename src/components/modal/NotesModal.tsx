@@ -204,11 +204,11 @@ function NotesModal({ notes, show, handleClose, gameTitle }: UserNotesProps) {
                                                               sx={{
                                                                   bgcolor: 'rgba(0,0,0,0.05)',
                                                                   fontWeight: 'bold',
-                                                                  fontSize: '10px' ,
+                                                                  fontSize: '0.85rem' ,
                                                                   color: style.title
                                                               }}
                                                         >
-                                                            {style.tag}
+                                                            {t(`tag_${style?.tag?.toLowerCase()}`)}
                                                         </Chip>
                                                     </Box>
                                                 </CardContent>
@@ -330,11 +330,11 @@ function NotesModal({ notes, show, handleClose, gameTitle }: UserNotesProps) {
                                                           sx={{
                                                               bgcolor: 'rgba(0,0,0,0.05)',
                                                               fontWeight: 'bold',
-                                                              fontSize: '10px' ,
+                                                              fontSize: '0.8rem' ,
                                                               color: style.title
                                                           }}
                                                     >
-                                                        {style.tag}
+                                                        {t(`tag_${style?.tag?.toLowerCase()}`)}
                                                     </Chip>
                                                 </Box>
                                             </CardContent>
@@ -424,7 +424,7 @@ function NotesModal({ notes, show, handleClose, gameTitle }: UserNotesProps) {
                                 updateField("type", newValue)}>
                             {NOTE_TYPE.map((type, index) => (
                                 <Option key={index} value={type?.type}>
-                                    {type?.type}
+                                    {t(`tag_${type?.type?.toLowerCase()}`)}
                                 </Option>
                             ))}
                         </Select>

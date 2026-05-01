@@ -1,5 +1,4 @@
 import React, {ReactNode, useState} from 'react';
-import {Container, Row} from 'react-bootstrap';
 import "../../../assets/styles/style.css"
 import "../../../assets/styles/game-card.css"
 import {useTranslation} from "react-i18next";

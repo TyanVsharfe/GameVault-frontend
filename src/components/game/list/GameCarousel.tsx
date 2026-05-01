@@ -4,9 +4,13 @@ import {AggregatedRelease} from "../../../types/igdb.game.types";
 import {PlatformBadge} from "../badge/PlatformBadge";
 import IgdbGameTypeBadge from "../badge/IgdbGameTypeBadge";
 import {useTranslation} from "react-i18next";
-import {AspectRatio, Button, Card, CardContent, CardOverflow, Chip, Typography} from "@mui/joy";
+import {AspectRatio, Button, Card, CardContent, CardOverflow, Chip, IconButton, Stack, Typography} from "@mui/joy";
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import AddIcon from '@mui/icons-material/Add';
+import {userGameService} from "../../../api/services/userGamesService";
+import {enumStatus} from "../../../utils/Enums";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
 
 export interface GameListProps {
     games: AggregatedRelease[];
@@ -47,16 +51,13 @@ const GameCarousel: React.FC<GameListProps> = ({ games, carouselRef, width }) =>
                                   // border: "0px",
                               }}
 
-                              // sx={{
-                              //     width: "10rem",
-                              //     height: "15.5rem",
-                              //     display: "grid",
-                              //     gap: "0.2rem"
-                              // }}
+                              sx={{
+                                  height: "29rem",
+                              }}
                         >
                             {releaseGame?.coverUrl && (
                                 <CardOverflow sx={{ flex: "0 0 auto", padding: 0, alignItems: "center"}}>
-                                    <AspectRatio ratio="3/4" className="game-card__img-wrapper"
+                                    <AspectRatio ratio="3/4"
                                                  sx={{
                                                      width: "100%",
                                                      padding: 0
@@ -87,26 +88,39 @@ const GameCarousel: React.FC<GameListProps> = ({ games, carouselRef, width }) =>
                                 </CardOverflow>
                             )}
                             <div style={{flex: 1, display: 'flex', flexDirection: 'column'}}>
-                                <Typography style={{marginBottom: '0.5rem'}}>
+                                <Typography level="title-md" style={{display: 'flex', marginBottom: '0.5rem', alignItems: 'flex-start', height: '3rem'}}>
                                     <Link to={`/games/${releaseGame.gameId}`}
                                           style={{textDecoration: 'none', color: 'inherit'}}>
                                         {releaseGame?.gameName || 'Название неизвестно'}
                                     </Link>
                                 </Typography>
-                                <CardContent style={{padding: '0', flex: 1, overflow: 'auto', alignItems: "center"}}>
-                                    {releaseGame?.platforms.slice(0, 4).map((platform, index) =>
+                                <CardContent style={{display: 'flow', padding: '0', flex: 1, overflow: 'auto'}}>
+                                    {releaseGame?.platforms.slice(0, 3).map((platform, index) =>
                                         PlatformBadge(platform.abbreviation?.replace(' ', '-'), index))
                                     }
-                                    {releaseGame?.platforms.length > 4 && (
+                                    {releaseGame?.platforms.length > 3 && (
                                         <Chip style={{marginBottom: '0.4rem', marginRight: '0.3rem'}}>
-                                            +{releaseGame.platforms.length - 4}
+                                            +{releaseGame.platforms.length - 3}
                                         </Chip>
                                     )}
                                 </CardContent>
-                                <div className="text-muted"
-                                             style={{background: 'none', border: 'none', padding: '0.5rem 0 0 0'}}>
-                                    {releaseGame?.earliestRelease?.human}
-                                </div>
+                                <Stack direction="row" sx={{display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                                    <div className="text-muted"
+                                         style={{alignItems: 'start', background: 'none', border: 'none', padding: '0.5rem 0 0 0'}}>
+                                        {releaseGame?.earliestRelease?.human}
+                                    </div>
+                                    <IconButton
+                                        color="neutral"
+                                        size="sm"
+                                        sx={{
+                                            zIndex: 10,
+                                        }}
+                                        onClick={(e) => {
+                                        }}
+                                    >
+                                        <AddIcon/>
+                                    </IconButton>
+                                </Stack>
                             </div>
                         </Card>
                     ))}

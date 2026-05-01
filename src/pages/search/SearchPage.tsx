@@ -1,6 +1,4 @@
 import React, {useEffect, useState} from "react";
-import {Alert, Spinner} from "react-bootstrap";
-import Row from "react-bootstrap/Row";
 import {igdbGamesService} from "../../api/services/igdbGamesService";
 import {useNavigate, useSearchParams} from "react-router-dom";
 import "../../assets/styles/game-card.css"
@@ -8,7 +6,7 @@ import {useTranslation} from "react-i18next";
 import {useTheme} from "next-themes";
 import {EnrichedIgdbGameList} from "../../components/game/list/EnrichedIgdbGameList";
 import Select from "@mui/joy/Select";
-import {Box, Button, buttonClasses, IconButton, Input, Option, Stack, ToggleButtonGroup} from "@mui/joy";
+import {Box, Button, buttonClasses, Card, CircularProgress, IconButton, Input, Option, Stack, ToggleButtonGroup} from "@mui/joy";
 import IgdbGameEnhancedList from "../../components/game/list/IgdbGameEnhancedList";
 import {SearchFilterModal} from "../../components/modal/SearchFilterModal";
 import {Helmet} from "react-helmet-async";
@@ -96,22 +94,25 @@ function SearchPage() {
         else if(searchParams.get("q") != null) {
             return (
                 <Box style={{textAlign: "center", maxWidth: "500px"}}>
-                    <Alert>{t('not_found')}</Alert>
+                    <Card>{t('not_found')}</Card>
                 </Box>
             )
         }
     };
 
     return (
-        <Box>
+        <Box sx={{display: 'flex', justifyContent: 'center'}}>
             <Helmet>
                 <title>{searchTerm == "" ? "Search" : searchTerm} | GameVault</title>
             </Helmet>
-            <Stack className=".d-flex justify-content-center align-items-center">
-                {/*<h2 className='page-title'>{searchParams.get("q") == null ? t('search') : t('result')}</h2>*/}
-                <Box style={{textAlign: "center", width: '35rem', paddingBottom: "10px"}}>
-                    <form className="mb-2 w-100" style={{maxWidth: "600px"}} onSubmit={handleSubmit}>
-                        <Stack direction="row" gap={2} className="justify-content-center g-2 mt-2">
+            <Stack
+                style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}
+            >
+                <Box style={{display: 'contents', textAlign: "center", width: '35rem', paddingBottom: "10px"}}>
+                    <form style={{maxWidth: "600px", marginBottom: '0.25rem', width: '25rem'}} onSubmit={handleSubmit}>
+                        <Stack direction="row" gap={2}
+                               style={{justifyContent: 'center', marginTop: 2, gap: 2}}
+                        >
                             <Input
                                 type="text"
                                 placeholder="Введите поисковый запрос..."
@@ -146,7 +147,7 @@ function SearchPage() {
                             {/*</Col>*/}
                         </Stack>
                     </form>
-                    <div style={{width: '15rem', display: 'flex', justifyContent: 'center', margin: 'auto'}}>
+                    <div style={{width: '15rem', display: 'flex', justifyContent: 'center', margin: 'auto', marginBottom: '0.75rem'}}>
                         <ToggleButtonGroup
                             sx={{
                                 display: 'flex',
@@ -192,10 +193,15 @@ function SearchPage() {
                 <Stack className="flex-wrap" style={{display: 'flex', alignItems: 'flex-end'}} gap="4">
                     {isLoading ? (
                         <Box style={{display: "flex", justifyContent: "center", paddingBottom: '20px'}}>
-                            <Spinner animation="border" variant="primary"/>
+                            <CircularProgress/>
                         </Box>
                     ) : (
-                        <Box className="justify-content-start align-items-center">
+                        <Box
+                             sx={{
+                                 justifyContent: 'start',
+                                 alignItems: 'center'
+                             }}
+                        >
                             {renderSearchResults()}
                             {/*<SearhResult searchResults={searchResults}/>*/}
                         </Box>

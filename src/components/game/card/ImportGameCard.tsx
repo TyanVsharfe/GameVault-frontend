@@ -1,6 +1,5 @@
 import React from "react";
 import {useTheme} from "next-themes";
-import {Col} from "react-bootstrap";
 import {Card, CardContent, Checkbox, Chip, Divider, Link} from "@mui/joy";
 import { IgdbGame } from "../../../types/igdb.game.types";
 
@@ -15,11 +14,10 @@ export const ImportGameCard: React.FC<ImportGameCardProps> = ({ game, t, onSwitc
     const coverUrl = game?.cover?.replace("t_thumb", "t_cover_big");
 
     return (
-        <Card data-bs-theme='dark' className='user-game-list-game-card text-center'
+        <Card variant="black" data-bs-theme='dark' className='user-game-list-game-card text-center'
               style={{
                   width: '9.5rem',
                   height: '18.25rem',
-                  backgroundColor: "rgba(30, 30, 30, 1)",
                   overflow: "hidden",
                   border: "0px",
                   padding: "0px",
@@ -36,7 +34,7 @@ export const ImportGameCard: React.FC<ImportGameCardProps> = ({ game, t, onSwitc
                     alignItems: 'center'
                 }}
             >
-                <div>
+                <div style={{textAlign: 'center'}}>
                     <Link
                         href={`/games/${game.id}`}
                         style={{
@@ -66,11 +64,11 @@ export const ImportGameCard: React.FC<ImportGameCardProps> = ({ game, t, onSwitc
                 <Chip
                     sx={{
                         width: '100px',
-                        minWidth: '100px',
                         justifyContent: 'center'
                     }}
                 >
                     <Checkbox
+                        sx={{textAlign: 'center'}}
                         variant="outlined"
                         disableIcon
                         overlay
@@ -79,13 +77,6 @@ export const ImportGameCard: React.FC<ImportGameCardProps> = ({ game, t, onSwitc
                         onChange={() => onSwitchChange(game.id)}
                     />
                 </Chip>
-                {/*<Link*/}
-                {/*   overlay*/}
-                {/*   href={`/games/${game.id}`}*/}
-                {/*   underline="none"*/}
-                {/*   sx={{ display: 'flex', flexDirection: 'column', alignItems: 'start' }}*/}
-                {/*>*/}
-                {/*</Link>*/}
             </CardContent>
         </Card>
     );

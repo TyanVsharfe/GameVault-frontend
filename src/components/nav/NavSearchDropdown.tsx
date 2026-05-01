@@ -11,6 +11,8 @@ import ErrorIcon from '@mui/icons-material/Error';
 import { IgdbGame } from '../../types/igdb.game.types';
 import { UserGameList } from '../../types/user.game.list.types';
 import {Toast} from "../toast/Toast";
+import AddIcon from '@mui/icons-material/Add';
+import {name} from "@vitejs/plugin-react";
 
 export interface NavSearchDropdownProps {
     games: IgdbGame[];
@@ -25,13 +27,13 @@ const NavSearchDropdown: React.FC<NavSearchDropdownProps> = ({ games, isListPage
 
     const [showSuccessNotification, setShowSuccessNotification] = React.useState(false);
     const [showErrorNotification, setShowErrorNotification] = React.useState(false);
-    const [gameName, setGameName] = React.useState<string>();
+    const [addedGame, setAddedGame] = React.useState<{id: number, name: string}>();
 
     const handleAddToList = async (game: IgdbGame) => {
         if (!listId || !onChange) return;
 
         try {
-            setGameName(game.name);
+            setAddedGame({id: game.id, name: game.name});
             const updatedList = await userGameListService.updateUserGameList(
                 { games: Array.from([game.id]) },
                 listId
@@ -63,84 +65,65 @@ const NavSearchDropdown: React.FC<NavSearchDropdownProps> = ({ games, isListPage
                 {games.filter(game => game.cover?.url != null).map((game, index: number) => (
                     <ListItem
                         key={index}
-                        className="mb-3 d-flex"
+                        className="mb-2 d-flex"
                         style={{width:'100%'}}
                     >
                         {game.cover?.url && (
                             <AspectRatio
                                 ratio="3/4"
                                 sx={{
-                                    width: '3.5rem',
-                                    height: '4.5rem'
-                            }}
+                                    width: '3.75rem',
+                                    height: '5rem'
+                                }}
                             >
                                 <img
                                     src={game.cover?.url.replace('t_thumb', 't_cover_big')}
                                     alt={game.name}
-                                    style={{width: '3rem', height: '4rem', objectFit: 'cover', borderRadius: '0.25rem'}}
+                                    style={{objectFit: 'cover', borderRadius: '0.25rem'}}
                                 />
                             </AspectRatio>
                         )}
-                        <Link
-                            href={`/games/${game.id}`}
-                            style={{width: '11rem', textDecoration: "none"}}
-                            underline="none"
-                            level="title-md"
-                            sx={{
-                                '--Link-gap': '0.5rem',
-                                pl: 1,
-                                py: 0.5,
-                                borderRadius: 'md',
-                                color: 'black',
-                        }}
-                        >
-                            {game.name}
-                        </Link>
-                        {isListPage && (
-                            <Button onClick={() => handleAddToList(game)}>
-                                Add to list
-                            </Button>
-                        )}
+                        <div style={{display: 'flex', justifyContent: 'space-between',
+                            width: '80%', alignItems: 'center'}}>
+                            <Link
+                                href={`/games/${game.id}`}
+                                style={{width: '11rem', textDecoration: "none"}}
+                                underline="none"
+                                level="title-md"
+                                sx={{
+                                    '--Link-gap': '0.5rem',
+                                    pl: 1,
+                                    py: 0.5,
+                                    borderRadius: 'md',
+                                    color: 'black',
+                                }}
+                            >
+                                {game.name}
+                            </Link>
+                            {isListPage && (
+                                <Button key={index} style={{height: '60%'}} onClick={() => handleAddToList(game)}>
+                                    {addedGame?.id === game.id ? <DoneIcon /> : <AddIcon />}
+                                </Button>
+                            )}
+                        </div>
                     </ListItem>
                 ))}
-
-                <Toast
-                    module="List"
-                    message={`${gameName} has been added to the list.`}
-                    isSuccess={true}
-                    open={showSuccessNotification}
-                    onClose={() => setShowSuccessNotification(false)}
-                />
-                <Toast
-                    module="List"
-                    message="Could not add the game. Please try again."
-                    isSuccess={false}
-                    open={showErrorNotification}
-                    onClose={() => setShowErrorNotification(false)}
-                />
-                {/*<Snackbar*/}
-                {/*    variant="soft"*/}
-                {/*    color="success"*/}
-                {/*    autoHideDuration={4000}*/}
-                {/*    open={showSuccessNotification}*/}
-                {/*    onClose={() => setShowSuccessNotification(false)}*/}
-                {/*    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}*/}
-                {/*    startDecorator={<DoneIcon/>}*/}
-                {/*>*/}
-                {/*    The game has been added to the list.*/}
-                {/*</Snackbar>*/}
-                {/*<Snackbar*/}
-                {/*    variant="soft"*/}
-                {/*    color="warning"*/}
-                {/*    autoHideDuration={4000}*/}
-                {/*    open={showErrorNotification}*/}
-                {/*    onClose={() => setShowErrorNotification(false)}*/}
-                {/*    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}*/}
-                {/*    startDecorator={<ErrorIcon/>}*/}
-                {/*>*/}
-                {/*    Could not add the game. Please try again.*/}
-                {/*</Snackbar>*/}
             </List>
+
+            <Toast
+                module="List"
+                message={`${addedGame?.name} has been added to the list.`}
+                isSuccess={true}
+                open={showSuccessNotification}
+                onClose={() => setShowSuccessNotification(false)}
+            />
+            <Toast
+                module="List"
+                message="Could not add the game. Please try again."
+                isSuccess={false}
+                open={showErrorNotification}
+                onClose={() => setShowErrorNotification(false)}
+            />
         </>
     );
 };

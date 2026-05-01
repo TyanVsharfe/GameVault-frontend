@@ -39,8 +39,8 @@ const GameSwiper: React.FC<SwiperGamesProps> = ({franchiseGames, t}) => {
                     gamesResultsOut.filter(g => g.cover?.url != null).map((game, index: number) => (
                         <SwiperSlide key={index} style={{display: "flex", justifyContent: "center", paddingTop: '0.5rem'}}>
                             <Card
+                                variant="black"
                                 style={{
-                                    backgroundColor: "rgba(30, 30, 30, 0.4)",
                                     overflow: "hidden",
                                     border: "0px",
                                 }}

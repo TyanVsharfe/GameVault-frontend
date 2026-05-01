@@ -10,6 +10,10 @@ export const en = {
         reset: 'Reset',
         save: 'Save',
 
+        // Main page
+        release_calendar: 'Release Calendar',
+        release_calendar_description: 'Upcoming games and their release dates',
+
         // User registration
         password: 'Password',
         no_account: 'No account',
@@ -85,6 +89,10 @@ export const en = {
         user_review: 'Your review',
 
         // Review
+        user_reviews: 'User reviews',
+        user_reviews_description: 'based on rated reviews',
+        user_no_reviews_description: 'not enough reviews to evaluate',
+
         what_do_you_think: 'What do you think?',
         helper_reviews: 'Help the community by sharing your experience with this game.',
         register_and_review: 'Login and review',
@@ -160,6 +168,12 @@ export const en = {
         save_changes: 'Save changes',
 
         // Notes
+        tag_general: 'General',
+        tag_gameplay: 'Gameplay',
+        tag_guide: 'Guide',
+        tag_combat: 'Combat',
+        tag_lore: 'Lore',
+
         your_notes: 'Your notes',
         your_notes_for: 'Your notes for',
         you_have: 'You have ',

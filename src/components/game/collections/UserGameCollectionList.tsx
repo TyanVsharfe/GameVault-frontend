@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import {Container, Row} from 'react-bootstrap';
 import "../../../assets/styles/style.css"
 import "../../../assets/styles/game-card.css"
 import {useTranslation} from "react-i18next";
@@ -22,6 +21,7 @@ import {
     sortableKeyboardCoordinates,
     rectSortingStrategy,
 } from '@dnd-kit/sortable';
+import {Box, Stack} from "@mui/joy";
 
 export interface UserGameListItemProps {
     games: UserGameListItem[];
@@ -90,8 +90,22 @@ const UserGameCollectionList: React.FC<UserGameListItemProps> = ({ games, editMo
 
     if (!editMode) {
         return (
-            <Container className="justify-content-start align-items-center game-list">
-                <Row>
+            <div className="justify-content-start align-items-center game-list">
+                <Box
+                    sx={{
+                        display: 'grid',
+                        gridTemplateColumns: {
+                            xs: 'repeat(auto-fill, minmax(11.5rem, 1fr))',
+                            sm: 'repeat(auto-fill, minmax(10.75rem, 1fr))',
+                            md: 'repeat(auto-fill, minmax(11.5rem, 1fr))'
+                        },
+                        width: '100%',
+                        mx: 'auto',
+                        pb: '0.75rem',
+                        gap: { xs: 1, sm: 1.5, md: 2 },
+                        justifyItems: 'center'
+                    }}
+                >
                     {items?.map((game: UserGameListItem) => (
                         <GameCard
                             key={game.game.igdbId}
@@ -101,13 +115,13 @@ const UserGameCollectionList: React.FC<UserGameListItemProps> = ({ games, editMo
                             t={t}
                         />
                     ))}
-                </Row>
-            </Container>
+                </Box>
+            </div>
         );
     }
 
     return (
-        <Container className="justify-content-start align-items-center game-list">
+        <div className="justify-content-start align-items-center game-list">
             <DndContext
                 sensors={sensors}
                 collisionDetection={closestCenter}
@@ -118,7 +132,21 @@ const UserGameCollectionList: React.FC<UserGameListItemProps> = ({ games, editMo
                     items={items.map((item) => item.game.igdbId)}
                     strategy={rectSortingStrategy}
                 >
-                    <Row>
+                    <Box
+                        sx={{
+                            display: 'grid',
+                            gridTemplateColumns: {
+                                xs: 'repeat(auto-fill, minmax(11.5rem, 1fr))',
+                                sm: 'repeat(auto-fill, minmax(10.75rem, 1fr))',
+                                md: 'repeat(auto-fill, minmax(11.5rem, 1fr))'
+                            },
+                            width: '100%',
+                            mx: 'auto',
+                            pb: '0.75rem',
+                            gap: { xs: 1, sm: 1.5, md: 2 },
+                            justifyItems: 'center'
+                        }}
+                    >
                         {items?.map((game: UserGameListItem, index: number) => (
                             <GameCard
                                 key={game.game.igdbId || index}
@@ -128,7 +156,7 @@ const UserGameCollectionList: React.FC<UserGameListItemProps> = ({ games, editMo
                                 t={t}
                             />
                         ))}
-                    </Row>
+                    </Box>
                 </SortableContext>
                 <DragOverlay>
                     {activeGame ? (
@@ -141,7 +169,7 @@ const UserGameCollectionList: React.FC<UserGameListItemProps> = ({ games, editMo
                     ) : null}
                 </DragOverlay>
             </DndContext>
-        </Container>
+        </div>
     );
 };
 

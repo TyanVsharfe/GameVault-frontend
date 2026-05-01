@@ -51,7 +51,7 @@ const UserGameCollectionCreateModal = ({ open, onClose, onSubmit, isSubmitting }
                     />
 
                     <Button onClick={() => onSubmit({ name, description, isPublic })}>
-                        {isSubmitting ? `t('adding')...` : t('add')}
+                        {isSubmitting ? `${t('adding')}...` : t('add')}
                     </Button>
                 </Stack>
             </ModalDialog>

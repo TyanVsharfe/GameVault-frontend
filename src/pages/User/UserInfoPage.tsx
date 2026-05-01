@@ -77,8 +77,10 @@ function UserInfoPage() {
                         alignItems: "center",
                     }}
                 >
-                    <Card className="mb-4" style={{ display: "flex", justifyContent: "center", marginRight: "15px", width: "20rem"}}
+                    <Card className="mb-4"
+                          style={{ display: "flex", justifyContent: "center", marginRight: "15px", width: "20rem"}}
                           sx={{
+                              height: '17.5rem',
                               gap: 0.5,
                               marginBottom: 1,
                               borderRadius: 'xl'
@@ -105,7 +107,7 @@ function UserInfoPage() {
                                 <div style={{display: 'flex', justifyContent: 'center', padding: '1rem'}}>
                                     <Avatar variant="plain" sx={{width: 64, height: 64}} src={avatarSrc}/>
                                 </div>
-                                <h3>{userInfo?.username}</h3>
+                                <h3 style={{textAlign: 'center'}}>{userInfo?.username}</h3>
                                 {/*<Badge bg={userInfo?.subscription === "Premium" ? "success" : "secondary"}*/}
                                 {/*       className="px-3 py-2">*/}
                                 {/*    {userInfo?.subscription}*/}
@@ -161,7 +163,7 @@ function UserInfoPage() {
                 >
                     <Stack direction="row"
                            spacing={2}
-                           sx={{justifyContent: 'space-between'}}
+                           sx={{justifyContent: 'space-between', paddingBottom: '1.5rem'}}
                     >
                         <Card sx={{width: '10rem', height: '6rem'}}>
                             <CardContent>
